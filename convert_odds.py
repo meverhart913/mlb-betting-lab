@@ -1,9 +1,11 @@
 import json
 import csv
+import math
 
 INPUT_FILE = "mlb_odds_dataset.json"
-OUTPUT_FILE = "mlb_odds_2021_2025.csv"
+MAX_ROWS_PER_FILE = 100000
 
+# Load JSON
 with open(INPUT_FILE, "r", encoding="utf-8") as f:
     data = json.load(f)
 
@@ -33,6 +35,7 @@ for date, games in data.items():
             current = book.get("currentLine", {})
 
             row = base.copy()
+
             row.update({
                 "sportsbook": book.get("sportsbook"),
                 "market": "moneyline",
@@ -52,6 +55,7 @@ for date, games in data.items():
             current = book.get("currentLine", {})
 
             row = base.copy()
+
             row.update({
                 "sportsbook": book.get("sportsbook"),
                 "market": "pointspread",
@@ -75,6 +79,7 @@ for date, games in data.items():
             current = book.get("currentLine", {})
 
             row = base.copy()
+
             row.update({
                 "sportsbook": book.get("sportsbook"),
                 "market": "totals",
@@ -90,25 +95,53 @@ for date, games in data.items():
 
             rows.append(row)
 
+
+# Build complete column list
 fieldnames = sorted(
     {key for row in rows for key in row.keys()}
 )
 
-with open(
-    OUTPUT_FILE,
-    "w",
-    newline="",
-    encoding="utf-8"
-) as f:
+# Split output into manageable files
+num_files = math.ceil(
+    len(rows) / MAX_ROWS_PER_FILE
+)
 
-    writer = csv.DictWriter(
-        f,
-        fieldnames=fieldnames
+print()
+print(f"Total records: {len(rows):,}")
+print(f"Creating {num_files} files...")
+print()
+
+for i in range(num_files):
+
+    start = i * MAX_ROWS_PER_FILE
+    end = start + MAX_ROWS_PER_FILE
+
+    chunk = rows[start:end]
+
+    filename = f"mlb_odds_part_{i + 1}.csv"
+
+    with open(
+        filename,
+        "w",
+        newline="",
+        encoding="utf-8"
+    ) as f:
+
+        writer = csv.DictWriter(
+            f,
+            fieldnames=fieldnames
+        )
+
+        writer.writeheader()
+        writer.writerows(chunk)
+
+    print(
+        f"Created {filename}: "
+        f"{len(chunk):,} rows"
     )
 
-    writer.writeheader()
-    writer.writerows(rows)
 
-print(f"Created {OUTPUT_FILE}")
-print(f"{len(rows):,} sportsbook-market records")
-print(f"{len(data):,} dates processed")
+print()
+print("Finished.")
+print(f"{len(data):,} dates processed.")
+print(f"{len(rows):,} sportsbook-market records exported.")
