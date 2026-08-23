@@ -1,0 +1,1 @@
+python -c "import json; d=json.load(open('mlb_odds_dataset.json',encoding='utf-8')); print(type(d)); print(len(d)); print(str(d[0] if isinstance(d,list) else list(d.items())[:1])[:5000])"
