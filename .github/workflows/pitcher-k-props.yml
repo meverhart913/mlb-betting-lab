@@ -30,13 +30,14 @@ jobs:
           echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
           echo "Has regular-season games: $HAS_GAMES"
 
-      - name: Restore pitcher prop history
+      - name: Restore pitcher prop research history
         if: steps.slate.outputs.has_games == 'true'
         uses: actions/cache@v4
         with:
           path: |
             data/current/pitcher_k_props_history.csv
             data/current/pitcher_k_props_raw_history.csv
+            data/current/pitcher_k_projection_history.csv
           key: pitcher-k-prop-history-${{ github.run_id }}
           restore-keys: |
             pitcher-k-prop-history-
@@ -57,25 +58,36 @@ jobs:
         if: steps.slate.outputs.has_games == 'true'
         run: python python/run_pitcher_k_props.py
 
+      - name: Archive and grade prospective projections
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/grade_pitcher_k_projections.py
+
       - name: Write job summary
         if: always()
         shell: bash
         run: |
-          echo '## Pitcher strikeout props' >> "$GITHUB_STEP_SUMMARY"
+          echo '## Pitcher strikeout research' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.slate.outputs.has_games }}" != "true" ]; then
             echo 'No MLB regular-season games today. No prop API calls were made.' >> "$GITHUB_STEP_SUMMARY"
           elif [ -f outputs/pitcher_k_prop_predictions.csv ]; then
-            echo 'Pitcher K projections and fair probabilities generated. All decisions remain NO BET pending prospective validation.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Pitcher K projections and fair probabilities generated. Research only; all decisions remain NO BET pending prospective validation.' >> "$GITHUB_STEP_SUMMARY"
             echo '' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             head -n 25 outputs/pitcher_k_prop_predictions.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
+            if [ -f outputs/pitcher_k_prospective_summary.csv ]; then
+              echo '' >> "$GITHUB_STEP_SUMMARY"
+              echo '### Prospective grading' >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              cat outputs/pitcher_k_prospective_summary.csv >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
           else
             echo 'No pitcher K prediction file generated. Props may not have been posted yet; inspect the steps above.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Upload pitcher prop outputs
+      - name: Upload pitcher prop research outputs
         if: always() && steps.slate.outputs.has_games == 'true'
         uses: actions/upload-artifact@v4
         with:
@@ -85,9 +97,12 @@ jobs:
             outputs/pitcher_k_walkforward_metrics.csv
             outputs/pitcher_k_walkforward_predictions.csv
             outputs/pitcher_k_prop_predictions.csv
+            outputs/pitcher_k_prospective_graded.csv
+            outputs/pitcher_k_prospective_summary.csv
             data/current/pitcher_k_props.csv
             data/current/pitcher_k_props_raw.csv
             data/current/pitcher_k_props_history.csv
             data/current/pitcher_k_props_raw_history.csv
+            data/current/pitcher_k_projection_history.csv
           if-no-files-found: warn
           retention-days: 90
