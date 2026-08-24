@@ -22,6 +22,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run full pitcher-aware walk-forward backtest
         run: python python/build_pitcher_model.py
+      - name: Validate market prices and rerun ROI evaluation
+        run: python python/evaluate_clean_market.py
       - name: Upload model outputs
         if: always()
         uses: actions/upload-artifact@v4
