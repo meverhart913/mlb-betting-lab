@@ -1,0 +1,69 @@
+name: Afternoon MLB odds snapshot
+
+on:
+  schedule:
+    # 18:00 UTC = 2:00 PM Eastern during MLB daylight-saving months.
+    # Morning + afternoon gives a quota-conscious line-movement baseline.
+    - cron: '0 18 * 4-10 *'
+  workflow_dispatch:
+
+jobs:
+  odds-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check today's MLB slate
+        id: slate
+        shell: bash
+        run: |
+          HAS_GAMES="$(python python/check_mlb_slate.py)"
+          echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
+          echo "Has regular-season games: $HAS_GAMES"
+
+      - name: Restore rolling odds history
+        if: steps.slate.outputs.has_games == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
+          key: odds-history-${{ github.run_id }}
+          restore-keys: |
+            odds-history-
+
+      - name: Pull afternoon sportsbook moneylines
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_morning_odds.py
+
+      - name: Build line movement summary
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/build_line_movement.py
+
+      - name: Upload line-movement snapshot
+        if: steps.slate.outputs.has_games == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: afternoon-odds-${{ github.run_id }}
+          path: |
+            data/current/morning_odds.csv
+            data/current/morning_odds_raw.csv
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
+            data/current/line_movement.csv
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Off-day summary
+        if: steps.slate.outputs.has_games != 'true'
+        run: echo 'No MLB regular-season games today; no Odds API quota used.' >> "$GITHUB_STEP_SUMMARY"

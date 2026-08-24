@@ -2,7 +2,7 @@ name: MLB model CI
 
 on:
   push:
-    branches: [main, organize-pitcher-model-v3, hybrid-market-model, test-rest-features]
+    branches: [main, organize-pitcher-model-v3, hybrid-market-model, test-rest-features, pregame-context-v2]
   pull_request:
     branches: [main]
 
@@ -20,8 +20,22 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
-      - name: Validate morning automation syntax
-        run: python -m py_compile python/run_morning_model.py python/fetch_morning_odds.py python/refresh_recent_mlb.py python/fetch_morning_context.py
+      - name: Validate automation syntax
+        run: >-
+          python -m py_compile
+          python/run_morning_model.py
+          python/fetch_morning_odds.py
+          python/refresh_recent_mlb.py
+          python/fetch_morning_context.py
+          python/fetch_bullpen_context.py
+          python/fetch_roster_context.py
+          python/fetch_lineup_context.py
+          python/check_mlb_slate.py
+          python/build_morning_report.py
+          python/build_line_movement.py
+          python/test_bullpen_features.py
+          python/test_bullpen_ablation.py
+          python/test_elo_features.py
       - name: Run full pitcher-aware walk-forward backtest
         run: python python/build_pitcher_model.py
       - name: Compare pitcher, team, and combined feature sets
@@ -32,6 +46,12 @@ jobs:
         run: python python/test_market_hybrid.py
       - name: Test team and starter rest features
         run: python python/test_rest_features.py
+      - name: Test bullpen workload features
+        run: python python/test_bullpen_features.py
+      - name: Ablate bullpen features individually
+        run: python python/test_bullpen_ablation.py
+      - name: Test Elo strength feature
+        run: python python/test_elo_features.py
       - name: Upload model outputs
         if: always()
         uses: actions/upload-artifact@v4

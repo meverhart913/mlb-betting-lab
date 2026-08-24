@@ -27,32 +27,66 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Determine target slate
+        id: slate
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.game_date }}" ]; then
+            GAME_DATE="${{ inputs.game_date }}"
+          else
+            GAME_DATE="$(date +%F)"
+          fi
+          HAS_GAMES="$(python python/check_mlb_slate.py --date "$GAME_DATE")"
+          echo "game_date=$GAME_DATE" >> "$GITHUB_OUTPUT"
+          echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
+          echo "Target date $GAME_DATE; has regular-season games: $HAS_GAMES"
+
+      - name: Restore rolling odds history
+        if: steps.slate.outputs.has_games == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
+          key: odds-history-${{ github.run_id }}
+          restore-keys: |
+            odds-history-
+
       - name: Refresh recent MLB results and pitcher/team logs
+        if: steps.slate.outputs.has_games == 'true'
         run: python python/refresh_recent_mlb.py --lookback-days 4
 
       - name: Rebuild leakage-safe historical modeling table
+        if: steps.slate.outputs.has_games == 'true'
         run: python python/build_pitcher_model.py
 
       - name: Pull current sportsbook moneylines
+        if: steps.slate.outputs.has_games == 'true'
         run: python python/fetch_morning_odds.py
 
+      - name: Capture bullpen workload context
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_bullpen_context.py --date "${{ steps.slate.outputs.game_date }}"
+
+      - name: Capture roster and IL context
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_roster_context.py --date "${{ steps.slate.outputs.game_date }}"
+
+      - name: Capture posted lineup context
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_lineup_context.py --date "${{ steps.slate.outputs.game_date }}"
+
       - name: Capture venue and weather context
-        shell: bash
-        run: |
-          if [ -n "${{ inputs.game_date }}" ]; then
-            python python/fetch_morning_context.py --date "${{ inputs.game_date }}"
-          else
-            python python/fetch_morning_context.py
-          fi
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_morning_context.py --date "${{ steps.slate.outputs.game_date }}"
 
       - name: Run morning model
-        shell: bash
-        run: |
-          if [ -n "${{ inputs.game_date }}" ]; then
-            python python/run_morning_model.py --date "${{ inputs.game_date }}"
-          else
-            python python/run_morning_model.py
-          fi
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/run_morning_model.py --date "${{ steps.slate.outputs.game_date }}"
+
+      - name: Build combined morning report
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/build_morning_report.py
 
       - name: Write job summary
         if: always()
@@ -60,25 +94,36 @@ jobs:
         run: |
           echo '## Morning MLB model' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
-          if [ -f outputs/morning_model_predictions.csv ]; then
-            echo 'Predictions generated. All decisions remain NO BET until a profitable rule is validated out of sample.' >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.slate.outputs.has_games }}" != "true" ]; then
+            echo 'No MLB regular-season games on the target date. No Odds API quota was used.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ -f outputs/morning_report.csv ]; then
+            echo 'Automated morning report generated. Model decisions remain NO BET until a profitable rule is validated out of sample.' >> "$GITHUB_STEP_SUMMARY"
             echo '' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
-            head -n 25 outputs/morning_model_predictions.csv >> "$GITHUB_STEP_SUMMARY"
+            head -n 20 outputs/morning_report.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'No morning prediction file was generated. Inspect the failed step above.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'No combined morning report was generated. Inspect the failed step above.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Upload morning outputs
-        if: always()
+        if: always() && steps.slate.outputs.has_games == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: morning-mlb-${{ github.run_id }}
           path: |
             outputs/morning_model_predictions.csv
+            outputs/morning_report.csv
             data/current/morning_odds.csv
             data/current/morning_odds_raw.csv
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
             data/current/morning_context.csv
+            data/current/bullpen_context.csv
+            data/current/roster_context.csv
+            data/current/injured_list_players.csv
+            data/current/recent_roster_transactions.csv
+            data/current/lineup_context.csv
+            data/current/lineup_players.csv
           if-no-files-found: warn
           retention-days: 30

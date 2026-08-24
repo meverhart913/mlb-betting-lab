@@ -2,8 +2,9 @@
 
 Requires THE_ODDS_API_KEY in the environment. Every individual sportsbook quote
 is retained for audit/price shopping, while morning_odds.csv contains one
-consensus row per game using median prices. Best available prices are recorded
-separately and are never used to construct the consensus probability.
+consensus row per game using median prices. Each successful pull is also
+appended to snapshot-history files so morning-to-later line movement can be
+measured prospectively without manual collection.
 """
 from __future__ import annotations
 
@@ -19,6 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CURRENT = ROOT / "data" / "current"
 OUT = CURRENT / "morning_odds.csv"
 RAW = CURRENT / "morning_odds_raw.csv"
+CONSENSUS_HISTORY = CURRENT / "odds_consensus_history.csv"
+RAW_HISTORY = CURRENT / "odds_raw_history.csv"
 URL = "https://api.the-odds-api.com/v4/sports/baseball_mlb/odds"
 
 
@@ -26,10 +29,20 @@ def best_positive_value(group: pd.DataFrame, column: str) -> tuple[float, str | 
     vals = pd.to_numeric(group[column], errors="coerce")
     if vals.notna().sum() == 0:
         return float("nan"), None
-    # For American odds a numerically larger value is always the better bettor price:
-    # +130 beats +120 and -105 beats -120.
     idx = vals.idxmax()
     return float(vals.loc[idx]), str(group.loc[idx, "sportsbook"])
+
+
+def append_history(path: Path, fresh: pd.DataFrame, keys: list[str]) -> None:
+    if fresh.empty:
+        return
+    if path.exists():
+        old = pd.read_csv(path, low_memory=False)
+        both = pd.concat([old, fresh], ignore_index=True, sort=False)
+    else:
+        both = fresh.copy()
+    both = both.drop_duplicates(keys, keep="last")
+    both.to_csv(path, index=False)
 
 
 def main() -> None:
@@ -48,6 +61,8 @@ def main() -> None:
     r.raise_for_status()
     payload = r.json()
     snapshot = datetime.now(ZoneInfo("America/New_York")).isoformat(timespec="minutes")
+    remaining = r.headers.get("x-requests-remaining")
+    used = r.headers.get("x-requests-used")
 
     rows = []
     for event in payload:
@@ -81,6 +96,7 @@ def main() -> None:
     CURRENT.mkdir(parents=True, exist_ok=True)
     raw = raw.sort_values(["date", "away_team", "home_team", "sportsbook"])
     raw.to_csv(RAW, index=False)
+    append_history(RAW_HISTORY, raw, ["date", "away_team", "home_team", "sportsbook", "snapshot_time_et"])
 
     consensus_rows = []
     keys = ["date", "away_team", "home_team"]
@@ -105,9 +121,11 @@ def main() -> None:
 
     consensus = pd.DataFrame(consensus_rows).sort_values(keys)
     consensus.to_csv(OUT, index=False)
+    append_history(CONSENSUS_HISTORY, consensus, keys + ["snapshot_time_et"])
+    quota = f" Odds API quota used={used}, remaining={remaining}." if used or remaining else ""
     print(
         f"Wrote {len(raw):,} raw sportsbook quotes to {RAW} and "
-        f"{len(consensus):,} consensus MLB game rows to {OUT}."
+        f"{len(consensus):,} consensus MLB game rows to {OUT}. Snapshot history updated.{quota}"
     )
 
 
