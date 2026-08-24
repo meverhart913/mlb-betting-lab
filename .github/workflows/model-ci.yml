@@ -2,7 +2,7 @@ name: MLB model CI
 
 on:
   push:
-    branches: [main, organize-pitcher-model-v3, hybrid-market-model, test-rest-features, pregame-context-v2, elo-market-v3, pitcher-k-props-v1]
+    branches: [main, organize-pitcher-model-v3, hybrid-market-model, test-rest-features, pregame-context-v2, elo-market-v3, pitcher-k-props-v1, pitcher-k-props-v2]
   pull_request:
     branches: [main]
 
@@ -40,6 +40,7 @@ jobs:
           python/test_elo_tuning.py
           python/build_pitcher_k_model.py
           python/test_pitcher_k_components.py
+          python/test_pitcher_k_ensemble.py
           python/test_pitcher_k_distribution.py
           python/fetch_pitcher_k_props.py
           python/run_pitcher_k_props.py
@@ -66,6 +67,8 @@ jobs:
         run: python python/build_pitcher_k_model.py
       - name: Test BF x K-rate component model
         run: python python/test_pitcher_k_components.py
+      - name: Test specialized BF x K-rate ensemble
+        run: python python/test_pitcher_k_ensemble.py
       - name: Test pitcher K distribution calibration
         run: python python/test_pitcher_k_distribution.py
       - name: Upload model outputs
