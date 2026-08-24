@@ -80,9 +80,9 @@ jobs:
         if: steps.slate.outputs.has_games == 'true'
         run: python python/fetch_morning_context.py --date "${{ steps.slate.outputs.game_date }}"
 
-      - name: Run morning model
+      - name: Run tuned Elo morning model
         if: steps.slate.outputs.has_games == 'true'
-        run: python python/run_morning_model.py --date "${{ steps.slate.outputs.game_date }}"
+        run: python python/run_morning_model_elo.py --date "${{ steps.slate.outputs.game_date }}"
 
       - name: Build combined morning report
         if: steps.slate.outputs.has_games == 'true'
@@ -97,7 +97,7 @@ jobs:
           if [ "${{ steps.slate.outputs.has_games }}" != "true" ]; then
             echo 'No MLB regular-season games on the target date. No Odds API quota was used.' >> "$GITHUB_STEP_SUMMARY"
           elif [ -f outputs/morning_report.csv ]; then
-            echo 'Automated morning report generated. Model decisions remain NO BET until a profitable rule is validated out of sample.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Automated morning report generated with tuned Elo. Model decisions remain NO BET because the market still outperforms the baseball model.' >> "$GITHUB_STEP_SUMMARY"
             echo '' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             head -n 20 outputs/morning_report.csv >> "$GITHUB_STEP_SUMMARY"
