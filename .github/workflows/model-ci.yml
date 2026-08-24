@@ -24,6 +24,7 @@ jobs:
         run: >-
           python -m py_compile
           python/run_morning_model.py
+          python/run_morning_model_elo.py
           python/fetch_morning_odds.py
           python/refresh_recent_mlb.py
           python/fetch_morning_context.py
