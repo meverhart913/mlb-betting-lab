@@ -5,7 +5,7 @@ Leakage-resistant MLB moneyline research pipeline using historical game results,
 ## Repository layout
 
 - `data/` canonical model inputs.
-- `data/current/` current-day operating inputs such as morning sportsbook odds.
+- `data/current/` automated current-day odds snapshots.
 - `data/legacy/` older odds exports retained for reference but not used by the current model.
 - `mlb_lab/` reusable backtesting package and CLI.
 - `python/` ingestion, conversion, feature engineering, modeling, and operating scripts.
@@ -27,33 +27,39 @@ The model builds pregame matchup differences from starter rolling 3-, 5-, and 10
 
 Regularized logistic regression and histogram gradient boosting are tested independently with expanding-window season walk-forwards. Cleaned sportsbook closing moneylines are the benchmark rather than a trusted source of model profit.
 
-## Morning-of-game operating point
+## Automated morning-of-game operation
 
-The selected production decision time is morning-of-game.
+The operating decision time is morning-of-game. The normal workflow requires no daily data entry.
 
-1. Copy `data/current/morning_odds_template.csv` to `data/current/morning_odds.csv`.
-2. Enter the morning moneyline for each game and the sportsbook/time captured.
-3. Rebuild the historical modeling table if the game/team/pitcher logs were refreshed:
+`.github/workflows/morning-mlb.yml` runs at 12:00 UTC (8:00 AM Eastern during the MLB daylight-saving season) from April through October and can also be started manually with `workflow_dispatch`.
+
+The scheduled job automatically:
+
+1. refreshes the previous four days of MLB schedule/results plus team and pitcher logs from MLB Stats API;
+2. rebuilds the leakage-safe historical modeling table;
+3. downloads current U.S. MLB moneylines from The Odds API;
+4. retains every raw sportsbook quote in `data/current/morning_odds_raw.csv`;
+5. creates one median-price consensus row per game in `data/current/morning_odds.csv`, while also recording the best available home and away prices/books;
+6. pulls the day's MLB schedule and probable starters;
+7. creates team and starter features using only games before the target date;
+8. trains the current historical logistic model;
+9. writes `outputs/morning_model_predictions.csv`;
+10. uploads the predictions and odds snapshots as a GitHub Actions artifact and writes a workflow job summary.
+
+### One-time credential setup
+
+The automated odds step requires a repository Actions secret named `THE_ODDS_API_KEY`. Current MLB odds are available on The Odds API free plan. This is a one-time credential setup, not a daily data-input step.
+
+Local/manual execution remains available only as a fallback:
 
 ```bash
+python python/refresh_recent_mlb.py
 python python/build_pitcher_model.py
-```
-
-4. Run:
-
-```bash
+python python/fetch_morning_odds.py
 python python/run_morning_model.py
 ```
 
-The runner pulls that day's MLB schedule and probable starters from MLB Stats API, creates team and starter features using only games before the target date, trains the current historical logistic model, joins the supplied morning market prices, and writes `outputs/morning_model_predictions.csv`.
-
 The morning output includes market probability, model probability, estimated model-vs-market difference, probable-starter status, and a research signal. **Every row remains `NO BET` until a profitable decision rule is demonstrated out of sample.**
-
-A different date can be evaluated with:
-
-```bash
-python python/run_morning_model.py --date YYYY-MM-DD
-```
 
 ## Leakage controls
 
@@ -74,8 +80,8 @@ Pitcher features are shifted one appearance and team features are shifted one ga
 python -m unittest discover -s tests -v
 ```
 
-GitHub Actions runs the unit tests and historical research pipeline on pushes and pull requests.
+GitHub Actions runs the unit tests and historical research pipeline on pushes and pull requests. The morning workflow handles live daily operation separately.
 
-## Data refresh
+## Next data priorities
 
-The enrichment files are generated from MLB Stats API game feeds. Generated outputs are research artifacts, not evidence of future profitability. The next meaningful model improvements require additional information known before the morning decision point, especially bullpen availability/workload, lineup information, injuries/roster changes, confirmed starter status, weather/park context, and historical morning line movement.
+Daily schedule, recent results, probable starters, pitcher/team logs, and sportsbook moneylines are now automated. The next meaningful model work is to automate and historically validate additional pregame data such as bullpen workload/availability, confirmed lineups, injuries/roster changes, weather/park context, and morning-to-close line movement. Manual data entry should be used only when no stable automated source exists.
