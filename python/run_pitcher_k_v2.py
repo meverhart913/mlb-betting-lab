@@ -67,7 +67,10 @@ def append_history(fresh: pd.DataFrame) -> None:
         out = pd.concat([old, fresh], ignore_index=True, sort=False)
     else:
         out = fresh.copy()
-    keys = [c for c in ["date", "event_id", "pitcher_id", "line", "snapshot_time_et", "v2_model"] if c in out.columns]
+    keys = [
+        c for c in ["date", "event_id", "pitcher_id", "line", "v2_snapshot_time_et", "v2_model"]
+        if c in out.columns
+    ]
     out = out.drop_duplicates(keys, keep="last")
     out.to_csv(HIST, index=False)
 
@@ -95,7 +98,6 @@ def main() -> None:
         game_start_et=("game_start_et", "first"),
     ).reset_index()
 
-    # V1 game_id is MLB's gamePk. Match both game and pitcher so doubleheaders cannot cross-join.
     v1["game_id"] = pd.to_numeric(v1["game_id"], errors="coerce")
     v1["pitcher_id"] = pd.to_numeric(v1["pitcher_id"], errors="coerce")
     z = v1.merge(summaries, on=["game_id", "pitcher_id"], how="inner")
@@ -128,6 +130,8 @@ def main() -> None:
         d = r._asdict()
         d.update({
             "v2_model": "v2_lineup_k_rate_0_2",
+            "v1_snapshot_time_et": getattr(r, "snapshot_time_et", None),
+            "v2_snapshot_time_et": r.lineup_snapshot_time_et,
             "v1_projected_k": float(r.projected_k),
             "lineup_weighted_k_per_pa": float(r.lineup_weighted_k_per_pa),
             "opponent_recent_k_per_pa": neutral,
