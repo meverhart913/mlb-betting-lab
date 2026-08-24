@@ -46,6 +46,10 @@ jobs:
         if: steps.slate.outputs.has_games == 'true'
         run: python python/fetch_morning_odds.py
 
+      - name: Build line movement summary
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/build_line_movement.py
+
       - name: Upload line-movement snapshot
         if: steps.slate.outputs.has_games == 'true'
         uses: actions/upload-artifact@v4
@@ -56,6 +60,7 @@ jobs:
             data/current/morning_odds_raw.csv
             data/current/odds_consensus_history.csv
             data/current/odds_raw_history.csv
+            data/current/line_movement.csv
           if-no-files-found: error
           retention-days: 30
 
