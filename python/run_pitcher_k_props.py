@@ -202,9 +202,10 @@ def main() -> None:
         side="OVER" if pd.notna(over_edge) and (pd.isna(under_edge) or over_edge>=under_edge) else "UNDER"
         edge=max(over_edge,under_edge) if pd.notna(over_edge) and pd.notna(under_edge) else np.nan
         rows.append({
-            "date":r.date,"event_id":r.event_id,"pitcher_id":r.pitcher_id,
-            "pitcher_name":r.mlb_pitcher_name or r.pitcher_name,"away_team":r.away_team,"home_team":r.home_team,
-            "line":line,"projection_model":"walkforward_selected_ensemble","component_weight":r.component_weight,
+            "date":r.date,"event_id":r.event_id,"snapshot_time_et":getattr(r,"snapshot_time_et",None),
+            "pitcher_id":r.pitcher_id,"pitcher_name":r.mlb_pitcher_name or r.pitcher_name,
+            "away_team":r.away_team,"home_team":r.home_team,"line":line,
+            "projection_model":"walkforward_selected_ensemble","component_weight":r.component_weight,
             "projected_bf":r.projected_bf,"projected_k_rate":r.projected_k_rate,"component_k":r.component_k,
             "direct_k":r.direct_k,"projected_k":mu,"fair_over_prob":p_over,"fair_under_prob":p_under,
             "push_prob":p_push,"market_over_prob_no_vig":market_over,"market_under_prob_no_vig":market_under,
