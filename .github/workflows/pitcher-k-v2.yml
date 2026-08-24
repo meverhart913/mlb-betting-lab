@@ -28,19 +28,27 @@ jobs:
           echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
           echo "Has regular-season games: $HAS_GAMES"
 
-      - name: Restore V1 and V2 research history
+      - name: Restore V2-only research history
         if: steps.slate.outputs.has_games == 'true'
         uses: actions/cache@v4
         with:
           path: |
-            data/current/pitcher_k_props_history.csv
-            data/current/pitcher_k_props_raw_history.csv
-            data/current/pitcher_k_projection_history.csv
             data/current/pitcher_k_v2_lineup_context_history.csv
             data/current/pitcher_k_v2_projection_history.csv
           key: pitcher-k-v2-history-${{ github.run_id }}
           restore-keys: |
             pitcher-k-v2-history-
+
+      - name: Restore latest noon V1 prop history
+        if: steps.slate.outputs.has_games == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/current/pitcher_k_props_history.csv
+            data/current/pitcher_k_props_raw_history.csv
+            data/current/pitcher_k_projection_history.csv
+          key: pitcher-k-prop-history-${{ github.run_id }}
+          restore-keys: |
             pitcher-k-prop-history-
 
       - name: Refresh recent MLB logs
