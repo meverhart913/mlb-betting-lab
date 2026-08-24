@@ -1,0 +1,108 @@
+name: Pitcher K props
+
+on:
+  schedule:
+    # 16:00 UTC = noon Eastern during MLB daylight-saving months.
+    - cron: '0 16 * 4-10 *'
+  workflow_dispatch:
+
+jobs:
+  pitcher-k-props:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check MLB slate
+        id: slate
+        shell: bash
+        run: |
+          HAS_GAMES="$(python python/check_mlb_slate.py)"
+          echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
+          echo "Has regular-season games: $HAS_GAMES"
+
+      - name: Restore pitcher prop research history
+        if: steps.slate.outputs.has_games == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/current/pitcher_k_props_history.csv
+            data/current/pitcher_k_props_raw_history.csv
+            data/current/pitcher_k_projection_history.csv
+          key: pitcher-k-prop-history-${{ github.run_id }}
+          restore-keys: |
+            pitcher-k-prop-history-
+
+      - name: Refresh recent MLB pitcher and team logs
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/refresh_recent_mlb.py --lookback-days 4
+
+      - name: Build walk-forward pitcher K model
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/build_pitcher_k_model.py
+
+      - name: Pull current pitcher strikeout props
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_pitcher_k_props.py
+
+      - name: Price current pitcher strikeout props
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/run_pitcher_k_props.py
+
+      - name: Archive and grade prospective projections
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/grade_pitcher_k_projections.py
+
+      - name: Write job summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Pitcher strikeout research' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.slate.outputs.has_games }}" != "true" ]; then
+            echo 'No MLB regular-season games today. No prop API calls were made.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ -f outputs/pitcher_k_prop_predictions.csv ]; then
+            echo 'Pitcher K projections and fair probabilities generated. Research only; all decisions remain NO BET pending prospective validation.' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            head -n 25 outputs/pitcher_k_prop_predictions.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            if [ -f outputs/pitcher_k_prospective_summary.csv ]; then
+              echo '' >> "$GITHUB_STEP_SUMMARY"
+              echo '### Prospective grading' >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              cat outputs/pitcher_k_prospective_summary.csv >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo 'No pitcher K prediction file generated. Props may not have been posted yet; inspect the steps above.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload pitcher prop research outputs
+        if: always() && steps.slate.outputs.has_games == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pitcher-k-props-${{ github.run_id }}
+          path: |
+            outputs/pitcher_k_model_summary.csv
+            outputs/pitcher_k_walkforward_metrics.csv
+            outputs/pitcher_k_walkforward_predictions.csv
+            outputs/pitcher_k_prop_predictions.csv
+            outputs/pitcher_k_prospective_graded.csv
+            outputs/pitcher_k_prospective_summary.csv
+            data/current/pitcher_k_props.csv
+            data/current/pitcher_k_props_raw.csv
+            data/current/pitcher_k_props_history.csv
+            data/current/pitcher_k_props_raw_history.csv
+            data/current/pitcher_k_projection_history.csv
+          if-no-files-found: warn
+          retention-days: 90
