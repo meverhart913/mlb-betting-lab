@@ -33,13 +33,6 @@ def norm_name(s) -> str:
     return re.sub(r"[^a-z0-9]", "", x)
 
 
-def american_prob(v):
-    x = pd.to_numeric(v, errors="coerce")
-    if pd.isna(x) or x == 0:
-        return np.nan
-    return 100.0/(x+100.0) if x > 0 else -x/(-x+100.0)
-
-
 def poisson_cdf(k: int, mu: float) -> float:
     if k < 0:
         return 0.0
@@ -149,6 +142,10 @@ def main() -> None:
     if props.empty:
         print("No current pitcher strikeout props available.")
         return
+    required={"market_over_prob_no_vig","market_under_prob_no_vig"}
+    missing_market=required.difference(props.columns)
+    if missing_market:
+        raise ValueError("Pitcher K consensus is missing required no-vig fields: " + ", ".join(sorted(missing_market)))
 
     hist=build_table()
     hist=hist[pd.to_numeric(hist["batters_faced"], errors="coerce").gt(0)].copy()
@@ -202,14 +199,17 @@ def main() -> None:
             p_over=1-poisson_cdf(k,mu)
         else:
             p_under=p_under_eq; p_push=0.0; p_over=1-p_under
-        imp_o=american_prob(r.over_price_median); imp_u=american_prob(r.under_price_median)
-        den=(imp_o+imp_u) if pd.notna(imp_o) and pd.notna(imp_u) else np.nan
-        market_over=imp_o/den if pd.notna(den) and den>0 else np.nan
-        market_under=imp_u/den if pd.notna(den) and den>0 else np.nan
-        over_edge=p_over-market_over if pd.notna(market_over) else np.nan
-        under_edge=p_under-market_under if pd.notna(market_under) else np.nan
-        side="OVER" if pd.notna(over_edge) and (pd.isna(under_edge) or over_edge>=under_edge) else "UNDER"
-        edge=max(over_edge,under_edge) if pd.notna(over_edge) and pd.notna(under_edge) else np.nan
+        market_over=pd.to_numeric(r.market_over_prob_no_vig,errors="coerce")
+        market_under=pd.to_numeric(r.market_under_prob_no_vig,errors="coerce")
+        if pd.isna(market_over) or pd.isna(market_under) or not (0 < market_over < 1) or not (0 < market_under < 1):
+            continue
+        den=market_over+market_under
+        if not np.isfinite(den) or abs(den-1.0) > 0.02:
+            raise ValueError(f"Invalid no-vig K consensus for {r.pitcher_name} {line}: over={market_over}, under={market_under}")
+        over_edge=p_over-market_over
+        under_edge=p_under-market_under
+        side="OVER" if over_edge>=under_edge else "UNDER"
+        edge=max(over_edge,under_edge)
         rows.append({
             "date":r.date,"event_id":r.event_id,"snapshot_time_et":getattr(r,"snapshot_time_et",None),
             "pitcher_id":r.pitcher_id,"pitcher_name":r.mlb_pitcher_name or r.pitcher_name,
