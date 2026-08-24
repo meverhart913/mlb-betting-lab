@@ -1,0 +1,49 @@
+name: Afternoon MLB odds snapshot
+
+on:
+  schedule:
+    # 18:00 UTC = 2:00 PM Eastern during MLB daylight-saving months.
+    # Morning + afternoon gives a quota-conscious line-movement baseline.
+    - cron: '0 18 * 4-10 *'
+  workflow_dispatch:
+
+jobs:
+  odds-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore rolling odds history
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
+          key: odds-history-${{ github.run_id }}
+          restore-keys: |
+            odds-history-
+
+      - name: Pull afternoon sportsbook moneylines
+        run: python python/fetch_morning_odds.py
+
+      - name: Upload line-movement snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: afternoon-odds-${{ github.run_id }}
+          path: |
+            data/current/morning_odds.csv
+            data/current/morning_odds_raw.csv
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
+          if-no-files-found: error
+          retention-days: 30
