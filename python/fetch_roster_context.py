@@ -53,7 +53,7 @@ def classify_il(description: str) -> str | None:
         return None
     if any(x in d for x in ("reinstated", "activated from", "returned from")):
         return "off_il"
-    if any(x in d for x in ("placed on", "transferred to", "selected to the injured list")):
+    if d.startswith("placed ") or d.startswith("transferred ") or "selected to the injured list" in d:
         return "on_il"
     return "il_event"
 
