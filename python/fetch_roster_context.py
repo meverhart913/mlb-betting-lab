@@ -10,7 +10,6 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 import argparse
-import re
 
 import pandas as pd
 import requests
@@ -118,7 +117,6 @@ def main() -> None:
             "active_pitchers": pitcher_count,
             "active_position_players": max(len(active_ids) - pitcher_count, 0),
             "inferred_il_count": len(current_il),
-            "il_pitcher_count": sum(1 for x in current_il if "pitch" in (x.get("description") or "").lower()),
             "source": "mlb-stats-api",
         })
 
