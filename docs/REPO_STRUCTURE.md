@@ -1,32 +1,19 @@
 # Repository structure
 
-- `data/` canonical raw and derived CSV datasets used by the current model.
-- `data/legacy/` older odds exports kept only for provenance/reference.
-- `mlb_lab/` reusable backtesting package and CLI.
-- `python/` ingestion, conversion, feature engineering, modeling, and evaluation scripts.
-- `outputs/` generated model tables, predictions, metrics, diagnostics, and reports.
-- `tests/` automated tests.
-- `docs/` design notes and operating instructions.
-- `archive/` obsolete snapshots and placeholders that are not part of the active pipeline.
+- `data/` canonical raw and derived datasets used by the model.
+- `data/current/` machine-generated morning odds and venue/weather snapshots; manual templates are fallback-only.
+- `data/legacy/` older odds exports retained for reference and data-quality investigation.
+- `python/` ingestion, conversion, feature engineering, model, backtest, research-comparison, and daily operating scripts.
+- `mlb_lab/` reusable package code and CLI.
+- `outputs/` generated model tables, predictions, metrics, reports, and research comparisons.
+- `tests/` automated unit/leakage tests.
+- `docs/` design and operating notes.
+- `archive/` obsolete snapshots and one-off artifacts.
 
-## Active data
+## Automated morning workflow
 
-The pitcher-aware model expects these under `data/`:
+`.github/workflows/morning-mlb.yml` is the normal operating path. During MLB season it runs each morning, incrementally refreshes recent MLB results/team/pitcher data, rebuilds the model table, pulls current U.S. moneylines, captures venue/weather context, scores the current slate, and uploads the morning artifacts.
 
-- `mlb_games_2018_present.csv`
-- `mlb_game_enrichment.csv`
-- `mlb_pitcher_game_logs.csv`
-- `mlb_team_game_logs.csv`
-- `mlb_odds_part_1.csv`
-- `mlb_odds_part_2.csv`
-- `mlb_odds_part_3.csv`
+The odds pull preserves both raw sportsbook quotes and a one-row-per-game median consensus with separately recorded best available home/away prices. This avoids contaminating fair-probability estimation with an impossible best-of-both-books synthetic market.
 
-Older `oddsData.csv` and `oddsDataMLB.csv` exports live under `data/legacy/` and are not read by the current model.
-
-## Active code
-
-The reusable backtester is under `mlb_lab/`. Standalone data/model scripts are under `python/`. `tests/` imports `mlb_lab.core` directly and also tests leakage-sensitive pitcher feature logic from `python.build_pitcher_model`.
-
-## Model outputs
-
-`python/build_pitcher_model.py` writes the baseball-model diagnostics and walk-forward results to `outputs/`. `python/evaluate_clean_market.py` validates historical American moneyline prices before producing the trusted market-comparison and ROI files.
+Manual CSV entry is retained only as a fallback if an automated provider is unavailable.
