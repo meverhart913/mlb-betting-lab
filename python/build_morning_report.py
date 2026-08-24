@@ -70,7 +70,7 @@ def main() -> None:
         report = report.merge(luw, on="game_id", how="left")
 
     if not roster.empty and "team_name" in roster:
-        rcols = [c for c in ["team_name", "active_roster_count", "active_pitchers", "active_position_players", "inferred_il_count", "il_pitcher_count"] if c in roster.columns]
+        rcols = [c for c in ["team_name", "active_roster_count", "active_pitchers", "active_position_players", "inferred_il_count"] if c in roster.columns]
         away = roster[rcols].drop_duplicates("team_name").rename(columns={c: f"away_{c}" for c in rcols if c != "team_name"})
         home = roster[rcols].drop_duplicates("team_name").rename(columns={c: f"home_{c}" for c in rcols if c != "team_name"})
         report = report.merge(away, left_on="away_team", right_on="team_name", how="left").drop(columns=["team_name"], errors="ignore")
@@ -80,9 +80,9 @@ def main() -> None:
     def fatigue(row, side):
         p = pd.to_numeric(row.get(f"{side}_bullpen_pitches_2d"), errors="coerce")
         b2b = pd.to_numeric(row.get(f"{side}_back_to_back_relievers"), errors="coerce")
-        if pd.notna(p) and p >= 120 or pd.notna(b2b) and b2b >= 3:
+        if (pd.notna(p) and p >= 120) or (pd.notna(b2b) and b2b >= 3):
             return "high"
-        if pd.notna(p) and p >= 70 or pd.notna(b2b) and b2b >= 1:
+        if (pd.notna(p) and p >= 70) or (pd.notna(b2b) and b2b >= 1):
             return "moderate"
         return "low"
     report["away_bullpen_fatigue_flag"] = report.apply(lambda r: fatigue(r, "away"), axis=1)
