@@ -40,10 +40,27 @@ OUT.mkdir(exist_ok=True)
 PITCHER_WINDOWS = (3, 5, 10)
 TEAM_WINDOWS = (10, 30)
 PITCHER_COLS = ["ip", "earned_runs", "walks", "strikeouts", "home_runs", "hits", "pitches"]
+PITCHER_RATE_COLS = ["era", "whip", "k9", "bb9", "hr9"]
 TEAM_COLS = [
     "runs", "hits", "home_runs", "walks", "strikeouts", "pitching_earned_runs",
     "pitching_walks", "pitching_strikeouts", "pitching_home_runs", "errors",
 ]
+
+
+def expected_feature_cols() -> list[str]:
+    """Return exactly the matchup features created by the historical builder.
+
+    Constructing this list explicitly prevents identifiers such as team_id from
+    being accidentally promoted into model features just because their column
+    names share a prefix with legitimate statistics.
+    """
+    cols: list[str] = []
+    for n in PITCHER_WINDOWS:
+        cols.extend(f"diff_sp_{c}_{n}" for c in PITCHER_COLS)
+        cols.extend(f"diff_sp_{c}_{n}" for c in PITCHER_RATE_COLS)
+    for n in TEAM_WINDOWS:
+        cols.extend(f"diff_team_{c}_{n}" for c in TEAM_COLS)
+    return sorted(cols)
 
 
 def american_prob(v: pd.Series) -> pd.Series:
@@ -56,10 +73,12 @@ def american_prob(v: pd.Series) -> pd.Series:
 
 
 def ip_to_outs(v) -> float:
-    if pd.isna(v): return np.nan
+    if pd.isna(v):
+        return np.nan
     try:
         text = str(v)
-        if "." not in text: return float(int(text) * 3)
+        if "." not in text:
+            return float(int(text) * 3)
         inn, partial = text.split(".", 1)
         partial = int(partial)
         return float(int(inn) * 3 + partial) if partial in (0, 1, 2) else np.nan
@@ -111,7 +130,8 @@ def latest_pitcher_features(logs: pd.DataFrame, pitcher_id, target: pd.Timestamp
         q = z.tail(n)
         sums = {c: pd.to_numeric(q[c], errors="coerce").sum(min_count=1) for c in PITCHER_COLS}
         ip = sums.get("ip", np.nan)
-        for c, val in sums.items(): out[f"{prefix}_sp_{c}_{n}"] = val
+        for c, val in sums.items():
+            out[f"{prefix}_sp_{c}_{n}"] = val
         out[f"{prefix}_sp_era_{n}"] = 9 * sums["earned_runs"] / ip if pd.notna(ip) and ip > 0 else np.nan
         out[f"{prefix}_sp_whip_{n}"] = (sums["walks"] + sums["hits"]) / ip if pd.notna(ip) and ip > 0 else np.nan
         out[f"{prefix}_sp_k9_{n}"] = 9 * sums["strikeouts"] / ip if pd.notna(ip) and ip > 0 else np.nan
@@ -130,8 +150,10 @@ def build_live_features(schedule: pd.DataFrame) -> pd.DataFrame:
     pitchers["is_starter"] = pd.to_numeric(pitchers["is_starter"], errors="coerce").fillna(0).astype(int)
     pitchers["outs"] = pitchers["innings_pitched"].map(ip_to_outs)
     pitchers["ip"] = pitchers["outs"] / 3.0
-    for c in PITCHER_COLS[1:]: pitchers[c] = pd.to_numeric(pitchers[c], errors="coerce")
-    for c in TEAM_COLS: teams[c] = pd.to_numeric(teams[c], errors="coerce")
+    for c in PITCHER_COLS[1:]:
+        pitchers[c] = pd.to_numeric(pitchers[c], errors="coerce")
+    for c in TEAM_COLS:
+        teams[c] = pd.to_numeric(teams[c], errors="coerce")
 
     rows = []
     for r in schedule.itertuples(index=False):
@@ -143,11 +165,15 @@ def build_live_features(schedule: pd.DataFrame) -> pd.DataFrame:
         row.update(latest_pitcher_features(pitchers, r.away_starter_id, target, "away"))
         rows.append(row)
     x = pd.DataFrame(rows)
-    home_cols = [c for c in x.columns if c.startswith("home_sp_") or c.startswith("home_team_")]
-    for h in home_cols:
-        a = "away" + h[4:]
-        if a in x.columns:
-            x["diff_" + h[5:]] = x[h] - x[a]
+
+    # Only construct differences for the explicitly defined model statistics.
+    # This deliberately excludes schedule identifiers such as home_team_id.
+    for feature in expected_feature_cols():
+        base = feature.removeprefix("diff_")
+        home = f"home_{base}"
+        away = f"away_{base}"
+        if home in x.columns and away in x.columns:
+            x[feature] = x[home] - x[away]
     return x
 
 
@@ -156,7 +182,9 @@ def fit_model(feature_cols: list[str]):
     hist = hist[hist["home_win"].notna()].copy()
     missing = [c for c in feature_cols if c not in hist.columns]
     if missing:
-        raise ValueError(f"Historical modeling table is missing {len(missing)} live feature columns. Run python/build_pitcher_model.py first.")
+        raise ValueError(
+            "Historical modeling table is missing live feature columns: " + ", ".join(missing)
+        )
     model = Pipeline([
         ("imp", SimpleImputer(strategy="median")),
         ("scale", StandardScaler()),
@@ -178,11 +206,14 @@ def main() -> None:
     odds = pd.read_csv(odds_path)
     odds = odds[odds["date"].astype(str) == args.date].copy()
     schedule = schedule_for(args.date)
-    if schedule.empty: raise SystemExit(f"No MLB regular-season games found for {args.date}.")
+    if schedule.empty:
+        raise SystemExit(f"No MLB regular-season games found for {args.date}.")
     live = build_live_features(schedule)
     merged = live.merge(odds, on=["date", "away_team", "home_team"], how="left")
 
-    feature_cols = sorted([c for c in merged.columns if c.startswith("diff_sp_") or c.startswith("diff_team_")])
+    feature_cols = [c for c in expected_feature_cols() if c in merged.columns]
+    if not feature_cols:
+        raise ValueError("No expected live matchup features were created.")
     model = fit_model(feature_cols)
     merged["model_home_prob"] = model.predict_proba(merged[feature_cols])[:, 1]
     ph = american_prob(merged["home_moneyline"])
@@ -191,7 +222,11 @@ def main() -> None:
     merged["model_edge_home"] = merged["model_home_prob"] - merged["market_home_prob"]
     merged["research_signal"] = np.where(merged["model_edge_home"] >= 0, "HOME", "AWAY")
     merged["decision"] = "NO BET - research model not validated profitable"
-    merged["starter_status"] = np.where(merged["home_starter_id"].notna() & merged["away_starter_id"].notna(), "both probable starters available", "starter missing/unconfirmed")
+    merged["starter_status"] = np.where(
+        merged["home_starter_id"].notna() & merged["away_starter_id"].notna(),
+        "both probable starters available",
+        "starter missing/unconfirmed",
+    )
 
     keep = [
         "date", "game_id", "away_team", "home_team", "away_starter", "home_starter", "starter_status",
