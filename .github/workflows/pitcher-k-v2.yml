@@ -1,0 +1,120 @@
+name: Pitcher K V2 lineups
+
+on:
+  schedule:
+    # 21:00 UTC = 5 PM Eastern during MLB daylight-saving months.
+    - cron: '0 21 * 4-10 *'
+  workflow_dispatch:
+
+jobs:
+  pitcher-k-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check MLB slate
+        id: slate
+        shell: bash
+        run: |
+          HAS_GAMES="$(python python/check_mlb_slate.py)"
+          echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
+          echo "Has regular-season games: $HAS_GAMES"
+
+      - name: Restore V1 and V2 research history
+        if: steps.slate.outputs.has_games == 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/current/pitcher_k_props_history.csv
+            data/current/pitcher_k_props_raw_history.csv
+            data/current/pitcher_k_projection_history.csv
+            data/current/pitcher_k_v2_lineup_context_history.csv
+            data/current/pitcher_k_v2_projection_history.csv
+          key: pitcher-k-v2-history-${{ github.run_id }}
+          restore-keys: |
+            pitcher-k-v2-history-
+            pitcher-k-prop-history-
+
+      - name: Refresh recent MLB logs
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/refresh_recent_mlb.py --lookback-days 4
+
+      - name: Rebuild V1 historical K model
+        if: steps.slate.outputs.has_games == 'true'
+        run: |
+          python python/build_pitcher_k_model.py
+          python python/test_pitcher_k_components.py
+          python python/test_pitcher_k_ensemble.py
+
+      - name: Restore noon prop snapshot without API call
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/restore_latest_pitcher_k_props.py
+
+      - name: Recreate frozen V1 projection from stored prices
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/run_pitcher_k_props.py
+
+      - name: Capture actual posted lineups and batter K context
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_lineup_k_context_v2.py
+
+      - name: Score parallel V2 lineup model
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/run_pitcher_k_v2.py
+
+      - name: Grade completed V2 projections
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/grade_pitcher_k_v2.py
+
+      - name: Write V2 summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Pitcher K V2 lineup research' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.slate.outputs.has_games }}" != "true" ]; then
+            echo 'No MLB regular-season games today.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            if [ -f data/current/pitcher_k_v2_lineup_status.csv ]; then
+              echo '### Lineup availability' >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              cat data/current/pitcher_k_v2_lineup_status.csv >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
+            if [ -f outputs/pitcher_k_v2_predictions.csv ]; then
+              echo '### V2 research projections' >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              head -n 25 outputs/pitcher_k_v2_predictions.csv >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
+            if [ -f outputs/pitcher_k_v2_prospective_summary.csv ]; then
+              echo '### V1 vs V2 prospective grading' >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              cat outputs/pitcher_k_v2_prospective_summary.csv >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+
+      - name: Upload V2 research outputs
+        if: always() && steps.slate.outputs.has_games == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pitcher-k-v2-${{ github.run_id }}
+          path: |
+            outputs/pitcher_k_v2_predictions.csv
+            outputs/pitcher_k_v2_prospective_graded.csv
+            outputs/pitcher_k_v2_prospective_summary.csv
+            data/current/pitcher_k_v2_lineup_context.csv
+            data/current/pitcher_k_v2_lineup_status.csv
+            data/current/pitcher_k_v2_lineup_context_history.csv
+            data/current/pitcher_k_v2_projection_history.csv
+          if-no-files-found: warn
+          retention-days: 90
