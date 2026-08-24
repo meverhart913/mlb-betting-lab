@@ -36,6 +36,15 @@ jobs:
       - name: Pull current sportsbook moneylines
         run: python python/fetch_morning_odds.py
 
+      - name: Capture venue and weather context
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.game_date }}" ]; then
+            python python/fetch_morning_context.py --date "${{ inputs.game_date }}"
+          else
+            python python/fetch_morning_context.py
+          fi
+
       - name: Run morning model
         shell: bash
         run: |
@@ -70,5 +79,6 @@ jobs:
             outputs/morning_model_predictions.csv
             data/current/morning_odds.csv
             data/current/morning_odds_raw.csv
+            data/current/morning_context.csv
           if-no-files-found: warn
           retention-days: 30
