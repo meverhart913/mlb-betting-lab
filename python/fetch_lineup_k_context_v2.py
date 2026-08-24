@@ -1,9 +1,9 @@
 """Collect posted MLB lineups and batter strikeout context for Pitcher-K V2.
 
 V1 is untouched. V2 only uses an actual batting order exposed by MLB's live game
-feed. If a lineup is not posted, the game is recorded as unavailable rather than
-inventing a projected lineup. Current-season batter K/PA and batting side are
-captured prospectively so later V2 models can be validated without hindsight.
+feed and only for games that have not started at the snapshot time. If a lineup
+is not posted, or the game already started, the game is recorded as unavailable
+rather than inventing or retrospectively using a lineup.
 """
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ OUT = CURRENT / "pitcher_k_v2_lineup_context.csv"
 HISTORY = CURRENT / "pitcher_k_v2_lineup_context_history.csv"
 STATUS = CURRENT / "pitcher_k_v2_lineup_status.csv"
 API = "https://statsapi.mlb.com/api"
+ET = ZoneInfo("America/New_York")
 
 
 def get_json(url: str, params=None, tries: int = 3):
@@ -83,7 +84,9 @@ def append_history(fresh: pd.DataFrame) -> None:
 def main() -> None:
     day = date.today().isoformat()
     season = date.today().year
-    snapshot = datetime.now(ZoneInfo("America/New_York")).isoformat(timespec="minutes")
+    snapshot_dt = datetime.now(ET)
+    snapshot = snapshot_dt.isoformat(timespec="minutes")
+    snapshot_utc = pd.Timestamp(snapshot_dt).tz_convert("UTC")
     sched = get_json(
         f"{API}/v1/schedule",
         {"sportId": 1, "date": day, "gameType": "R", "hydrate": "probablePitcher"},
@@ -95,7 +98,14 @@ def main() -> None:
 
     for g in games:
         game_id = int(g["gamePk"])
-        feed = get_json(f"{API}/v1.1/game/{game_id}/feed/live")
+        game_start_utc = pd.to_datetime(g.get("gameDate"), utc=True, errors="coerce")
+        pregame_eligible = bool(pd.notna(game_start_utc) and game_start_utc > snapshot_utc)
+        game_start_et = (
+            game_start_utc.tz_convert("America/New_York").isoformat()
+            if pd.notna(game_start_utc) else None
+        )
+
+        feed = get_json(f"{API}/v1.1/game/{game_id}/feed/live") if pregame_eligible else {}
         box = (feed.get("liveData") or {}).get("boxscore") or {}
         teams_box = box.get("teams") or {}
         gd = feed.get("gameData") or {}
@@ -108,17 +118,22 @@ def main() -> None:
                 continue
             pitcher_id = int(pp["id"])
             pitcher_name = pp.get("fullName")
+            opponent_team = (((g.get("teams") or {}).get(lineup_side) or {}).get("team") or {})
+            opponent_team_id = pd.to_numeric(opponent_team.get("id"), errors="coerce")
+
             pitcher_key = people.get(f"ID{pitcher_id}") or {}
             pitch_hand = ((pitcher_key.get("pitchHand") or {}).get("code"))
-
             side_box = teams_box.get(lineup_side) or {}
             order = side_box.get("battingOrder") or []
-            posted = len(order) >= 9
+            posted = bool(pregame_eligible and len(order) >= 9)
+            reason = "eligible" if posted else ("game_already_started" if not pregame_eligible else "lineup_not_posted")
             game_status.append({
-                "date": day, "game_id": game_id, "pitcher_id": pitcher_id,
-                "pitcher_name": pitcher_name, "opponent_side": lineup_side,
+                "date": day, "game_id": game_id, "game_start_et": game_start_et,
+                "pitcher_id": pitcher_id, "pitcher_name": pitcher_name,
+                "opponent_team_id": opponent_team_id, "opponent_side": lineup_side,
+                "pregame_eligible": int(pregame_eligible),
                 "lineup_posted": int(posted), "lineup_count": len(order),
-                "snapshot_time_et": snapshot,
+                "exclusion_reason": reason, "snapshot_time_et": snapshot,
             })
             if not posted:
                 continue
@@ -128,9 +143,9 @@ def main() -> None:
                 p = people.get(f"ID{batter_id}") or {}
                 stats = season_hitting(batter_id, season, stat_cache)
                 rows.append({
-                    "date": day, "game_id": game_id,
+                    "date": day, "game_id": game_id, "game_start_et": game_start_et,
                     "pitcher_id": pitcher_id, "pitcher_name": pitcher_name,
-                    "pitcher_hand": pitch_hand,
+                    "pitcher_hand": pitch_hand, "opponent_team_id": opponent_team_id,
                     "batter_id": batter_id, "batter_name": p.get("fullName"),
                     "batter_side": ((p.get("batSide") or {}).get("code")),
                     "batting_order": slot,
@@ -143,7 +158,6 @@ def main() -> None:
     status.to_csv(STATUS, index=False)
     out = pd.DataFrame(rows)
     if not out.empty:
-        # PA-weighted lineup K rate, capped to prevent one tiny-sample player dominating.
         out["weight_pa"] = pd.to_numeric(out["season_pa"], errors="coerce").clip(lower=25, upper=500)
         out["weighted_k"] = out["season_k_per_pa"] * out["weight_pa"]
         grp = out.groupby(["game_id", "pitcher_id"], dropna=False)
@@ -163,8 +177,12 @@ def main() -> None:
     append_history(out)
 
     posted_pairs = int(status["lineup_posted"].sum()) if not status.empty else 0
+    eligible_pairs = int(status["pregame_eligible"].sum()) if not status.empty else 0
     total_pairs = len(status)
-    print(f"V2 lineup capture: {posted_pairs}/{total_pairs} probable-starter opponent lineups posted; {len(out)} batter rows captured.")
+    print(
+        f"V2 lineup capture: {posted_pairs}/{eligible_pairs} eligible opponent lineups posted; "
+        f"{total_pairs - eligible_pairs} started-game pitcher sides excluded; {len(out)} batter rows captured."
+    )
 
 
 if __name__ == "__main__":
