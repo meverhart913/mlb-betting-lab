@@ -10,8 +10,9 @@ on:
       - 'python/backfill_statcast_pitch_features.py'
       - 'python/build_statcast_rolling_features.py'
       - 'python/test_pitcher_k_statcast_features.py'
-      - 'python/backfill_batter_k_splits.py'
-      - 'python/build_batter_k_split_features.py'
+      - 'python/backfill_batter_k_hand_splits.py'
+      - 'python/build_batter_k_hand_rolling.py'
+      - 'python/lookup_batter_k_hand_features.py'
   workflow_dispatch:
 
 jobs:
@@ -41,8 +42,8 @@ jobs:
           python python/backfill_statcast_pitch_features.py \
             --start "${{ matrix.year }}-03-15" \
             --end "$END" \
-            --chunk-days 14 \
-            --sleep-seconds 0.5
+            --chunk-days 3 \
+            --sleep-seconds 0.25
           mv data/features/statcast_pitcher_daily.csv "data/features/statcast_pitcher_${{ matrix.year }}.csv"
       - name: Upload season aggregates
         uses: actions/upload-artifact@v4
