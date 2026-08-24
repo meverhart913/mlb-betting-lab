@@ -1,0 +1,67 @@
+name: Pitcher K CI
+
+on:
+  push:
+    branches: [pitcher-k-props-v2]
+    paths:
+      - 'python/*pitcher_k*.py'
+      - '.github/workflows/pitcher-k-*.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'python/*pitcher_k*.py'
+      - '.github/workflows/pitcher-k-*.yml'
+
+concurrency:
+  group: pitcher-k-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pitcher-k-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Compile pitcher K research scripts
+        run: >-
+          python -m py_compile
+          python/build_pitcher_k_model.py
+          python/test_pitcher_k_components.py
+          python/test_pitcher_k_ensemble.py
+          python/test_pitcher_k_distribution.py
+          python/fetch_pitcher_k_props.py
+          python/build_pitcher_k_line_movement.py
+          python/run_pitcher_k_props.py
+          python/grade_pitcher_k_projections.py
+      - name: Build walk-forward pitcher K model
+        run: python python/build_pitcher_k_model.py
+      - name: Test BF x K-rate component model
+        run: python python/test_pitcher_k_components.py
+      - name: Test specialized component/direct blend
+        run: python python/test_pitcher_k_ensemble.py
+      - name: Test K probability distribution calibration
+        run: python python/test_pitcher_k_distribution.py
+      - name: Upload pitcher K research outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pitcher-k-model-outputs
+          path: |
+            outputs/pitcher_k_model_summary.csv
+            outputs/pitcher_k_walkforward_metrics.csv
+            outputs/pitcher_k_walkforward_predictions.csv
+            outputs/pitcher_k_component_metrics.csv
+            outputs/pitcher_k_component_predictions.csv
+            outputs/pitcher_k_ensemble_metrics.csv
+            outputs/pitcher_k_ensemble_summary.csv
+            outputs/pitcher_k_ensemble_predictions.csv
+            outputs/pitcher_k_distribution_metrics.csv
+            outputs/pitcher_k_distribution_summary.csv
+          if-no-files-found: warn
+          retention-days: 30
