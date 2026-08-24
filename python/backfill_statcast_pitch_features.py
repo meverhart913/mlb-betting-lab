@@ -1,8 +1,9 @@
 """Backfill leakage-safe daily Statcast pitcher features for Pitcher K V2.1.
 
-The script downloads pitch-level CSV data from Baseball Savant in date chunks,
-then aggregates only information available before each game date. It writes a
-compact daily feature table rather than storing every pitch in the repository.
+The script downloads pitch-level CSV data from Baseball Savant in deliberately
+small date chunks, then aggregates to compact pitcher/day rows. Small chunks are
+required because large Statcast CSV queries can truncate without an explicit
+error, creating silent historical coverage gaps.
 
 Research only. This collector is separate from V1/V2 prospective histories.
 """
@@ -23,6 +24,7 @@ DATA = ROOT / "data" / "features"
 DATA.mkdir(parents=True, exist_ok=True)
 OUT = DATA / "statcast_pitcher_daily.csv"
 BASE = "https://baseballsavant.mlb.com/statcast_search/csv"
+MAX_SAFE_RESPONSE_ROWS = 30000
 
 SWING_DESCRIPTIONS = {
     "swinging_strike", "swinging_strike_blocked", "foul", "foul_tip",
@@ -53,7 +55,13 @@ def fetch_chunk(start: date, end: date) -> pd.DataFrame:
     text = r.text.strip()
     if not text:
         return pd.DataFrame()
-    return pd.read_csv(StringIO(text), low_memory=False)
+    df = pd.read_csv(StringIO(text), low_memory=False)
+    if len(df) >= MAX_SAFE_RESPONSE_ROWS:
+        raise RuntimeError(
+            f"Statcast returned {len(df):,} pitch rows for {start} through {end}; "
+            "query may be truncated. Reduce --chunk-days before trusting this backfill."
+        )
+    return df
 
 
 def aggregate(raw: pd.DataFrame) -> pd.DataFrame:
@@ -116,25 +124,29 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--start", required=True)
     ap.add_argument("--end", required=True)
-    ap.add_argument("--chunk-days", type=int, default=7)
-    ap.add_argument("--sleep-seconds", type=float, default=1.0)
+    ap.add_argument("--chunk-days", type=int, default=3)
+    ap.add_argument("--sleep-seconds", type=float, default=0.25)
     args = ap.parse_args()
     start = date.fromisoformat(args.start)
     end = date.fromisoformat(args.end)
     if end < start:
         raise SystemExit("--end must be on or after --start")
+    if args.chunk_days < 1:
+        raise SystemExit("--chunk-days must be >= 1")
 
     parts = []
+    raw_rows = 0
     for lo, hi in chunks(start, end, args.chunk_days):
         print(f"Fetching Statcast {lo} through {hi}...")
         raw = fetch_chunk(lo, hi)
+        raw_rows += len(raw)
         part = aggregate(raw)
         if not part.empty:
             parts.append(part)
         time.sleep(max(args.sleep_seconds, 0))
     fresh = pd.concat(parts, ignore_index=True, sort=False) if parts else pd.DataFrame()
     merge_save(fresh)
-    print(f"Wrote {len(fresh):,} daily pitcher rows into {OUT}.")
+    print(f"Read {raw_rows:,} pitch rows and wrote {len(fresh):,} daily pitcher rows into {OUT}.")
 
 
 if __name__ == "__main__":
