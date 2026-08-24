@@ -1,0 +1,97 @@
+name: Pitcher K V2.1 Statcast research
+
+on:
+  push:
+    branches: [pitcher-k-v21-statcast]
+    paths:
+      - '.github/workflows/pitcher-k-v21-statcast.yml'
+  workflow_dispatch:
+
+jobs:
+  backfill-statcast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        year: [2021, 2022, 2023, 2024, 2025, 2026]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pitcher-k-v21-statcast
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Backfill season Statcast aggregates
+        shell: bash
+        run: |
+          if [ "${{ matrix.year }}" = "2026" ]; then
+            END="2026-08-24"
+          else
+            END="${{ matrix.year }}-10-31"
+          fi
+          python python/backfill_statcast_pitch_features.py \
+            --start "${{ matrix.year }}-03-15" \
+            --end "$END" \
+            --chunk-days 14 \
+            --sleep-seconds 0.5
+          mv data/features/statcast_pitcher_daily.csv "data/features/statcast_pitcher_${{ matrix.year }}.csv"
+      - name: Upload season aggregates
+        uses: actions/upload-artifact@v4
+        with:
+          name: statcast-${{ matrix.year }}
+          path: data/features/statcast_pitcher_${{ matrix.year }}.csv
+          retention-days: 7
+
+  test-statcast-challenger:
+    needs: backfill-statcast
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pitcher-k-v21-statcast
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Download season aggregates
+        uses: actions/download-artifact@v4
+        with:
+          pattern: statcast-*
+          path: statcast_parts
+      - name: Combine season aggregates
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import pandas as pd
+          files = sorted(Path('statcast_parts').rglob('statcast_pitcher_*.csv'))
+          if not files:
+              raise SystemExit('No Statcast season artifacts found')
+          out = pd.concat([pd.read_csv(f, low_memory=False) for f in files], ignore_index=True, sort=False)
+          out = out.drop_duplicates(['game_date','pitcher_id'], keep='last').sort_values(['game_date','pitcher_id'])
+          Path('data/features').mkdir(parents=True, exist_ok=True)
+          out.to_csv('data/features/statcast_pitcher_daily.csv', index=False)
+          print(f'Combined {len(files)} seasons into {len(out):,} pitcher-day rows')
+          PY
+      - name: Build leakage-safe rolling Statcast features
+        run: python python/build_statcast_rolling_features.py
+      - name: Run walk-forward Statcast challenger
+        run: python python/test_pitcher_k_statcast_features.py
+      - name: Upload V2.1 research outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: pitcher-k-v21-statcast-results
+          path: |
+            data/features/statcast_pitcher_daily.csv
+            data/features/statcast_pitcher_pregame.csv
+            outputs/pitcher_k_statcast_metrics.csv
+            outputs/pitcher_k_statcast_predictions.csv
+            outputs/pitcher_k_statcast_summary.csv
+          retention-days: 30
