@@ -41,6 +41,7 @@ jobs:
           python/build_pitcher_k_model.py
           python/fetch_pitcher_k_props.py
           python/run_pitcher_k_props.py
+          python/grade_pitcher_k_projections.py
       - name: Run full pitcher-aware walk-forward backtest
         run: python python/build_pitcher_model.py
       - name: Compare pitcher, team, and combined feature sets
