@@ -1,8 +1,8 @@
 """Create a parallel Pitcher-K V2 research projection from V1 + posted lineup context.
 
 This does not alter V1. V2 applies a conservative lineup K-rate adjustment to the
-V1 projected strikeout mean, capped at +/-15%. It exists to create a clean
-prospective comparison while richer handedness/pitch-mix features are developed.
+V1 projected strikeout mean, capped at +/-15%. The posted lineup is compared with
+that specific opponent team's recent K/PA; league recent K/PA is only a fallback.
 """
 from __future__ import annotations
 
@@ -33,18 +33,30 @@ def poisson_cdf(k: int, mu: float) -> float:
     return min(max(total, 0.0), 1.0)
 
 
-def baseline_team_k_rate(pitcher_id: int, day: str) -> float:
-    # Use the V1 team's recent opponent-K proxy when a lineup is available.
-    # This is intentionally simple; V2.1 will replace it with handedness-specific
-    # batter expectations after enough historical/prospective context is captured.
+def load_team_logs() -> pd.DataFrame:
     logs = pd.read_csv(DATA / "mlb_team_game_logs.csv", low_memory=False)
     logs["date"] = pd.to_datetime(logs["date"], errors="coerce")
+    logs["team_id"] = pd.to_numeric(logs["team_id"], errors="coerce")
     for c in ["strikeouts", "at_bats", "walks"]:
         logs[c] = pd.to_numeric(logs[c], errors="coerce")
-    # Without opponent team id in V1, use league recent K/PA as neutral baseline.
-    z = logs[logs.date < pd.Timestamp(day)].sort_values("date").tail(30 * 15)
-    pa = z.at_bats.sum() + z.walks.sum()
-    return float(z.strikeouts.sum() / pa) if pa > 0 else 0.23
+    return logs
+
+
+def k_rate(z: pd.DataFrame) -> float:
+    pa = z["at_bats"].sum() + z["walks"].sum()
+    return float(z["strikeouts"].sum() / pa) if pa > 0 else np.nan
+
+
+def baseline_team_k_rate(opponent_team_id: int, day: str, logs: pd.DataFrame) -> tuple[float, str]:
+    target = pd.Timestamp(day)
+    team = logs[(logs.team_id == opponent_team_id) & (logs.date < target)].sort_values(["date", "game_id"]).tail(30)
+    rate = k_rate(team) if not team.empty else np.nan
+    if pd.notna(rate) and 0.05 <= rate <= 0.50:
+        return float(rate), "opponent_last_30_games"
+
+    league = logs[logs.date < target].sort_values("date").tail(30 * 15)
+    fallback = k_rate(league)
+    return (float(fallback) if pd.notna(fallback) else 0.23), "league_recent_fallback"
 
 
 def append_history(fresh: pd.DataFrame) -> None:
@@ -69,22 +81,30 @@ def main() -> None:
     ctx = pd.read_csv(CTX, low_memory=False)
     if v1.empty or ctx.empty:
         pd.DataFrame().to_csv(V2, index=False)
-        print("No posted lineup context available for V2 scoring.")
+        print("No posted pregame lineup context available for V2 scoring.")
         return
 
     ctx["pitcher_id"] = pd.to_numeric(ctx["pitcher_id"], errors="coerce")
-    summaries = ctx.groupby("pitcher_id", dropna=False).agg(
+    ctx["opponent_team_id"] = pd.to_numeric(ctx["opponent_team_id"], errors="coerce")
+    summaries = ctx.groupby(["game_id", "pitcher_id"], dropna=False).agg(
         lineup_batters=("batter_id", "nunique"),
         lineup_weighted_k_per_pa=("lineup_weighted_k_per_pa", "first"),
         pitcher_hand=("pitcher_hand", "first"),
+        opponent_team_id=("opponent_team_id", "first"),
         lineup_snapshot_time_et=("snapshot_time_et", "first"),
+        game_start_et=("game_start_et", "first"),
     ).reset_index()
-    z = v1.merge(summaries, on="pitcher_id", how="inner")
+
+    # V1 game_id is MLB's gamePk. Match both game and pitcher so doubleheaders cannot cross-join.
+    v1["game_id"] = pd.to_numeric(v1["game_id"], errors="coerce")
+    v1["pitcher_id"] = pd.to_numeric(v1["pitcher_id"], errors="coerce")
+    z = v1.merge(summaries, on=["game_id", "pitcher_id"], how="inner")
+    logs = load_team_logs()
     rows = []
     for r in z.itertuples(index=False):
-        if r.lineup_batters < 9 or pd.isna(r.lineup_weighted_k_per_pa):
+        if r.lineup_batters < 9 or pd.isna(r.lineup_weighted_k_per_pa) or pd.isna(r.opponent_team_id):
             continue
-        neutral = baseline_team_k_rate(int(r.pitcher_id), str(r.date))
+        neutral, baseline_source = baseline_team_k_rate(int(r.opponent_team_id), str(r.date), logs)
         ratio = float(r.lineup_weighted_k_per_pa) / neutral if neutral > 0 else 1.0
         factor = float(np.clip(ratio, 0.85, 1.15))
         mu = float(np.clip(r.projected_k * factor, 0.05, None))
@@ -100,17 +120,18 @@ def main() -> None:
             p_push = 0.0
             p_over = 1.0 - p_under
         mo = pd.to_numeric(getattr(r, "market_over_prob_no_vig", np.nan), errors="coerce")
-        mu_market = pd.to_numeric(getattr(r, "market_under_prob_no_vig", np.nan), errors="coerce")
+        market_under = pd.to_numeric(getattr(r, "market_under_prob_no_vig", np.nan), errors="coerce")
         over_edge = p_over - mo if pd.notna(mo) else np.nan
-        under_edge = p_under - mu_market if pd.notna(mu_market) else np.nan
+        under_edge = p_under - market_under if pd.notna(market_under) else np.nan
         side = "OVER" if pd.notna(over_edge) and (pd.isna(under_edge) or over_edge >= under_edge) else "UNDER"
         edge = max(over_edge, under_edge) if pd.notna(over_edge) and pd.notna(under_edge) else np.nan
         d = r._asdict()
         d.update({
-            "v2_model": "v2_lineup_k_rate_0_1",
+            "v2_model": "v2_lineup_k_rate_0_2",
             "v1_projected_k": float(r.projected_k),
             "lineup_weighted_k_per_pa": float(r.lineup_weighted_k_per_pa),
-            "neutral_recent_k_per_pa": neutral,
+            "opponent_recent_k_per_pa": neutral,
+            "opponent_baseline_source": baseline_source,
             "lineup_adjustment_factor": factor,
             "v2_projected_k": mu,
             "v2_fair_over_prob": p_over,
@@ -126,7 +147,7 @@ def main() -> None:
         out = out.sort_values("v2_model_market_edge", ascending=False)
     out.to_csv(V2, index=False)
     append_history(out)
-    print(f"V2 scored {len(out)} posted-lineup pitcher/line rows; V1 remains unchanged.")
+    print(f"V2 scored {len(out)} pregame posted-lineup pitcher/line rows; V1 remains unchanged.")
 
 
 if __name__ == "__main__":
