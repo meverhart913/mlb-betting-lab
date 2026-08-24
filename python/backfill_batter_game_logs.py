@@ -22,6 +22,8 @@ GAMES = DATA / "mlb_games_2018_present.csv"
 OUT = DERIVED / "mlb_batter_game_logs.csv"
 STATE = CURRENT / "batter_backfill_state.csv"
 BASE = "https://statsapi.mlb.com/api/v1/game"
+SCHEMA_VERSION = 2
+REQUIRED_SCHEMA_COLUMNS = {"batting_order_code", "batting_order", "in_starting_lineup"}
 
 
 def get_with_retry(url: str, attempts: int = 4) -> dict:
@@ -54,12 +56,22 @@ def side_rows(payload: dict, game_id: int, game_date: str, side: str) -> list[di
         person = player.get("person") or {}
         batting = ((player.get("stats") or {}).get("batting") or {})
         order_raw = player.get("battingOrder")
+        order_code = None
+        batting_order = None
+        is_starter = 0
         try:
-            batting_order = int(order_raw) // 100 if order_raw not in (None, "") else None
+            if order_raw not in (None, ""):
+                order_code = int(order_raw)
+                batting_order = order_code // 100
+                # MLB uses the hundreds digit as lineup slot; suffix 00 is the
+                # original starter, while 01/02/... are later substitutes in
+                # that same batting slot.
+                is_starter = int(order_code % 100 == 0 and 1 <= batting_order <= 9)
         except (TypeError, ValueError):
+            order_code = None
             batting_order = None
-        # A batting order indicates the player appeared in the offensive lineup;
-        # retain bench/substitute appearances too when batting stats exist.
+            is_starter = 0
+
         has_batting = bool(batting) or batting_order is not None
         if not has_batting:
             continue
@@ -68,11 +80,10 @@ def side_rows(payload: dict, game_id: int, game_date: str, side: str) -> list[di
         hbp = pd.to_numeric(batting.get("hitByPitch"), errors="coerce")
         sf = pd.to_numeric(batting.get("sacFlies"), errors="coerce")
         sh = pd.to_numeric(batting.get("sacBunts"), errors="coerce")
-        # MLB boxscore payloads do not always expose plateAppearances directly.
-        # This approximation is sufficient for K-rate and is explicitly stored.
         vals = [0 if pd.isna(x) else float(x) for x in (ab, bb, hbp, sf, sh)]
         approx_pa = sum(vals)
         out.append({
+            "schema_version": SCHEMA_VERSION,
             "game_id": game_id,
             "date": game_date,
             "side": side,
@@ -80,8 +91,9 @@ def side_rows(payload: dict, game_id: int, game_date: str, side: str) -> list[di
             "opponent_team_id": opp_id,
             "player_id": person.get("id"),
             "player_name": person.get("fullName"),
+            "batting_order_code": order_code,
             "batting_order": batting_order,
-            "in_starting_lineup": int(batting_order is not None and batting_order > 0),
+            "in_starting_lineup": is_starter,
             "at_bats": batting.get("atBats"),
             "approx_plate_appearances": approx_pa,
             "hits": batting.get("hits"),
@@ -124,6 +136,21 @@ def load_games() -> pd.DataFrame:
     return g.sort_values(["date", "game_id"])
 
 
+def load_existing() -> tuple[pd.DataFrame, bool]:
+    """Return existing log and whether an obsolete checkpoint was invalidated."""
+    if not OUT.exists():
+        return pd.DataFrame(), False
+    existing = pd.read_csv(OUT, low_memory=False)
+    if existing.empty:
+        return existing, False
+    version = pd.to_numeric(existing.get("schema_version", pd.Series(dtype=float)), errors="coerce")
+    bad_schema = not REQUIRED_SCHEMA_COLUMNS.issubset(existing.columns) or version.dropna().empty or int(version.dropna().min()) < SCHEMA_VERSION
+    if bad_schema:
+        print("Existing batter checkpoint uses obsolete lineup-starter schema; rebuilding it from game 1.")
+        return pd.DataFrame(), True
+    return existing, False
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--batch-size", type=int, default=350)
@@ -135,15 +162,15 @@ def main() -> None:
     DERIVED.mkdir(parents=True, exist_ok=True)
     CURRENT.mkdir(parents=True, exist_ok=True)
     games = load_games()
-    existing = pd.read_csv(OUT, low_memory=False) if OUT.exists() else pd.DataFrame()
+    existing, invalidated = load_existing()
     done = set(pd.to_numeric(existing.get("game_id", pd.Series(dtype=float)), errors="coerce").dropna().astype(int))
     pending = games[~games["game_id"].isin(done)].head(args.batch_size)
 
     if pending.empty:
         pd.DataFrame([{
-            "total_games": len(games), "completed_games": len(done), "remaining_games": 0,
+            "schema_version": SCHEMA_VERSION, "total_games": len(games), "completed_games": len(done), "remaining_games": 0,
             "last_batch_requested": 0, "last_batch_succeeded": 0, "last_batch_failed": 0,
-            "complete": True,
+            "checkpoint_invalidated": invalidated, "complete": True,
         }]).to_csv(STATE, index=False)
         print(f"Batter history complete: {len(done):,}/{len(games):,} games.")
         return
@@ -162,30 +189,33 @@ def main() -> None:
 
     fresh = pd.DataFrame(results)
     if not fresh.empty:
-        if existing.empty:
-            combined = fresh
-        else:
-            combined = pd.concat([existing, fresh], ignore_index=True, sort=False)
+        combined = fresh if existing.empty else pd.concat([existing, fresh], ignore_index=True, sort=False)
         combined = combined.drop_duplicates(["game_id", "team_id", "player_id"], keep="last")
-        combined = combined.sort_values(["date", "game_id", "side", "batting_order", "player_id"], na_position="last")
+        combined = combined.sort_values(["date", "game_id", "side", "batting_order", "batting_order_code", "player_id"], na_position="last")
         combined.to_csv(OUT, index=False)
     else:
         combined = existing
+        if invalidated and OUT.exists():
+            OUT.unlink()
 
     completed_now = set(pd.to_numeric(combined.get("game_id", pd.Series(dtype=float)), errors="coerce").dropna().astype(int))
     state = pd.DataFrame([{
+        "schema_version": SCHEMA_VERSION,
         "total_games": len(games),
         "completed_games": len(completed_now),
         "remaining_games": max(len(games) - len(completed_now), 0),
         "last_batch_requested": len(work),
         "last_batch_succeeded": len(work) - len(failed),
         "last_batch_failed": len(failed),
+        "checkpoint_invalidated": invalidated,
         "complete": len(completed_now) >= len(games),
     }])
     state.to_csv(STATE, index=False)
+    fail_path = CURRENT / "batter_backfill_failures.csv"
     if failed:
-        fail_path = CURRENT / "batter_backfill_failures.csv"
         pd.DataFrame(failed, columns=["game_id", "error"]).to_csv(fail_path, index=False)
+    elif fail_path.exists():
+        fail_path.unlink()
     print(state.to_string(index=False))
     print(f"Rows stored: {len(combined):,}; failed game requests this batch: {len(failed)}")
 
