@@ -2,15 +2,17 @@ name: Batter history CI
 
 on:
   push:
-    branches: [batter-history-v1]
+    branches: [batter-history-v1, batter-history-v2, lineup-k-rate-v1]
     paths:
       - 'python/backfill_batter_game_logs.py'
+      - 'python/test_pitcher_k_lineup_features.py'
       - 'tests/test_batter_backfill.py'
       - '.github/workflows/batter-history-*.yml'
   pull_request:
     branches: [main]
     paths:
       - 'python/backfill_batter_game_logs.py'
+      - 'python/test_pitcher_k_lineup_features.py'
       - 'tests/test_batter_backfill.py'
       - '.github/workflows/batter-history-*.yml'
 
@@ -30,7 +32,7 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Compile backfill script
-        run: python -m py_compile python/backfill_batter_game_logs.py
+      - name: Compile batter history and lineup research scripts
+        run: python -m py_compile python/backfill_batter_game_logs.py python/test_pitcher_k_lineup_features.py
       - name: Run batter backfill parser tests
         run: python -m unittest tests.test_batter_backfill -v
