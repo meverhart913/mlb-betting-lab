@@ -1,0 +1,31 @@
+name: MLB model CI
+
+on:
+  push:
+    branches: [main, organize-pitcher-model-v3]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Run full pitcher-aware walk-forward backtest
+        run: python python/build_pitcher_model.py
+      - name: Upload model outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pitcher-model-outputs
+          path: outputs/
+          if-no-files-found: warn
