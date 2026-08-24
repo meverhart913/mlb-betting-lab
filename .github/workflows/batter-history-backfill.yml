@@ -1,0 +1,68 @@
+name: MLB batter history backfill
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/batter-history-backfill.yml']
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: mlb-batter-history-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore batter-history progress
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/derived/mlb_batter_game_logs.csv
+            data/current/batter_backfill_state.csv
+            data/current/batter_backfill_failures.csv
+          key: batter-history-${{ github.run_id }}
+          restore-keys: |
+            batter-history-
+
+      - name: Backfill next historical batch
+        run: python python/backfill_batter_game_logs.py --batch-size 350 --workers 6
+
+      - name: Write progress summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## MLB batter history backfill' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f data/current/batter_backfill_state.csv ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat data/current/batter_backfill_state.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo 'No state file generated; inspect the failed step.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload batter-history checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: batter-history-${{ github.run_id }}
+          path: |
+            data/derived/mlb_batter_game_logs.csv
+            data/current/batter_backfill_state.csv
+            data/current/batter_backfill_failures.csv
+          if-no-files-found: warn
+          retention-days: 14
