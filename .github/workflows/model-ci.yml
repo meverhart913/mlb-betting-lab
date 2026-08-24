@@ -39,6 +39,8 @@ jobs:
           python/test_elo_features.py
           python/test_elo_tuning.py
           python/build_pitcher_k_model.py
+          python/test_pitcher_k_components.py
+          python/test_pitcher_k_distribution.py
           python/fetch_pitcher_k_props.py
           python/run_pitcher_k_props.py
           python/grade_pitcher_k_projections.py
@@ -62,6 +64,10 @@ jobs:
         run: python python/test_elo_tuning.py
       - name: Build and walk-forward test pitcher strikeout model
         run: python python/build_pitcher_k_model.py
+      - name: Test BF x K-rate component model
+        run: python python/test_pitcher_k_components.py
+      - name: Test pitcher K distribution calibration
+        run: python python/test_pitcher_k_distribution.py
       - name: Upload model outputs
         if: always()
         uses: actions/upload-artifact@v4
