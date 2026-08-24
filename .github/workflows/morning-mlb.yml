@@ -64,6 +64,15 @@ jobs:
             python python/fetch_roster_context.py
           fi
 
+      - name: Capture posted lineup context
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.game_date }}" ]; then
+            python python/fetch_lineup_context.py --date "${{ inputs.game_date }}"
+          else
+            python python/fetch_lineup_context.py
+          fi
+
       - name: Capture venue and weather context
         shell: bash
         run: |
@@ -82,20 +91,23 @@ jobs:
             python python/run_morning_model.py
           fi
 
+      - name: Build combined morning report
+        run: python python/build_morning_report.py
+
       - name: Write job summary
         if: always()
         shell: bash
         run: |
           echo '## Morning MLB model' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
-          if [ -f outputs/morning_model_predictions.csv ]; then
-            echo 'Predictions generated. All decisions remain NO BET until a profitable rule is validated out of sample.' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f outputs/morning_report.csv ]; then
+            echo 'Automated morning report generated. Model decisions remain NO BET until a profitable rule is validated out of sample.' >> "$GITHUB_STEP_SUMMARY"
             echo '' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
-            head -n 25 outputs/morning_model_predictions.csv >> "$GITHUB_STEP_SUMMARY"
+            head -n 20 outputs/morning_report.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'No morning prediction file was generated. Inspect the failed step above.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'No combined morning report was generated. Inspect the failed step above.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Upload morning outputs
@@ -105,6 +117,7 @@ jobs:
           name: morning-mlb-${{ github.run_id }}
           path: |
             outputs/morning_model_predictions.csv
+            outputs/morning_report.csv
             data/current/morning_odds.csv
             data/current/morning_odds_raw.csv
             data/current/odds_consensus_history.csv
@@ -114,5 +127,7 @@ jobs:
             data/current/roster_context.csv
             data/current/injured_list_players.csv
             data/current/recent_roster_transactions.csv
+            data/current/lineup_context.csv
+            data/current/lineup_players.csv
           if-no-files-found: warn
           retention-days: 30
