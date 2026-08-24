@@ -1,9 +1,8 @@
 """Archive and grade prospective pitcher strikeout projections.
 
-This is an evaluation layer, not a betting executor. Current projection rows are
-appended to a persistent history. Once final pitcher logs are available, each
-row is graded against actual strikeouts. Aggregate calibration/error summaries
-are written for ongoing research.
+This is an evaluation layer, not a betting executor. Each timestamped projection
+snapshot is preserved independently so first-vs-latest market comparisons and
+future CLV analysis remain possible. Completed starts are graded automatically.
 """
 from __future__ import annotations
 
@@ -32,7 +31,7 @@ def append_current() -> None:
         h = pd.concat([old, fresh], ignore_index=True, sort=False)
     else:
         h = fresh.copy()
-    keys = [c for c in ["date", "event_id", "pitcher_id", "line", "projection_model"] if c in h.columns]
+    keys = [c for c in ["date", "event_id", "pitcher_id", "line", "projection_model", "snapshot_time_et"] if c in h.columns]
     if keys:
         h = h.drop_duplicates(keys, keep="last")
     CURRENT.mkdir(parents=True, exist_ok=True)
@@ -67,13 +66,25 @@ def main() -> None:
     if graded.empty:
         print("Projection history archived; no completed projected starts are gradeable yet.")
         return
+
+    snap = graded.copy()
+    if "snapshot_time_et" in snap.columns:
+        snap["snapshot_time_et"] = pd.to_datetime(snap["snapshot_time_et"], errors="coerce")
+    start_keys = ["game_id", "pitcher_id", "line"]
+    first = snap.sort_values("snapshot_time_et").drop_duplicates(start_keys, keep="first") if "snapshot_time_et" in snap.columns else snap.drop_duplicates(start_keys)
+    latest = snap.sort_values("snapshot_time_et").drop_duplicates(start_keys, keep="last") if "snapshot_time_et" in snap.columns else snap.drop_duplicates(start_keys)
+
     summary = pd.DataFrame([{
-        "graded_props": int(len(graded)),
+        "graded_snapshots": int(len(graded)),
         "unique_starts": int(graded[["game_id", "pitcher_id"]].drop_duplicates().shape[0]),
-        "mae_k": float(graded["absolute_error"].mean()),
-        "rmse_k": float(np.sqrt(graded["squared_error"].mean())),
+        "unique_prop_lines": int(graded[start_keys].drop_duplicates().shape[0]),
+        "all_snapshot_mae_k": float(graded["absolute_error"].mean()),
+        "first_snapshot_mae_k": float(first["absolute_error"].mean()),
+        "latest_snapshot_mae_k": float(latest["absolute_error"].mean()),
+        "all_snapshot_rmse_k": float(np.sqrt(graded["squared_error"].mean())),
+        "first_snapshot_over_brier": float(first["over_brier"].mean()),
+        "latest_snapshot_over_brier": float(latest["over_brier"].mean()),
         "mean_projection_error": float(graded["projection_error"].mean()),
-        "over_brier": float(graded["over_brier"].mean()),
         "mean_model_market_edge": float(pd.to_numeric(graded.get("model_market_edge"), errors="coerce").mean()),
     }])
     summary.to_csv(SUMMARY, index=False)
