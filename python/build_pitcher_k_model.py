@@ -67,15 +67,18 @@ def build_table() -> pd.DataFrame:
         t[c] = pd.to_numeric(t[c], errors="coerce")
     t["team_id"] = pd.to_numeric(t["team_id"], errors="coerce")
     t = t.sort_values(["team_id", "date", "game_id"])
+    created_team_features = []
     for w in TEAM_WINDOWS:
         grp = t.groupby("team_id", group_keys=False)
         minp = max(5, w // 2)
         k = grp["strikeouts"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
         ab = grp["at_bats"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
         bb = grp["walks"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
-        t[f"team_k_per_ab_{w}"] = k / ab.replace(0, np.nan)
-        t[f"team_k_per_pa_{w}"] = k / (ab + bb).replace(0, np.nan)
-        t[f"team_runs_{w}"] = grp["runs"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).mean())
+        names = [f"team_k_per_ab_{w}", f"team_k_per_pa_{w}", f"team_runs_{w}"]
+        t[names[0]] = k / ab.replace(0, np.nan)
+        t[names[1]] = k / (ab + bb).replace(0, np.nan)
+        t[names[2]] = grp["runs"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).mean())
+        created_team_features.extend(names)
 
     ids = t[["game_id", "side", "team_id"]].drop_duplicates(["game_id", "side"])
     home_ids = ids[ids.side.eq("home")][["game_id", "team_id"]].rename(columns={"team_id": "home_team_id"})
@@ -83,9 +86,8 @@ def build_table() -> pd.DataFrame:
     p = p.merge(home_ids, on="game_id", how="left").merge(away_ids, on="game_id", how="left")
     p["opponent_team_id"] = np.where(p["side"].eq("home"), p["away_team_id"], p["home_team_id"])
 
-    opp_cols = [c for c in t.columns if c.startswith("team_")]
-    opp = t[["game_id", "team_id"] + opp_cols].copy()
-    opp = opp.rename(columns={c: f"opp_{c}" for c in opp_cols})
+    opp = t[["game_id", "team_id"] + created_team_features].copy()
+    opp = opp.rename(columns={c: f"opp_{c}" for c in created_team_features})
     z = p.merge(opp, left_on=["game_id", "opponent_team_id"], right_on=["game_id", "team_id"], how="left", suffixes=("", "_opp"))
     z["season"] = z["date"].dt.year
     return z[z["strikeouts"].notna() & z["date"].notna()].copy()
