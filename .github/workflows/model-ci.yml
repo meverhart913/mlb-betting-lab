@@ -30,6 +30,7 @@ jobs:
           python/fetch_bullpen_context.py
           python/fetch_roster_context.py
           python/fetch_lineup_context.py
+          python/check_mlb_slate.py
           python/build_morning_report.py
           python/test_bullpen_features.py
       - name: Run full pitcher-aware walk-forward backtest
