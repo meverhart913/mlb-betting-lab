@@ -32,7 +32,9 @@ jobs:
           python/fetch_lineup_context.py
           python/check_mlb_slate.py
           python/build_morning_report.py
+          python/build_line_movement.py
           python/test_bullpen_features.py
+          python/test_bullpen_ablation.py
       - name: Run full pitcher-aware walk-forward backtest
         run: python python/build_pitcher_model.py
       - name: Compare pitcher, team, and combined feature sets
@@ -45,6 +47,8 @@ jobs:
         run: python python/test_rest_features.py
       - name: Test bullpen workload features
         run: python python/test_bullpen_features.py
+      - name: Ablate bullpen features individually
+        run: python python/test_bullpen_ablation.py
       - name: Upload model outputs
         if: always()
         uses: actions/upload-artifact@v4
