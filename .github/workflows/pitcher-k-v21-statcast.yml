@@ -3,8 +3,15 @@ name: Pitcher K V2.1 Statcast research
 on:
   push:
     branches: [pitcher-k-v21-statcast]
+  pull_request:
+    branches: [main]
     paths:
       - '.github/workflows/pitcher-k-v21-statcast.yml'
+      - 'python/backfill_statcast_pitch_features.py'
+      - 'python/build_statcast_rolling_features.py'
+      - 'python/test_pitcher_k_statcast_features.py'
+      - 'python/backfill_batter_k_splits.py'
+      - 'python/build_batter_k_split_features.py'
   workflow_dispatch:
 
 jobs:
@@ -17,8 +24,6 @@ jobs:
         year: [2021, 2022, 2023, 2024, 2025, 2026]
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: pitcher-k-v21-statcast
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -52,8 +57,6 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: pitcher-k-v21-statcast
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
