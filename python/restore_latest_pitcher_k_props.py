@@ -1,8 +1,9 @@
-"""Restore the latest cached pitcher-K consensus snapshot to the current file.
+"""Restore today's latest cached pitcher-K consensus snapshot to the current file.
 
 Used by V2 so a late-afternoon lineup run can reuse the noon sportsbook snapshot
-without spending more Odds API credits.
+without spending more Odds API credits. Stale prior-day data is rejected.
 """
+from datetime import date
 from pathlib import Path
 import pandas as pd
 
@@ -22,12 +23,22 @@ def main() -> None:
     h = h[h["snapshot_time_et"].notna()].copy()
     if h.empty:
         raise SystemExit("Cached pitcher K prop history has no valid snapshot timestamps.")
-    target_date = str(h.sort_values("snapshot_time_et").iloc[-1]["date"])
-    d = h[h["date"].astype(str).eq(target_date)].copy()
+
+    today = date.today().isoformat()
+    d = h[h["date"].astype(str).eq(today)].copy()
+    if d.empty:
+        latest_date = str(h.sort_values("snapshot_time_et").iloc[-1]["date"])
+        raise SystemExit(
+            f"No pitcher-K prop snapshot exists for today ({today}); latest cached date is {latest_date}. "
+            "V2 will not score stale sportsbook data."
+        )
+
     latest = d["snapshot_time_et"].max()
     out = d[d["snapshot_time_et"].eq(latest)].copy()
+    if out.empty:
+        raise SystemExit(f"No valid latest pitcher-K snapshot rows found for {today}.")
     out.to_csv(OUT, index=False)
-    print(f"Restored {len(out)} pitcher-K consensus rows from {latest} for {target_date}; no Odds API call made.")
+    print(f"Restored {len(out)} pitcher-K consensus rows from {latest} for {today}; no Odds API call made.")
 
 
 if __name__ == "__main__":
