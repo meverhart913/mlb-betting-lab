@@ -2,7 +2,7 @@ name: MLB model CI
 
 on:
   push:
-    branches: [main, organize-pitcher-model-v3, hybrid-market-model, test-rest-features]
+    branches: [main, organize-pitcher-model-v3, hybrid-market-model, test-rest-features, morning-of-pipeline]
   pull_request:
     branches: [main]
 
@@ -20,6 +20,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
+      - name: Validate morning runner syntax
+        run: python -m py_compile python/run_morning_model.py
       - name: Run full pitcher-aware walk-forward backtest
         run: python python/build_pitcher_model.py
       - name: Compare pitcher, team, and combined feature sets
