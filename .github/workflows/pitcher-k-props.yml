@@ -12,6 +12,7 @@ jobs:
     timeout-minutes: 30
     env:
       THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+      ODDS_API_CREDIT_RESERVE: '30'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -62,6 +63,10 @@ jobs:
         if: steps.slate.outputs.has_games == 'true'
         run: python python/fetch_pitcher_k_props.py
 
+      - name: Build prop line-movement history
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/build_pitcher_k_line_movement.py
+
       - name: Price current pitcher strikeout props
         if: steps.slate.outputs.has_games == 'true'
         run: python python/run_pitcher_k_props.py
@@ -80,6 +85,13 @@ jobs:
             echo 'No MLB regular-season games today. No prop API calls were made.' >> "$GITHUB_STEP_SUMMARY"
           elif [ -f outputs/pitcher_k_prop_predictions.csv ]; then
             echo 'Pitcher K projections and fair probabilities generated. Research only; all decisions remain NO BET pending prospective validation.' >> "$GITHUB_STEP_SUMMARY"
+            if [ -f data/current/pitcher_k_collection_status.csv ]; then
+              echo '' >> "$GITHUB_STEP_SUMMARY"
+              echo '### API collection status' >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              cat data/current/pitcher_k_collection_status.csv >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
             if [ -f outputs/pitcher_k_ensemble_summary.csv ]; then
               echo '' >> "$GITHUB_STEP_SUMMARY"
               echo '### Walk-forward blend selection' >> "$GITHUB_STEP_SUMMARY"
@@ -116,9 +128,11 @@ jobs:
             outputs/pitcher_k_ensemble_metrics.csv
             outputs/pitcher_k_ensemble_summary.csv
             outputs/pitcher_k_ensemble_predictions.csv
+            outputs/pitcher_k_line_movement.csv
             outputs/pitcher_k_prop_predictions.csv
             outputs/pitcher_k_prospective_graded.csv
             outputs/pitcher_k_prospective_summary.csv
+            data/current/pitcher_k_collection_status.csv
             data/current/pitcher_k_props.csv
             data/current/pitcher_k_props_raw.csv
             data/current/pitcher_k_props_history.csv
