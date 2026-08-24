@@ -2,7 +2,7 @@ name: Pitcher K CI
 
 on:
   push:
-    branches: [pitcher-k-props-v2]
+    branches: [pitcher-k-props-v2, pitcher-k-props-v3]
     paths:
       - 'python/*pitcher_k*.py'
       - '.github/workflows/pitcher-k-*.yml'
