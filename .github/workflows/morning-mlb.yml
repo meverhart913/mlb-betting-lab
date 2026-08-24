@@ -1,0 +1,74 @@
+name: Morning MLB model
+
+on:
+  schedule:
+    # 12:00 UTC = 8:00 AM Eastern during MLB daylight-saving months.
+    - cron: '0 12 * 4-10 *'
+  workflow_dispatch:
+    inputs:
+      game_date:
+        description: 'Optional YYYY-MM-DD date (defaults to today)'
+        required: false
+        type: string
+
+jobs:
+  morning-model:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Refresh recent MLB results and pitcher/team logs
+        run: python python/refresh_recent_mlb.py --lookback-days 4
+
+      - name: Rebuild leakage-safe historical modeling table
+        run: python python/build_pitcher_model.py
+
+      - name: Pull current sportsbook moneylines
+        run: python python/fetch_morning_odds.py
+
+      - name: Run morning model
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.game_date }}" ]; then
+            python python/run_morning_model.py --date "${{ inputs.game_date }}"
+          else
+            python python/run_morning_model.py
+          fi
+
+      - name: Write job summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Morning MLB model' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f outputs/morning_model_predictions.csv ]; then
+            echo 'Predictions generated. All decisions remain NO BET until a profitable rule is validated out of sample.' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            head -n 25 outputs/morning_model_predictions.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'No morning prediction file was generated. Inspect the failed step above.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload morning outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: morning-mlb-${{ github.run_id }}
+          path: |
+            outputs/morning_model_predictions.csv
+            data/current/morning_odds.csv
+            data/current/morning_odds_raw.csv
+          if-no-files-found: warn
+          retention-days: 30
