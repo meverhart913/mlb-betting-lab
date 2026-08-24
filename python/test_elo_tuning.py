@@ -12,7 +12,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data"
 OUT = ROOT / "outputs"
 
 
@@ -49,7 +48,7 @@ def fit_prob(train_x, train_y, test_x):
     m = Pipeline([
         ("imp", SimpleImputer(strategy="median")),
         ("scale", StandardScaler()),
-        ("m", LogisticRegression(max_iter=3000, C=0.3)),
+        ("m", LogisticRegression(max_iter=2500, C=0.3)),
     ])
     m.fit(train_x, train_y)
     return m.predict_proba(test_x)[:, 1]
@@ -62,10 +61,10 @@ def main():
     t["home_win"] = t["home_win"].astype(int)
     base_features = [c for c in t.columns if c.startswith("diff_sp_") or c.startswith("diff_team_")]
 
+    # Coarse grid first. Refinement is only justified around an out-of-sample winner.
     grid_rows = []
-    pred_rows = []
     best = None
-    for k, home_adv, carryover in itertools.product((8, 12, 16, 20, 24, 32), (0, 20, 35, 50, 65), (0.5, 0.65, 0.8, 0.9, 1.0)):
+    for k, home_adv, carryover in itertools.product((12, 20, 28, 36), (20, 35, 50), (0.60, 0.75, 0.90)):
         elo = build_elo(t[["game_id","date","home_team","away_team","home_win"]], k, home_adv, carryover)
         z = t.merge(elo, on="game_id", how="left")
         years = z["date"].dt.year
@@ -87,12 +86,13 @@ def main():
     grid.to_csv(OUT / "elo_tuning_grid.csv", index=False)
     if best is None: raise SystemExit("No Elo tuning results")
 
-    # Final detailed comparison for best configuration.
     elo = build_elo(t[["game_id","date","home_team","away_team","home_win"]], best["k"], best["home_adv"], best["carryover"])
     z = t.merge(elo, on="game_id", how="left")
     z["season"] = z["date"].dt.year
-    valid_market = z["close_home_odds"].abs().between(100,5000) & z["close_away_odds"].abs().between(100,5000)
-    ph = implied(z["close_home_odds"]); pa = implied(z["close_away_odds"])
+    ch = pd.to_numeric(z["close_home_odds"], errors="coerce")
+    ca = pd.to_numeric(z["close_away_odds"], errors="coerce")
+    valid_market = ch.abs().between(100,5000) & ca.abs().between(100,5000)
+    ph = implied(ch); pa = implied(ca)
     z["market_prob"] = ph/(ph+pa)
     z["market_logit"] = np.log(z["market_prob"].clip(.01,.99)/(1-z["market_prob"].clip(.01,.99)))
 
