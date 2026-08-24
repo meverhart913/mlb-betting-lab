@@ -1,9 +1,9 @@
 """Fetch current MLB starting-pitcher strikeout props from The Odds API.
 
-Uses the free current event endpoints. Player props are queried one event at a
-time. Raw sportsbook quotes are retained; a consensus table keeps median prices
-and best available prices for each pitcher/line pair. Snapshot history is
-append-only when restored through the workflow cache.
+Current player props are queried one event at a time. Raw sportsbook quotes are
+retained; a consensus table keeps median and best prices. The collector protects
+a configurable API-credit reserve and records collection status so a low quota
+produces partial research output instead of exhausting the account.
 """
 from __future__ import annotations
 
@@ -21,7 +21,9 @@ RAW = CURRENT / "pitcher_k_props_raw.csv"
 CONSENSUS = CURRENT / "pitcher_k_props.csv"
 RAW_HISTORY = CURRENT / "pitcher_k_props_raw_history.csv"
 CONS_HISTORY = CURRENT / "pitcher_k_props_history.csv"
+STATUS = CURRENT / "pitcher_k_collection_status.csv"
 BASE = "https://api.the-odds-api.com/v4/sports/baseball_mlb"
+DEFAULT_RESERVE = 30
 
 
 def append_history(path: Path, fresh: pd.DataFrame, keys: list[str]) -> None:
@@ -36,36 +38,59 @@ def append_history(path: Path, fresh: pd.DataFrame, keys: list[str]) -> None:
     out.to_csv(path, index=False)
 
 
+def int_header(resp, name: str):
+    try:
+        return int(resp.headers.get(name, ""))
+    except (TypeError, ValueError):
+        return None
+
+
 def main() -> None:
     key = os.getenv("THE_ODDS_API_KEY")
     if not key:
         raise SystemExit("THE_ODDS_API_KEY is not configured.")
+    reserve = int(os.getenv("ODDS_API_CREDIT_RESERVE", str(DEFAULT_RESERVE)))
     target = date.today().isoformat()
     common = {"apiKey": key, "dateFormat": "iso"}
     r = requests.get(f"{BASE}/events", params=common, timeout=30)
     r.raise_for_status()
+
     events = []
     for e in r.json():
         ts = pd.to_datetime(e.get("commence_time"), utc=True, errors="coerce")
         local_date = ts.tz_convert("America/New_York").date().isoformat() if pd.notna(ts) else None
         if local_date == target:
-            events.append(e)
+            events.append((ts, e))
+    events.sort(key=lambda x: x[0] if pd.notna(x[0]) else pd.Timestamp.max.tz_localize("UTC"))
+    events = [e for _, e in events]
+
+    remaining_start = int_header(r, "x-requests-remaining")
+    budget_events = len(events)
+    if remaining_start is not None:
+        budget_events = max(0, min(len(events), remaining_start - reserve))
+    selected_events = events[:budget_events]
+    skipped_budget = len(events) - len(selected_events)
 
     snapshot = datetime.now(ZoneInfo("America/New_York")).isoformat(timespec="minutes")
     rows = []
     credits = 0
-    for event in events:
+    last_remaining = remaining_start
+    checked = 0
+    for event in selected_events:
         eid = event.get("id")
         params = {"apiKey": key, "regions": "us", "markets": "pitcher_strikeouts", "oddsFormat": "american", "dateFormat": "iso"}
         q = requests.get(f"{BASE}/events/{eid}/odds", params=params, timeout=30)
+        checked += 1
         if q.status_code == 422:
             print(f"WARN no pitcher strikeout market for event {eid}")
             continue
         q.raise_for_status()
-        try:
-            credits += int(q.headers.get("x-requests-last", "0"))
-        except ValueError:
-            pass
+        used = int_header(q, "x-requests-last")
+        if used is not None:
+            credits += used
+        q_remaining = int_header(q, "x-requests-remaining")
+        if q_remaining is not None:
+            last_remaining = q_remaining
         payload = q.json()
         for book in payload.get("bookmakers", []):
             sportsbook = book.get("title") or book.get("key")
@@ -87,28 +112,44 @@ def main() -> None:
                     })
 
     CURRENT.mkdir(parents=True, exist_ok=True)
+    status = pd.DataFrame([{
+        "date": target, "snapshot_time_et": snapshot, "events_on_slate": len(events),
+        "events_checked": checked, "events_skipped_for_quota": skipped_budget,
+        "credit_reserve": reserve, "credits_used_event_calls": credits,
+        "credits_remaining_start": remaining_start, "credits_remaining_end": last_remaining,
+        "raw_quotes": len(rows),
+    }])
+    status.to_csv(STATUS, index=False)
+
     raw = pd.DataFrame(rows)
     if raw.empty:
         raw.to_csv(RAW, index=False)
-        print(f"No pitcher strikeout props returned for {target}; {len(events)} MLB events checked.")
+        pd.DataFrame().to_csv(CONSENSUS, index=False)
+        print(f"No pitcher strikeout props returned for {target}; checked {checked}/{len(events)} MLB events; skipped for quota: {skipped_budget}.")
         return
+
     raw["line"] = pd.to_numeric(raw["line"], errors="coerce")
     raw["price"] = pd.to_numeric(raw["price"], errors="coerce")
     raw = raw.sort_values(["event_id", "pitcher_name", "line", "sportsbook", "side"])
     raw.to_csv(RAW, index=False)
     append_history(RAW_HISTORY, raw, ["event_id", "pitcher_name", "line", "sportsbook", "side", "snapshot_time_et"])
 
-    wide = raw.pivot_table(index=["date","event_id","away_team","home_team","pitcher_name","line","sportsbook","snapshot_time_et"], columns="side", values="price", aggfunc="last").reset_index()
+    wide = raw.pivot_table(
+        index=["date","event_id","away_team","home_team","pitcher_name","line","sportsbook","snapshot_time_et"],
+        columns="side", values="price", aggfunc="last"
+    ).reset_index()
     rows2 = []
     for keys, g in wide.groupby(["date","event_id","away_team","home_team","pitcher_name","line"], dropna=False):
         def best(col):
             x = pd.to_numeric(g.get(col), errors="coerce")
-            if x.notna().sum() == 0: return (float("nan"), None)
+            if x.notna().sum() == 0:
+                return (float("nan"), None)
             idx = x.idxmax()
             return float(x.loc[idx]), str(g.loc[idx, "sportsbook"])
         bo, bob = best("over"); bu, bub = best("under")
         rows2.append({
-            "date": keys[0], "event_id": keys[1], "away_team": keys[2], "home_team": keys[3], "pitcher_name": keys[4], "line": keys[5],
+            "date": keys[0], "event_id": keys[1], "away_team": keys[2], "home_team": keys[3],
+            "pitcher_name": keys[4], "line": keys[5],
             "over_price_median": pd.to_numeric(g.get("over"), errors="coerce").median(),
             "under_price_median": pd.to_numeric(g.get("under"), errors="coerce").median(),
             "best_over_price": bo, "best_over_sportsbook": bob,
@@ -118,8 +159,10 @@ def main() -> None:
     cons = pd.DataFrame(rows2).sort_values(["event_id","pitcher_name","line"])
     cons.to_csv(CONSENSUS, index=False)
     append_history(CONS_HISTORY, cons, ["event_id", "pitcher_name", "line", "snapshot_time_et"])
-    remaining = r.headers.get("x-requests-remaining")
-    print(f"Wrote {len(raw):,} raw K quotes and {len(cons):,} consensus pitcher-line rows across {len(events)} events. API credits used in event-odds calls: {credits}; remaining header: {remaining}.")
+    print(
+        f"Wrote {len(raw):,} raw K quotes and {len(cons):,} consensus rows; checked {checked}/{len(events)} events; "
+        f"skipped for quota: {skipped_budget}; credits used: {credits}; remaining: {last_remaining}."
+    )
 
 if __name__ == "__main__":
     main()
