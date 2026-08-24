@@ -23,7 +23,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Check today's MLB slate
+        id: slate
+        shell: bash
+        run: |
+          HAS_GAMES="$(python python/check_mlb_slate.py)"
+          echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
+          echo "Has regular-season games: $HAS_GAMES"
+
       - name: Restore rolling odds history
+        if: steps.slate.outputs.has_games == 'true'
         uses: actions/cache@v4
         with:
           path: |
@@ -34,9 +43,11 @@ jobs:
             odds-history-
 
       - name: Pull afternoon sportsbook moneylines
+        if: steps.slate.outputs.has_games == 'true'
         run: python python/fetch_morning_odds.py
 
       - name: Upload line-movement snapshot
+        if: steps.slate.outputs.has_games == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: afternoon-odds-${{ github.run_id }}
@@ -47,3 +58,7 @@ jobs:
             data/current/odds_raw_history.csv
           if-no-files-found: error
           retention-days: 30
+
+      - name: Off-day summary
+        if: steps.slate.outputs.has_games != 'true'
+        run: echo 'No MLB regular-season games today; no Odds API quota used.' >> "$GITHUB_STEP_SUMMARY"
