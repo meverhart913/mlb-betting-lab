@@ -37,10 +37,29 @@ class BatterBackfillTests(unittest.TestCase):
         self.assertEqual(r["team_id"], 10)
         self.assertEqual(r["opponent_team_id"], 20)
         self.assertEqual(r["player_id"], 1)
+        self.assertEqual(r["batting_order_code"], 300)
         self.assertEqual(r["batting_order"], 3)
         self.assertEqual(r["in_starting_lineup"], 1)
         self.assertEqual(r["strikeouts"], 2)
         self.assertEqual(r["approx_plate_appearances"], 5.0)
+
+    def test_substitute_retains_slot_but_is_not_starter(self):
+        payload = {
+            "teams": {
+                "away": {"team": {"id": 10}, "players": {
+                    "ID2": {
+                        "person": {"id": 2, "fullName": "Pinch Hitter"},
+                        "battingOrder": "301",
+                        "stats": {"batting": {"atBats": 1, "strikeOuts": 1}},
+                    }
+                }},
+                "home": {"team": {"id": 20}, "players": {}},
+            }
+        }
+        r = side_rows(payload, 123, "2026-08-24", "away")[0]
+        self.assertEqual(r["batting_order_code"], 301)
+        self.assertEqual(r["batting_order"], 3)
+        self.assertEqual(r["in_starting_lineup"], 0)
 
     def test_non_batter_is_ignored(self):
         payload = {
