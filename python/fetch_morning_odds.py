@@ -1,7 +1,9 @@
 """Fetch current MLB moneylines automatically from The Odds API.
 
-Requires THE_ODDS_API_KEY in the environment. The free plan currently supports
-current MLB odds, so this removes daily manual odds entry from the workflow.
+Requires THE_ODDS_API_KEY in the environment. Every individual sportsbook quote
+is retained for audit/price shopping, while morning_odds.csv contains one
+consensus row per game using median prices. Best available prices are recorded
+separately and are never used to construct the consensus probability.
 """
 from __future__ import annotations
 
@@ -14,8 +16,20 @@ import pandas as pd
 import requests
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "data" / "current" / "morning_odds.csv"
+CURRENT = ROOT / "data" / "current"
+OUT = CURRENT / "morning_odds.csv"
+RAW = CURRENT / "morning_odds_raw.csv"
 URL = "https://api.the-odds-api.com/v4/sports/baseball_mlb/odds"
+
+
+def best_positive_value(group: pd.DataFrame, column: str) -> tuple[float, str | None]:
+    vals = pd.to_numeric(group[column], errors="coerce")
+    if vals.notna().sum() == 0:
+        return float("nan"), None
+    # For American odds a numerically larger value is always the better bettor price:
+    # +130 beats +120 and -105 beats -120.
+    idx = vals.idxmax()
+    return float(vals.loc[idx]), str(group.loc[idx, "sportsbook"])
 
 
 def main() -> None:
@@ -60,15 +74,41 @@ def main() -> None:
                     "source_last_update": book.get("last_update"),
                 })
 
-    df = pd.DataFrame(rows)
-    if df.empty:
+    raw = pd.DataFrame(rows)
+    if raw.empty:
         raise SystemExit("The Odds API returned no MLB h2h moneylines.")
 
-    # Keep every sportsbook quote. The morning model can form a consensus and
-    # preserve individual books for price shopping later.
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    df.sort_values(["date", "away_team", "home_team", "sportsbook"]).to_csv(OUT, index=False)
-    print(f"Wrote {len(df):,} sportsbook quotes for {df[['date','away_team','home_team']].drop_duplicates().shape[0]:,} MLB games to {OUT}")
+    CURRENT.mkdir(parents=True, exist_ok=True)
+    raw = raw.sort_values(["date", "away_team", "home_team", "sportsbook"])
+    raw.to_csv(RAW, index=False)
+
+    consensus_rows = []
+    keys = ["date", "away_team", "home_team"]
+    for key_vals, g in raw.groupby(keys, dropna=False):
+        best_home, best_home_book = best_positive_value(g, "home_moneyline")
+        best_away, best_away_book = best_positive_value(g, "away_moneyline")
+        consensus_rows.append({
+            "date": key_vals[0],
+            "sportsbook": "CONSENSUS_MEDIAN",
+            "away_team": key_vals[1],
+            "home_team": key_vals[2],
+            "away_moneyline": pd.to_numeric(g["away_moneyline"], errors="coerce").median(),
+            "home_moneyline": pd.to_numeric(g["home_moneyline"], errors="coerce").median(),
+            "snapshot_time_et": snapshot,
+            "quote_count": int(len(g)),
+            "best_away_moneyline": best_away,
+            "best_away_sportsbook": best_away_book,
+            "best_home_moneyline": best_home,
+            "best_home_sportsbook": best_home_book,
+            "source": "the-odds-api",
+        })
+
+    consensus = pd.DataFrame(consensus_rows).sort_values(keys)
+    consensus.to_csv(OUT, index=False)
+    print(
+        f"Wrote {len(raw):,} raw sportsbook quotes to {RAW} and "
+        f"{len(consensus):,} consensus MLB game rows to {OUT}."
+    )
 
 
 if __name__ == "__main__":
