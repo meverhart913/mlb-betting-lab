@@ -43,6 +43,7 @@ jobs:
           python/test_pitcher_k_ensemble.py
           python/test_pitcher_k_distribution.py
           python/fetch_pitcher_k_props.py
+          python/build_pitcher_k_line_movement.py
           python/run_pitcher_k_props.py
           python/grade_pitcher_k_projections.py
       - name: Run full pitcher-aware walk-forward backtest
