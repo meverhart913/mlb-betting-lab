@@ -5,7 +5,6 @@ on:
     branches: [main]
     paths: ['.github/workflows/pitcher-k-props.yml']
   schedule:
-    # 16:00 UTC = noon Eastern during MLB daylight-saving months.
     - cron: '0 16 * 4-10 *'
   workflow_dispatch:
 
@@ -74,6 +73,10 @@ jobs:
         if: steps.slate.outputs.has_games == 'true'
         run: python python/run_pitcher_k_props.py
 
+      - name: Validate and reprice from no-vig consensus
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/reprice_pitcher_k_predictions.py
+
       - name: Archive and grade prospective projections
         if: steps.slate.outputs.has_games == 'true'
         run: python python/grade_pitcher_k_projections.py
@@ -103,6 +106,7 @@ jobs:
               echo '```' >> "$GITHUB_STEP_SUMMARY"
             fi
             echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Current research projections' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             head -n 25 outputs/pitcher_k_prop_predictions.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"

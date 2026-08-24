@@ -1,9 +1,9 @@
 """Fetch current MLB starting-pitcher strikeout props from The Odds API.
 
-Current player props are queried one event at a time. Raw sportsbook quotes are
-retained; a consensus table keeps median and best prices. The collector protects
-a configurable API-credit reserve and records collection status so a low quota
-produces partial research output instead of exhausting the account.
+Raw sportsbook quotes are retained. Consensus probability is calculated by
+removing vig within each sportsbook first, then taking the median no-vig
+probability across books. American odds themselves are never averaged because
+values crossing +/-100 are not linear.
 """
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -45,14 +46,20 @@ def int_header(resp, name: str):
         return None
 
 
+def implied_prob(v):
+    x = pd.to_numeric(v, errors="coerce")
+    if pd.isna(x) or x == 0:
+        return np.nan
+    return 100.0 / (x + 100.0) if x > 0 else -x / (-x + 100.0)
+
+
 def main() -> None:
     key = os.getenv("THE_ODDS_API_KEY")
     if not key:
         raise SystemExit("THE_ODDS_API_KEY is not configured.")
     reserve = int(os.getenv("ODDS_API_CREDIT_RESERVE", str(DEFAULT_RESERVE)))
     target = date.today().isoformat()
-    common = {"apiKey": key, "dateFormat": "iso"}
-    r = requests.get(f"{BASE}/events", params=common, timeout=30)
+    r = requests.get(f"{BASE}/events", params={"apiKey": key, "dateFormat": "iso"}, timeout=30)
     r.raise_for_status()
 
     events = []
@@ -72,14 +79,15 @@ def main() -> None:
     skipped_budget = len(events) - len(selected_events)
 
     snapshot = datetime.now(ZoneInfo("America/New_York")).isoformat(timespec="minutes")
-    rows = []
-    credits = 0
+    rows, credits, checked = [], 0, 0
     last_remaining = remaining_start
-    checked = 0
     for event in selected_events:
         eid = event.get("id")
-        params = {"apiKey": key, "regions": "us", "markets": "pitcher_strikeouts", "oddsFormat": "american", "dateFormat": "iso"}
-        q = requests.get(f"{BASE}/events/{eid}/odds", params=params, timeout=30)
+        q = requests.get(
+            f"{BASE}/events/{eid}/odds",
+            params={"apiKey": key, "regions": "us", "markets": "pitcher_strikeouts", "oddsFormat": "american", "dateFormat": "iso"},
+            timeout=30,
+        )
         checked += 1
         if q.status_code == 422:
             print(f"WARN no pitcher strikeout market for event {eid}")
@@ -100,32 +108,30 @@ def main() -> None:
                 for o in market.get("outcomes", []):
                     pitcher = o.get("description")
                     side = str(o.get("name") or "").lower()
-                    if not pitcher or side not in {"over", "under"}:
-                        continue
-                    rows.append({
-                        "date": target, "event_id": eid,
-                        "away_team": payload.get("away_team"), "home_team": payload.get("home_team"),
-                        "pitcher_name": pitcher, "side": side, "line": o.get("point"), "price": o.get("price"),
-                        "sportsbook": sportsbook, "bookmaker_key": book.get("key"),
-                        "source_last_update": market.get("last_update") or book.get("last_update"),
-                        "snapshot_time_et": snapshot, "source": "the-odds-api",
-                    })
+                    if pitcher and side in {"over", "under"}:
+                        rows.append({
+                            "date": target, "event_id": eid,
+                            "away_team": payload.get("away_team"), "home_team": payload.get("home_team"),
+                            "pitcher_name": pitcher, "side": side, "line": o.get("point"), "price": o.get("price"),
+                            "sportsbook": sportsbook, "bookmaker_key": book.get("key"),
+                            "source_last_update": market.get("last_update") or book.get("last_update"),
+                            "snapshot_time_et": snapshot, "source": "the-odds-api",
+                        })
 
     CURRENT.mkdir(parents=True, exist_ok=True)
-    status = pd.DataFrame([{
+    pd.DataFrame([{
         "date": target, "snapshot_time_et": snapshot, "events_on_slate": len(events),
         "events_checked": checked, "events_skipped_for_quota": skipped_budget,
         "credit_reserve": reserve, "credits_used_event_calls": credits,
         "credits_remaining_start": remaining_start, "credits_remaining_end": last_remaining,
         "raw_quotes": len(rows),
-    }])
-    status.to_csv(STATUS, index=False)
+    }]).to_csv(STATUS, index=False)
 
     raw = pd.DataFrame(rows)
     if raw.empty:
         raw.to_csv(RAW, index=False)
         pd.DataFrame().to_csv(CONSENSUS, index=False)
-        print(f"No pitcher strikeout props returned for {target}; checked {checked}/{len(events)} MLB events; skipped for quota: {skipped_budget}.")
+        print(f"No pitcher strikeout props returned for {target}; checked {checked}/{len(events)} events.")
         return
 
     raw["line"] = pd.to_numeric(raw["line"], errors="coerce")
@@ -138,8 +144,15 @@ def main() -> None:
         index=["date","event_id","away_team","home_team","pitcher_name","line","sportsbook","snapshot_time_et"],
         columns="side", values="price", aggfunc="last"
     ).reset_index()
+    wide["over_implied"] = wide.get("over", pd.Series(index=wide.index, dtype=float)).map(implied_prob)
+    wide["under_implied"] = wide.get("under", pd.Series(index=wide.index, dtype=float)).map(implied_prob)
+    denom = wide["over_implied"] + wide["under_implied"]
+    wide["over_prob_no_vig"] = np.where(denom > 0, wide["over_implied"] / denom, np.nan)
+    wide["under_prob_no_vig"] = np.where(denom > 0, wide["under_implied"] / denom, np.nan)
+
     rows2 = []
-    for keys, g in wide.groupby(["date","event_id","away_team","home_team","pitcher_name","line"], dropna=False):
+    group_cols = ["date","event_id","away_team","home_team","pitcher_name","line"]
+    for keys, g in wide.groupby(group_cols, dropna=False):
         def best(col):
             x = pd.to_numeric(g.get(col), errors="coerce")
             if x.notna().sum() == 0:
@@ -147,11 +160,14 @@ def main() -> None:
             idx = x.idxmax()
             return float(x.loc[idx]), str(g.loc[idx, "sportsbook"])
         bo, bob = best("over"); bu, bub = best("under")
+        over_cons = pd.to_numeric(g["over_prob_no_vig"], errors="coerce").median()
+        under_cons = pd.to_numeric(g["under_prob_no_vig"], errors="coerce").median()
+        if pd.notna(over_cons) and not (0.02 <= over_cons <= 0.98):
+            raise ValueError(f"Invalid no-vig Over consensus {over_cons} for {keys[4]} {keys[5]}")
         rows2.append({
             "date": keys[0], "event_id": keys[1], "away_team": keys[2], "home_team": keys[3],
             "pitcher_name": keys[4], "line": keys[5],
-            "over_price_median": pd.to_numeric(g.get("over"), errors="coerce").median(),
-            "under_price_median": pd.to_numeric(g.get("under"), errors="coerce").median(),
+            "market_over_prob_no_vig": over_cons, "market_under_prob_no_vig": under_cons,
             "best_over_price": bo, "best_over_sportsbook": bob,
             "best_under_price": bu, "best_under_sportsbook": bub,
             "sportsbook_count": int(g["sportsbook"].nunique()), "snapshot_time_et": snapshot,
@@ -159,10 +175,7 @@ def main() -> None:
     cons = pd.DataFrame(rows2).sort_values(["event_id","pitcher_name","line"])
     cons.to_csv(CONSENSUS, index=False)
     append_history(CONS_HISTORY, cons, ["event_id", "pitcher_name", "line", "snapshot_time_et"])
-    print(
-        f"Wrote {len(raw):,} raw K quotes and {len(cons):,} consensus rows; checked {checked}/{len(events)} events; "
-        f"skipped for quota: {skipped_budget}; credits used: {credits}; remaining: {last_remaining}."
-    )
+    print(f"Wrote {len(raw):,} raw K quotes and {len(cons):,} no-vig consensus rows; checked {checked}/{len(events)} events; credits used: {credits}; remaining: {last_remaining}.")
 
 if __name__ == "__main__":
     main()
