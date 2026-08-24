@@ -1,6 +1,9 @@
 name: Pitcher K props
 
 on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/pitcher-k-props.yml']
   schedule:
     # 16:00 UTC = noon Eastern during MLB daylight-saving months.
     - cron: '0 16 * 4-10 *'
