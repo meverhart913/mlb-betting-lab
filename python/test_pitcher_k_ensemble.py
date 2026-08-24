@@ -27,11 +27,14 @@ def hgb(loss="squared_error", leaves=15, l2=3.0):
 
 def specialized_features(z: pd.DataFrame):
     all_feats = feature_cols(z)
-    # Opportunity/leash: prior BF, pitch count, outs, effectiveness, rest, opponent run environment.
+    # Opportunity/leash: prior workload, pitch efficiency, effectiveness, rest,
+    # and opponent ability to extend innings/create plate appearances.
     bf = [c for c in all_feats if any(k in c for k in (
-        "batters_faced", "pitches_", "outs_", "earned_runs_", "walks_", "hits_", "home_runs_", "days_rest", "opp_team_runs_"
+        "batters_faced", "pitches_", "outs_", "earned_runs_", "walks_", "hits_", "home_runs_", "days_rest",
+        "opp_team_runs_", "opp_team_walk_per_pa_", "opp_team_hits_per_ab_", "opp_team_pa_per_game_"
     ))]
-    # Strikeout rate: prior K skill plus opponent strikeout tendency. Keep workload variables out.
+    # Strikeout rate: prior K skill plus opponent strikeout tendency. Keep most
+    # opportunity variables out so BF and K-rate remain mechanically distinct.
     kr = [c for c in all_feats if any(k in c for k in (
         "k_rate_", "k_per_100_pitches_", "strikeouts_", "opp_team_k_per_"
     ))]
@@ -70,7 +73,6 @@ def main() -> None:
         y = z.loc[test, "strikeouts"].to_numpy(float)
 
         for w in (0.0, 0.25, 0.5, 0.75, 1.0):
-            # w=1 is pure specialized component; w=0 is pure direct model.
             mu = np.clip(w * component + (1.0 - w) * direct_hat, 0.05, None)
             rows.append({
                 "season": year, "component_weight": w, "starts": int(test.sum()),

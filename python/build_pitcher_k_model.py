@@ -1,8 +1,8 @@
 """Build and walk-forward test a starting-pitcher strikeout projection model.
 
 Target: strikeouts recorded by the starting pitcher. Features are strictly
-pregame: prior starter workload/performance plus opponent batting strikeout form
-from games before the target game.
+pregame: prior starter workload/performance plus opponent offensive form from
+games before the target game.
 """
 from __future__ import annotations
 
@@ -52,6 +52,7 @@ def build_table() -> pd.DataFrame:
         p[c] = pd.to_numeric(p[c], errors="coerce")
     p = p.sort_values(["pitcher_id", "date", "game_id"])
     p["days_rest"] = p.groupby("pitcher_id")["date"].diff().dt.days
+
     for w in PITCHER_WINDOWS:
         grp = p.groupby("pitcher_id", group_keys=False)
         minp = max(2, w // 2)
@@ -60,8 +61,11 @@ def build_table() -> pd.DataFrame:
         prev_k = grp["strikeouts"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
         prev_bf = grp["batters_faced"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
         prev_pitches = grp["pitches"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
+        prev_outs = grp["outs"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
         p[f"sp_k_rate_{w}"] = prev_k / prev_bf.replace(0, np.nan)
         p[f"sp_k_per_100_pitches_{w}"] = 100.0 * prev_k / prev_pitches.replace(0, np.nan)
+        p[f"sp_pitches_per_bf_{w}"] = prev_pitches / prev_bf.replace(0, np.nan)
+        p[f"sp_outs_per_bf_{w}"] = prev_outs / prev_bf.replace(0, np.nan)
 
     for c in ["strikeouts", "at_bats", "walks", "runs", "hits", "home_runs"]:
         t[c] = pd.to_numeric(t[c], errors="coerce")
@@ -74,10 +78,18 @@ def build_table() -> pd.DataFrame:
         k = grp["strikeouts"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
         ab = grp["at_bats"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
         bb = grp["walks"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
-        names = [f"team_k_per_ab_{w}", f"team_k_per_pa_{w}", f"team_runs_{w}"]
+        hits = grp["hits"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).sum())
+        pa_game = grp["at_bats"].transform(lambda x: (x + t.loc[x.index, "walks"]).shift(1).rolling(w, min_periods=minp).mean())
+        names = [
+            f"team_k_per_ab_{w}", f"team_k_per_pa_{w}", f"team_runs_{w}",
+            f"team_walk_per_pa_{w}", f"team_hits_per_ab_{w}", f"team_pa_per_game_{w}",
+        ]
         t[names[0]] = k / ab.replace(0, np.nan)
         t[names[1]] = k / (ab + bb).replace(0, np.nan)
         t[names[2]] = grp["runs"].transform(lambda x: x.shift(1).rolling(w, min_periods=minp).mean())
+        t[names[3]] = bb / (ab + bb).replace(0, np.nan)
+        t[names[4]] = hits / ab.replace(0, np.nan)
+        t[names[5]] = pa_game
         created_team_features.extend(names)
 
     ids = t[["game_id", "side", "team_id"]].drop_duplicates(["game_id", "side"])
