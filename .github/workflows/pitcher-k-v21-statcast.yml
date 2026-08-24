@@ -10,6 +10,7 @@ on:
       - 'python/backfill_statcast_pitch_features.py'
       - 'python/build_statcast_rolling_features.py'
       - 'python/test_pitcher_k_statcast_features.py'
+      - 'python/test_pitcher_k_statcast_placement.py'
       - 'python/backfill_batter_k_hand_splits.py'
       - 'python/build_batter_k_hand_rolling.py'
       - 'python/lookup_batter_k_hand_features.py'
@@ -55,7 +56,7 @@ jobs:
   test-statcast-challenger:
     needs: backfill-statcast
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -88,6 +89,8 @@ jobs:
         run: python python/build_statcast_rolling_features.py
       - name: Run walk-forward Statcast challenger
         run: python python/test_pitcher_k_statcast_features.py
+      - name: Run Statcast placement ablation
+        run: python python/test_pitcher_k_statcast_placement.py
       - name: Upload V2.1 research outputs
         uses: actions/upload-artifact@v4
         with:
@@ -98,4 +101,6 @@ jobs:
             outputs/pitcher_k_statcast_metrics.csv
             outputs/pitcher_k_statcast_predictions.csv
             outputs/pitcher_k_statcast_summary.csv
+            outputs/pitcher_k_statcast_placement_metrics.csv
+            outputs/pitcher_k_statcast_placement_summary.csv
           retention-days: 30
