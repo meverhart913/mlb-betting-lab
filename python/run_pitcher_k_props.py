@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from build_pitcher_k_model import build_table, feature_cols
+from build_pitcher_k_model import build_table
 from test_pitcher_k_ensemble import hgb, specialized_features
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,6 +76,14 @@ def schedule(day: str) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def innings_to_outs(v):
+    try:
+        parts=str(v).split(".",1); a=int(parts[0]); b=int(parts[1]) if len(parts)>1 else 0
+        return a*3+b if b in (0,1,2) else np.nan
+    except Exception:
+        return np.nan
+
+
 def live_features(slate: pd.DataFrame, target: pd.Timestamp) -> pd.DataFrame:
     p = pd.read_csv(DATA / "mlb_pitcher_game_logs.csv", low_memory=False)
     t = pd.read_csv(DATA / "mlb_team_game_logs.csv", low_memory=False)
@@ -88,6 +96,7 @@ def live_features(slate: pd.DataFrame, target: pd.Timestamp) -> pd.DataFrame:
         p[c]=pd.to_numeric(p[c], errors="coerce")
     for c in ["strikeouts","at_bats","walks","runs","hits","home_runs"]:
         t[c]=pd.to_numeric(t[c], errors="coerce")
+    p["outs"] = p["innings_pitched"].map(innings_to_outs)
 
     rows=[]
     for r in slate.itertuples(index=False):
@@ -95,30 +104,27 @@ def live_features(slate: pd.DataFrame, target: pd.Timestamp) -> pd.DataFrame:
         q=p[(p.pitcher_id==r.pitcher_id)&(p.is_starter==1)&(p.date<target)].sort_values(["date","game_id"])
         row["days_rest"]=(target-q.date.iloc[-1]).days if len(q) else np.nan
         for w in (3,5,10):
-            z=q.tail(w)
-            minp=max(2,w//2)
-            for c in ["strikeouts","walks","hits","earned_runs","home_runs","batters_faced","pitches"]:
+            z=q.tail(w); minp=max(2,w//2)
+            for c in ["strikeouts","walks","hits","earned_runs","home_runs","batters_faced","pitches","outs"]:
                 row[f"sp_{c}_{w}"]=z[c].mean() if len(z)>=minp else np.nan
-            outs=[]
-            for v in z.get("innings_pitched", pd.Series(dtype=object)):
-                try:
-                    parts=str(v).split(".",1); a=int(parts[0]); b=int(parts[1]) if len(parts)>1 else 0
-                    if b in (0,1,2): outs.append(a*3+b)
-                except Exception:
-                    pass
-            row[f"sp_outs_{w}"]=np.mean(outs) if len(outs)>=minp else np.nan
             if len(z)>=minp:
-                row[f"sp_k_rate_{w}"]=z.strikeouts.sum()/z.batters_faced.sum() if z.batters_faced.sum()>0 else np.nan
-                row[f"sp_k_per_100_pitches_{w}"]=100*z.strikeouts.sum()/z.pitches.sum() if z.pitches.sum()>0 else np.nan
+                bf=z.batters_faced.sum(); pitches=z.pitches.sum(); outs=z.outs.sum(); ks=z.strikeouts.sum()
+                row[f"sp_k_rate_{w}"]=ks/bf if bf>0 else np.nan
+                row[f"sp_k_per_100_pitches_{w}"]=100*ks/pitches if pitches>0 else np.nan
+                row[f"sp_pitches_per_bf_{w}"]=pitches/bf if bf>0 else np.nan
+                row[f"sp_outs_per_bf_{w}"]=outs/bf if bf>0 else np.nan
 
         o=t[(t.team_id==r.opponent_team_id)&(t.date<target)].sort_values(["date","game_id"])
         for w in (10,30):
             z=o.tail(w); minp=max(5,w//2)
             if len(z)>=minp:
-                row[f"opp_team_k_per_ab_{w}"]=z.strikeouts.sum()/z.at_bats.sum() if z.at_bats.sum()>0 else np.nan
-                denom=z.at_bats.sum()+z.walks.sum()
-                row[f"opp_team_k_per_pa_{w}"]=z.strikeouts.sum()/denom if denom>0 else np.nan
+                ab=z.at_bats.sum(); bb=z.walks.sum(); ks=z.strikeouts.sum(); hits=z.hits.sum(); pa=ab+bb
+                row[f"opp_team_k_per_ab_{w}"]=ks/ab if ab>0 else np.nan
+                row[f"opp_team_k_per_pa_{w}"]=ks/pa if pa>0 else np.nan
                 row[f"opp_team_runs_{w}"]=z.runs.mean()
+                row[f"opp_team_walk_per_pa_{w}"]=bb/pa if pa>0 else np.nan
+                row[f"opp_team_hits_per_ab_{w}"]=hits/ab if ab>0 else np.nan
+                row[f"opp_team_pa_per_game_{w}"]=(z.at_bats+z.walks).mean()
         rows.append(row)
     return pd.DataFrame(rows)
 
@@ -164,6 +170,9 @@ def main() -> None:
     if slate.empty:
         raise SystemExit(f"No probable MLB starters found for {day}.")
     live=live_features(slate, target)
+    missing=[c for c in all_feats if c not in live.columns]
+    if missing:
+        raise ValueError("Live pitcher K feature builder is missing: " + ", ".join(missing))
     bf_hat=np.clip(bf.predict(live[bf_feats]),5,40)
     kr_hat=np.clip(kr.predict(live[kr_feats]),0.02,0.55)
     component=np.clip(bf_hat*kr_hat,0.05,None)
