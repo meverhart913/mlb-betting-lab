@@ -27,6 +27,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Restore rolling odds history
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
+          key: odds-history-${{ github.run_id }}
+          restore-keys: |
+            odds-history-
+
       - name: Refresh recent MLB results and pitcher/team logs
         run: python python/refresh_recent_mlb.py --lookback-days 4
 
@@ -35,6 +45,24 @@ jobs:
 
       - name: Pull current sportsbook moneylines
         run: python python/fetch_morning_odds.py
+
+      - name: Capture bullpen workload context
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.game_date }}" ]; then
+            python python/fetch_bullpen_context.py --date "${{ inputs.game_date }}"
+          else
+            python python/fetch_bullpen_context.py
+          fi
+
+      - name: Capture roster and IL context
+        shell: bash
+        run: |
+          if [ -n "${{ inputs.game_date }}" ]; then
+            python python/fetch_roster_context.py --date "${{ inputs.game_date }}"
+          else
+            python python/fetch_roster_context.py
+          fi
 
       - name: Capture venue and weather context
         shell: bash
@@ -79,6 +107,12 @@ jobs:
             outputs/morning_model_predictions.csv
             data/current/morning_odds.csv
             data/current/morning_odds_raw.csv
+            data/current/odds_consensus_history.csv
+            data/current/odds_raw_history.csv
             data/current/morning_context.csv
+            data/current/bullpen_context.csv
+            data/current/roster_context.csv
+            data/current/injured_list_players.csv
+            data/current/recent_roster_transactions.csv
           if-no-files-found: warn
           retention-days: 30
