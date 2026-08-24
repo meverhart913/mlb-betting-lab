@@ -74,7 +74,6 @@ def main():
     t["home_win"] = t["home_win"].astype(int)
 
     base = [c for c in t.columns if c.startswith("diff_sp_") or c.startswith("diff_team_") and not c.endswith("rest_days")]
-    # Explicit list prevents accidental inclusion of the new rest columns in base.
     base = [c for c in base if c not in {"diff_team_rest_days", "diff_starter_rest_days"}]
     rest = [
         "home_team_rest_days", "away_team_rest_days", "diff_team_rest_days",
@@ -114,6 +113,8 @@ def main():
             & t["close_away_odds"].abs().between(100, 5000, inclusive="both")
         )
         train_idx = t.index[train_market]
+        if len(train_idx) < 500:
+            continue
         phtr = implied(t.loc[train_idx, "close_home_odds"]); patr = implied(t.loc[train_idx, "close_away_odds"])
         train_mp = pd.Series(phtr / (phtr + patr), index=train_idx)
         t.loc[train_idx, "market_logit_rest_test"] = logit(train_mp)
@@ -129,7 +130,8 @@ def main():
     results.to_csv(OUT / "rest_feature_walkforward.csv", index=False)
     summary = results.groupby("model", as_index=False).agg(seasons=("season","count"), mean_log_loss=("log_loss","mean"), mean_brier=("brier","mean"), mean_roc_auc=("roc_auc","mean")).sort_values("mean_log_loss")
     summary.to_csv(OUT / "rest_feature_summary.csv", index=False)
-    if pred_rows: pd.concat(pred_rows, ignore_index=True).to_csv(OUT / "rest_feature_predictions.csv", index=False)
+    if pred_rows:
+        pd.concat(pred_rows, ignore_index=True).to_csv(OUT / "rest_feature_predictions.csv", index=False)
     print("\nREST FEATURE SUMMARY")
     print(summary.round(5).to_string(index=False))
     print("\nREST FEATURE WALK-FORWARD")
