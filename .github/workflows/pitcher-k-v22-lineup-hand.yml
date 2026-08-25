@@ -30,7 +30,7 @@ jobs:
       - name: Backfill season matchup inputs
         shell: bash
         run: |
-          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-24"
+          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-25"
           python python/backfill_batter_k_hand_splits.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/batter_k_by_pitcher_hand_daily.csv "data/features/batter_hand_${{ matrix.year }}.csv"
           python python/backfill_historical_starting_lineups.py --start "${{ matrix.year }}-03-15" --end "$END"
@@ -52,7 +52,7 @@ jobs:
       - name: Backfill season Statcast pitcher features
         shell: bash
         run: |
-          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-24"
+          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-25"
           python python/backfill_statcast_pitch_features.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/statcast_pitcher_daily.csv "data/features/statcast_pitcher_${{ matrix.year }}.csv"
       - uses: actions/upload-artifact@v4
