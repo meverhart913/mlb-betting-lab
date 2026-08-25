@@ -9,30 +9,22 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      matrix:
-        year: [2021, 2022, 2023, 2024, 2025, 2026]
+      matrix: {year: [2021, 2022, 2023, 2024, 2025, 2026]}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.12', cache: pip}
       - run: pip install -r requirements.txt
-      - name: Backfill batter K by opposing hand
+      - name: Backfill season matchup inputs
         shell: bash
         run: |
           END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-24"
           python python/backfill_batter_k_hand_splits.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/batter_k_by_pitcher_hand_daily.csv "data/features/batter_hand_${{ matrix.year }}.csv"
-      - name: Backfill historical starting lineups
-        shell: bash
-        run: |
-          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-24"
           python python/backfill_historical_starting_lineups.py --start "${{ matrix.year }}-03-15" --end "$END"
           mv data/features/historical_starting_lineups.csv "data/features/lineups_${{ matrix.year }}.csv"
       - uses: actions/upload-artifact@v4
-        with:
-          name: v22-${{ matrix.year }}
-          path: data/features/*_${{ matrix.year }}.csv
-          retention-days: 7
+        with: {name: 'v22-${{ matrix.year }}', path: 'data/features/*_${{ matrix.year }}.csv', retention-days: 7}
   test-v22:
     needs: historical-data
     runs-on: ubuntu-latest
@@ -51,11 +43,13 @@ jobs:
           from pathlib import Path
           import pandas as pd
           Path('data/features').mkdir(parents=True,exist_ok=True)
-          for pat,out in [('batter_hand_*.csv','batter_k_by_pitcher_hand_daily.csv'),('lineups_*.csv','historical_starting_lineups.csv')]:
-              fs=list(Path('parts').rglob(pat)); z=pd.concat([pd.read_csv(f,low_memory=False) for f in fs],ignore_index=True); z.to_csv('data/features/'+out,index=False); print(out,len(z))
+          for pat,out,keys in [('batter_hand_*.csv','batter_k_by_pitcher_hand_daily.csv',['game_date','batter_id','pitcher_hand']),('lineups_*.csv','historical_starting_lineups.csv',['game_pk','team_id','batting_order'])]:
+              fs=list(Path('parts').rglob(pat)); z=pd.concat([pd.read_csv(f,low_memory=False) for f in fs],ignore_index=True); z=z.drop_duplicates(keys,keep='last'); z.to_csv('data/features/'+out,index=False); print(out,len(z))
           PY
       - run: python python/build_batter_k_hand_rolling.py
       - run: python python/backfill_pitcher_handedness.py --start 2021-03-15 --end 2026-08-24 --chunk-days 3 --sleep-seconds .2
+      - name: Build opponent-specific historical lineup features
+        run: python python/build_historical_lineup_hand_features.py
       - name: Restore validated Statcast rolling features
         run: |
           python python/backfill_statcast_pitch_features.py --start 2021-03-15 --end 2026-08-24 --chunk-days 3 --sleep-seconds .2
@@ -67,6 +61,7 @@ jobs:
           path: |
             data/features/pitcher_handedness.csv
             data/features/historical_starting_lineups.csv
+            data/features/historical_lineup_hand_features.csv
             data/features/batter_k_by_pitcher_hand_pregame.csv
             outputs/pitcher_k_batter_hand_metrics.csv
             outputs/pitcher_k_batter_hand_summary.csv
