@@ -2,6 +2,18 @@ name: Pitcher K V2.2 lineup handedness research
 on:
   push:
     branches: [pitcher-k-v22-lineup-hand, pitcher-k-v22-market-validation]
+    paths:
+      - '.github/workflows/pitcher-k-v22-lineup-hand.yml'
+      - 'python/backfill_batter_k_hand_splits.py'
+      - 'python/backfill_historical_starting_lineups.py'
+      - 'python/backfill_pitcher_handedness.py'
+      - 'python/backfill_statcast_pitch_features.py'
+      - 'python/build_batter_k_hand_rolling.py'
+      - 'python/build_statcast_rolling_features.py'
+      - 'python/build_historical_lineup_hand_features.py'
+      - 'python/test_pitcher_k_batter_hand_features.py'
+      - 'python/build_pitcher_k_model.py'
+      - 'python/test_pitcher_k_ensemble.py'
   workflow_dispatch:
 jobs:
   historical-data:
