@@ -1,7 +1,7 @@
 name: Pitcher K V2.2 lineup handedness research
 on:
   push:
-    branches: [pitcher-k-v22-lineup-hand]
+    branches: [pitcher-k-v22-lineup-hand, pitcher-k-v22-market-validation]
   workflow_dispatch:
 jobs:
   historical-data:
@@ -98,4 +98,5 @@ jobs:
             data/features/statcast_pitcher_pregame.csv
             outputs/pitcher_k_batter_hand_metrics.csv
             outputs/pitcher_k_batter_hand_summary.csv
+            outputs/pitcher_k_batter_hand_predictions.csv
           retention-days: 30
