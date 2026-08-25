@@ -1,0 +1,52 @@
+name: Pitcher K free market grade
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pitcher-k-free-market-grade.yml'
+      - 'python/grade_free_pitcher_k_archive.py'
+  schedule:
+    - cron: '30 10 * 4-10 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Refresh completed MLB results
+        run: python python/refresh_recent_mlb.py --lookback-days 3
+      - name: Grade accumulated free pitcher-K archive
+        run: python python/grade_free_pitcher_k_archive.py
+      - name: Commit refreshed results and grading
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/mlb_games_2018_present.csv data/mlb_game_enrichment.csv data/mlb_pitcher_game_logs.csv data/mlb_team_game_logs.csv data/market/free_pitcher_k_archive_graded.csv outputs/free_pitcher_k_archive_status.csv
+          if git diff --cached --quiet; then
+            echo 'No grading changes to commit.'
+          else
+            git commit -m 'Refresh and grade free pitcher K archive'
+            git push origin main
+          fi
+      - name: Write summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Free pitcher-K archive grading' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f outputs/free_pitcher_k_archive_status.csv ]; then
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/free_pitcher_k_archive_status.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
