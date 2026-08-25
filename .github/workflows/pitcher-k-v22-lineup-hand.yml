@@ -1,7 +1,19 @@
 name: Pitcher K V2.2 lineup handedness research
 on:
   push:
-    branches: [pitcher-k-v22-lineup-hand]
+    branches: [pitcher-k-v22-lineup-hand, pitcher-k-v22-market-validation]
+    paths:
+      - '.github/workflows/pitcher-k-v22-lineup-hand.yml'
+      - 'python/backfill_batter_k_hand_splits.py'
+      - 'python/backfill_historical_starting_lineups.py'
+      - 'python/backfill_pitcher_handedness.py'
+      - 'python/backfill_statcast_pitch_features.py'
+      - 'python/build_batter_k_hand_rolling.py'
+      - 'python/build_statcast_rolling_features.py'
+      - 'python/build_historical_lineup_hand_features.py'
+      - 'python/test_pitcher_k_batter_hand_features.py'
+      - 'python/build_pitcher_k_model.py'
+      - 'python/test_pitcher_k_ensemble.py'
   workflow_dispatch:
 jobs:
   historical-data:
@@ -18,7 +30,7 @@ jobs:
       - name: Backfill season matchup inputs
         shell: bash
         run: |
-          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-24"
+          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-25"
           python python/backfill_batter_k_hand_splits.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/batter_k_by_pitcher_hand_daily.csv "data/features/batter_hand_${{ matrix.year }}.csv"
           python python/backfill_historical_starting_lineups.py --start "${{ matrix.year }}-03-15" --end "$END"
@@ -40,7 +52,7 @@ jobs:
       - name: Backfill season Statcast pitcher features
         shell: bash
         run: |
-          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-24"
+          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-25"
           python python/backfill_statcast_pitch_features.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/statcast_pitcher_daily.csv "data/features/statcast_pitcher_${{ matrix.year }}.csv"
       - uses: actions/upload-artifact@v4
@@ -98,4 +110,5 @@ jobs:
             data/features/statcast_pitcher_pregame.csv
             outputs/pitcher_k_batter_hand_metrics.csv
             outputs/pitcher_k_batter_hand_summary.csv
+            outputs/pitcher_k_batter_hand_predictions.csv
           retention-days: 30

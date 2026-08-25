@@ -1,0 +1,69 @@
+name: Pitcher K free market smoke test
+
+on:
+  push:
+    branches: [pitcher-k-v22-market-validation]
+    paths:
+      - 'python/fetch_propline_sample.py'
+      - 'python/backtest_pitcher_k_market.py'
+      - '.github/workflows/pitcher-k-free-market-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Download latest successful V2.2 research artifact
+        shell: bash
+        run: |
+          RUN_ID="$(gh run list --workflow 'Pitcher K V2.2 lineup handedness research' --branch pitcher-k-v22-market-validation --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo 'No successful V2.2 research run found on this branch.'
+            exit 1
+          fi
+          echo "Using V2.2 run $RUN_ID"
+          mkdir -p v22_artifact
+          gh run download "$RUN_ID" -n pitcher-k-v22-results -D v22_artifact
+          mkdir -p outputs
+          cp v22_artifact/outputs/pitcher_k_batter_hand_predictions.csv outputs/
+      - name: Fetch free PropLine pitcher-K sample
+        run: python python/fetch_propline_sample.py
+      - name: Run free market overlap smoke test
+        run: python python/backtest_pitcher_k_market.py
+      - name: Write summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Free pitcher-K market smoke test' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f outputs/pitcher_k_market_threshold_summary.csv ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/pitcher_k_market_threshold_summary.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'No matched market summary was produced. Inspect the prior step for sample coverage/schema details.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pitcher-k-free-market-smoke-${{ github.run_id }}
+          path: |
+            data/market/pitcher_k_historical_raw.csv
+            outputs/pitcher_k_market_graded.csv
+            outputs/pitcher_k_market_threshold_summary.csv
+            outputs/pitcher_k_market_year_summary.csv
+          if-no-files-found: warn
+          retention-days: 30

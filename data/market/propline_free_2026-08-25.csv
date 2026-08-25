@@ -1,0 +1,11 @@
+date,pitcher_name,line,side,price,sportsbook,event_id,snapshot_time_et,source
+2026-08-25,Chase Burns,6.5,over,105,underdog,160989,2026-08-25T00:54:27.703236+00:00,propline_free_sample
+2026-08-25,Chase Burns,6.5,under,-143,underdog,160989,2026-08-25T00:54:27.703236+00:00,propline_free_sample
+2026-08-25,Chase Burns,6.5,over,-105,dabble,160989,2026-08-24T23:47:41.862417+00:00,propline_free_sample
+2026-08-25,Chase Burns,6.5,under,107,dabble,160989,2026-08-25T01:38:03.422558+00:00,propline_free_sample
+2026-08-25,Chase Burns,6.5,over,-125,smarkets,160989,2026-08-24T23:49:44.629814+00:00,propline_free_sample
+2026-08-25,Chase Burns,6.5,under,-111,smarkets,160989,2026-08-25T01:41:46.264704+00:00,propline_free_sample
+2026-08-25,Chase Burns,6.5,over,100,prizepicks,160989,2026-08-24T02:09:06.416203+00:00,propline_free_sample
+2026-08-25,Chase Burns,6.5,under,100,prizepicks,160989,2026-08-24T02:09:06.416203+00:00,propline_free_sample
+2026-08-25,Chase Burns,9.5,over,100,prizepicks,160989,2026-08-24T02:09:06.416203+00:00,propline_free_sample
+2026-08-25,Chase Burns,9.5,under,100,prizepicks,160989,2026-08-24T02:09:06.416203+00:00,propline_free_sample

@@ -1,0 +1,49 @@
+name: Pitcher K free market archive
+
+on:
+  push:
+    branches: [pitcher-k-v22-market-validation]
+    paths: ['.github/workflows/pitcher-k-free-market-archive.yml']
+  schedule:
+    - cron: '30 15 * 4-10 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pitcher-k-v22-market-validation
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Fetch free PropLine pitcher-K sample
+        run: python python/fetch_propline_sample.py
+      - name: Archive normalized sample
+        shell: bash
+        run: |
+          DAY="$(python - <<'PY'
+          import pandas as pd
+          p='data/market/pitcher_k_historical_raw.csv'
+          d=pd.read_csv(p)
+          print(str(pd.to_datetime(d['date']).dt.date.max()))
+          PY
+          )"
+          mkdir -p data/market/free_archive
+          cp data/market/pitcher_k_historical_raw.csv "data/market/free_archive/propline_pitcher_k_${DAY}.csv"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/market/free_archive/
+          if git diff --cached --quiet; then
+            echo 'No new market archive changes.'
+          else
+            git commit -m "Archive free PropLine pitcher K sample ${DAY}"
+            git push origin HEAD:pitcher-k-v22-market-validation
+          fi
