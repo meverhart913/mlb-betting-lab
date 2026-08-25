@@ -25,6 +25,7 @@ DATA.mkdir(parents=True, exist_ok=True)
 OUT = DATA / "statcast_pitcher_daily.csv"
 BASE = "https://baseballsavant.mlb.com/statcast_search/csv"
 MAX_SAFE_RESPONSE_ROWS = 30000
+MAX_FETCH_ATTEMPTS = 5
 
 SWING_DESCRIPTIONS = {
     "swinging_strike", "swinging_strike_blocked", "foul", "foul_tip",
@@ -50,18 +51,34 @@ def fetch_chunk(start: date, end: date) -> pd.DataFrame:
         "game_date_lt": end.isoformat(),
         "hfGT": "R|",
     }
-    r = requests.get(BASE, params=params, timeout=120)
-    r.raise_for_status()
-    text = r.text.strip()
-    if not text:
-        return pd.DataFrame()
-    df = pd.read_csv(StringIO(text), low_memory=False)
-    if len(df) >= MAX_SAFE_RESPONSE_ROWS:
-        raise RuntimeError(
-            f"Statcast returned {len(df):,} pitch rows for {start} through {end}; "
-            "query may be truncated. Reduce --chunk-days before trusting this backfill."
-        )
-    return df
+    last_error = None
+    for attempt in range(1, MAX_FETCH_ATTEMPTS + 1):
+        try:
+            r = requests.get(BASE, params=params, timeout=120)
+            r.raise_for_status()
+            text = r.text.strip()
+            if not text:
+                return pd.DataFrame()
+            df = pd.read_csv(StringIO(text), low_memory=False)
+            if len(df) >= MAX_SAFE_RESPONSE_ROWS:
+                raise RuntimeError(
+                    f"Statcast returned {len(df):,} pitch rows for {start} through {end}; "
+                    "query may be truncated. Reduce --chunk-days before trusting this backfill."
+                )
+            return df
+        except (requests.RequestException, pd.errors.ParserError) as exc:
+            last_error = exc
+            if attempt == MAX_FETCH_ATTEMPTS:
+                break
+            delay = min(5 * (2 ** (attempt - 1)), 60)
+            print(
+                f"Transient Statcast failure for {start} through {end} "
+                f"(attempt {attempt}/{MAX_FETCH_ATTEMPTS}): {exc}. Retrying in {delay}s..."
+            )
+            time.sleep(delay)
+    raise RuntimeError(
+        f"Statcast fetch failed for {start} through {end} after {MAX_FETCH_ATTEMPTS} attempts"
+    ) from last_error
 
 
 def aggregate(raw: pd.DataFrame) -> pd.DataFrame:
