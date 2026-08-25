@@ -29,7 +29,7 @@ def chunks(start: date, end: date, days: int):
         cur = hi + timedelta(days=1)
 
 
-def fetch_chunk(start: date, end: date) -> pd.DataFrame:
+def fetch_chunk(start: date, end: date, retries: int = 5) -> pd.DataFrame:
     params = {
         "all": "true",
         "type": "batter",
@@ -38,10 +38,21 @@ def fetch_chunk(start: date, end: date) -> pd.DataFrame:
         "game_date_lt": end.isoformat(),
         "hfGT": "R|",
     }
-    r = requests.get(BASE, params=params, timeout=120)
-    r.raise_for_status()
-    text = r.text.strip()
-    return pd.read_csv(StringIO(text), low_memory=False) if text else pd.DataFrame()
+    last = None
+    for attempt in range(1, retries + 1):
+        try:
+            r = requests.get(BASE, params=params, timeout=120)
+            r.raise_for_status()
+            text = r.text.strip()
+            return pd.read_csv(StringIO(text), low_memory=False) if text else pd.DataFrame()
+        except (requests.RequestException, OSError) as exc:
+            last = exc
+            if attempt >= retries:
+                break
+            wait = min(30, 2 ** attempt)
+            print(f"WARN Statcast fetch failed for {start}..{end} attempt {attempt}/{retries}: {exc}; retrying in {wait}s", flush=True)
+            time.sleep(wait)
+    raise RuntimeError(f"Statcast fetch failed after {retries} attempts for {start}..{end}: {last}")
 
 
 def aggregate(raw: pd.DataFrame) -> pd.DataFrame:
@@ -59,8 +70,6 @@ def aggregate(raw: pd.DataFrame) -> pd.DataFrame:
     z["p_throws"] = z["p_throws"].astype(str).str.upper()
     z = z[z["game_date"].notna() & z["batter"].notna() & z["p_throws"].isin(["L", "R"])].copy()
 
-    # Statcast repeats PA-level event across pitches only at the terminal pitch; selecting
-    # non-null events leaves one row per completed plate appearance.
     pa = z[z["events"].notna() & z["at_bat_number"].notna()].copy()
     pa = pa.drop_duplicates(["game_date", "batter", "at_bat_number"], keep="last")
     pa["is_k"] = pa["events"].isin(["strikeout", "strikeout_double_play"]).astype(int)
@@ -94,6 +103,7 @@ def main() -> None:
     ap.add_argument("--end", required=True)
     ap.add_argument("--chunk-days", type=int, default=14)
     ap.add_argument("--sleep-seconds", type=float, default=0.5)
+    ap.add_argument("--retries", type=int, default=5)
     args = ap.parse_args()
     start = date.fromisoformat(args.start)
     end = date.fromisoformat(args.end)
@@ -102,8 +112,8 @@ def main() -> None:
 
     parts = []
     for lo, hi in chunks(start, end, args.chunk_days):
-        print(f"Fetching batter handedness Statcast {lo} through {hi}...")
-        part = aggregate(fetch_chunk(lo, hi))
+        print(f"Fetching batter handedness Statcast {lo} through {hi}...", flush=True)
+        part = aggregate(fetch_chunk(lo, hi, retries=max(1, args.retries)))
         if not part.empty:
             parts.append(part)
         time.sleep(max(args.sleep_seconds, 0))
