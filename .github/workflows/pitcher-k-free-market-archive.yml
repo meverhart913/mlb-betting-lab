@@ -2,10 +2,12 @@ name: Pitcher K free market archive
 
 on:
   push:
-    branches: [pitcher-k-v22-market-validation]
+    branches: [main]
     paths: ['.github/workflows/pitcher-k-free-market-archive.yml']
   schedule:
-    - cron: '30 15 * 4-10 *'
+    # Four snapshots per MLB day during the regular season. UTC times roughly
+    # correspond to late morning through evening US Eastern during DST.
+    - cron: '30 14,17,20,23 * 4-10 *'
   workflow_dispatch:
 
 permissions:
@@ -18,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: pitcher-k-v22-market-validation
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -29,21 +31,24 @@ jobs:
       - name: Archive normalized sample
         shell: bash
         run: |
-          DAY="$(python - <<'PY'
+          read DAY STAMP <<< "$(python - <<'PY'
           import pandas as pd
+          from datetime import datetime, timezone
           p='data/market/pitcher_k_historical_raw.csv'
           d=pd.read_csv(p)
-          print(str(pd.to_datetime(d['date']).dt.date.max()))
+          day=str(pd.to_datetime(d['date']).dt.date.max())
+          stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+          print(day, stamp)
           PY
           )"
-          mkdir -p data/market/free_archive
-          cp data/market/pitcher_k_historical_raw.csv "data/market/free_archive/propline_pitcher_k_${DAY}.csv"
+          mkdir -p "data/market/free_archive/${DAY}"
+          cp data/market/pitcher_k_historical_raw.csv "data/market/free_archive/${DAY}/propline_pitcher_k_${STAMP}.csv"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/market/free_archive/
           if git diff --cached --quiet; then
             echo 'No new market archive changes.'
           else
-            git commit -m "Archive free PropLine pitcher K sample ${DAY}"
-            git push origin HEAD:pitcher-k-v22-market-validation
+            git commit -m "Archive free PropLine pitcher K sample ${DAY} ${STAMP}"
+            git push origin HEAD:main
           fi
