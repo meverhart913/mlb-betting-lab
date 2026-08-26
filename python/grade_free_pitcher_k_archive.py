@@ -25,7 +25,11 @@ def norm_name(v) -> str:
 
 
 def main() -> None:
-    files = sorted(ARCHIVE.glob("propline_pitcher_k_*.csv"))
+    # Archive snapshots are stored both as legacy root-level daily files and as
+    # timestamped files inside YYYY-MM-DD subdirectories. Search recursively so
+    # every preserved snapshot is graded rather than silently ignoring the
+    # timestamped archive that powers line-movement analysis.
+    files = sorted(ARCHIVE.rglob("propline_pitcher_k_*.csv"))
     if not files:
         raise SystemExit("No archived free PropLine pitcher-K files found.")
     if not PITCHERS.exists():
@@ -34,7 +38,7 @@ def main() -> None:
     parts = []
     for f in files:
         z = pd.read_csv(f, low_memory=False)
-        z["archive_file"] = f.name
+        z["archive_file"] = str(f.relative_to(ARCHIVE))
         parts.append(z)
     market = pd.concat(parts, ignore_index=True, sort=False)
     market["date"] = pd.to_datetime(market["date"], errors="coerce").dt.normalize()
