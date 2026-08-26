@@ -6,6 +6,8 @@ on:
     paths:
       - 'python/redteam_pitcher_k_market.py'
       - '.github/workflows/pitcher-k-market-redteam.yml'
+  schedule:
+    - cron: '30 14 * 3-10 *'
   workflow_dispatch:
 
 permissions:
@@ -45,7 +47,8 @@ jobs:
         if: always()
         shell: bash
         run: |
-          echo '## Pitcher K market red-team' >> "$GITHUB_STEP_SUMMARY"
+          echo '## FanDuel-primary pitcher K validation' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Headline interpretation: FanDuel only, one selected alt-K wager per pitcher start.' >> "$GITHUB_STEP_SUMMARY"
           if [ -f outputs/pitcher_k_market_redteam_summary.csv ]; then
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             cat outputs/pitcher_k_market_redteam_summary.csv >> "$GITHUB_STEP_SUMMARY"
