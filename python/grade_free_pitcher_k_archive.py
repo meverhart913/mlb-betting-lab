@@ -1,8 +1,9 @@
-"""Grade accumulated free pitcher-K market snapshots against completed MLB starts.
+"""Grade accumulated free pitcher-K market snapshots against completed MLB appearances.
 
 This does not evaluate model profitability. It attaches actual strikeouts to every
 archived quote once the game is final so the market history is permanently ready
-for later V2.2/V2.x backtests.
+for later V2.2/V2.x backtests. Starter eligibility is preserved separately for
+model matching instead of blocking outcome grading.
 """
 from __future__ import annotations
 
@@ -25,10 +26,6 @@ def norm_name(v) -> str:
 
 
 def main() -> None:
-    # Archive snapshots are stored both as legacy root-level daily files and as
-    # timestamped files inside YYYY-MM-DD subdirectories. Search recursively so
-    # every preserved snapshot is graded rather than silently ignoring the
-    # timestamped archive that powers line-movement analysis.
     files = sorted(ARCHIVE.rglob("propline_pitcher_k_*.csv"))
     if not files:
         raise SystemExit("No archived free PropLine pitcher-K files found.")
@@ -48,12 +45,19 @@ def main() -> None:
 
     p = pd.read_csv(PITCHERS, low_memory=False)
     p["date"] = pd.to_datetime(p["date"], errors="coerce").dt.normalize()
-    p["is_starter"] = pd.to_numeric(p.get("is_starter"), errors="coerce").fillna(0)
+    p["is_starter"] = pd.to_numeric(p.get("is_starter"), errors="coerce").fillna(0).astype(int)
     p["strikeouts"] = pd.to_numeric(p["strikeouts"], errors="coerce")
     p["name_key"] = p["pitcher_name"].map(norm_name)
-    p = p[p.is_starter.eq(1) & p.strikeouts.notna()].copy()
-    results = p[[c for c in ["date", "name_key", "game_id", "pitcher_id", "pitcher_name", "strikeouts"] if c in p.columns]].copy()
-    results = results.rename(columns={"pitcher_name": "mlb_pitcher_name", "strikeouts": "actual_k"})
+    # Grade any pitcher who actually appeared. V2.2 eligibility remains a later
+    # filter because the model itself only generates starting-pitcher forecasts.
+    p = p[p.strikeouts.notna()].copy()
+    result_cols = ["date", "name_key", "game_id", "pitcher_id", "pitcher_name", "strikeouts", "is_starter"]
+    results = p[[c for c in result_cols if c in p.columns]].copy()
+    results = results.rename(columns={
+        "pitcher_name": "mlb_pitcher_name",
+        "strikeouts": "actual_k",
+        "is_starter": "mlb_is_starter",
+    })
     results = results.drop_duplicates(["date", "name_key"], keep="last")
 
     g = market.merge(results, on=["date", "name_key"], how="left")
@@ -69,8 +73,6 @@ def main() -> None:
     g.loc[win, "market_result"] = "WIN"
     g.loc[loss, "market_result"] = "LOSS"
 
-    # Identical rows can recur when successive snapshots have not moved. Preserve
-    # distinct snapshot timestamps, but remove exact duplicate archive copies.
     keys = [c for c in ["date", "pitcher_name", "line", "side", "price", "sportsbook", "event_id", "snapshot_time_et"] if c in g.columns]
     if keys:
         g = g.drop_duplicates(keys, keep="last")
@@ -85,6 +87,7 @@ def main() -> None:
         "unique_dates": int(g.date.nunique()),
         "unique_pitchers": int(g.name_key.nunique()),
         "graded_rows": int(g.actual_k.notna().sum()),
+        "starter_graded_rows": int((g.actual_k.notna() & pd.to_numeric(g.get("mlb_is_starter"), errors="coerce").eq(1)).sum()),
         "pending_rows": int(g.actual_k.isna().sum()),
         "earliest_date": g.date.min().date() if len(g) else None,
         "latest_date": g.date.max().date() if len(g) else None,
