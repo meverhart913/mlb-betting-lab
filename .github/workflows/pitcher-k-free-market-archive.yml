@@ -5,9 +5,10 @@ on:
     branches: [main]
     paths: ['.github/workflows/pitcher-k-free-market-archive.yml']
   schedule:
-    # Four snapshots per MLB day during the regular season. UTC times roughly
-    # correspond to late morning through evening US Eastern during DST.
-    - cron: '30 14,17,20,23 * 4-10 *'
+    # Hourly snapshots from late morning through late evening Eastern during DST.
+    # This improves pregame timing coverage and gives us useful FanDuel CLV paths
+    # while remaining far below the free sample request allowance.
+    - cron: '30 0-2,14-23 * 4-10 *'
   workflow_dispatch:
 
 permissions:
