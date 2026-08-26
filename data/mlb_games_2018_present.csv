@@ -20326,14 +20326,14 @@ season,game_id,date,game_datetime,away_team,home_team,away_score,home_score,away
 2026,824962,2026-08-25,2026-08-26T01:40:00Z,Minnesota Twins,Athletics,2.0,4.0,64,69,52,81,Taj Bradley,Gage Jump,Sutter Health Park,Final,Regular Season,1,Athletics,1.0
 2026,823098,2026-08-25,2026-08-26T01:40:00Z,Philadelphia Phillies,Seattle Mariners,1.0,4.0,73,60,64,69,Aaron Nola,George Kirby,T-Mobile Park,Final,Regular Season,1,Seattle Mariners,1.0
 2026,823181,2026-08-25,2026-08-26T01:45:00Z,Cincinnati Reds,San Francisco Giants,1.0,3.0,62,71,54,78,Brady Singer,Adrian Houser,Oracle Park,Final,Regular Season,1,San Francisco Giants,1.0
-2026,824234,2026-08-26,2026-08-26T17:10:00Z,Tampa Bay Rays,Detroit Tigers,0.0,0.0,78,54,62,70,Freddy Peralta,Troy Melton,Comerica Park,In Progress,Regular Season,1,,
-2026,825039,2026-08-26,2026-08-26T19:40:00Z,Chicago Cubs,Arizona Diamondbacks,,,76,57,70,63,Matthew Boyd,Eduardo Rodriguez,Chase Field,Scheduled,Regular Season,1,,
+2026,824234,2026-08-26,2026-08-26T17:10:00Z,Tampa Bay Rays,Detroit Tigers,3.0,0.0,78,54,62,70,Freddy Peralta,Troy Melton,Comerica Park,In Progress,Regular Season,1,Tampa Bay Rays,0.0
+2026,825039,2026-08-26,2026-08-26T19:40:00Z,Chicago Cubs,Arizona Diamondbacks,0.0,0.0,76,57,70,63,Matthew Boyd,Eduardo Rodriguez,Chase Field,Pre-Game,Regular Season,1,,
 2026,823180,2026-08-26,2026-08-26T19:45:00Z,Cincinnati Reds,San Francisco Giants,0.0,0.0,62,71,54,78,Nick Lodolo,Logan Webb,Oracle Park,Pre-Game,Regular Season,1,,
-2026,823988,2026-08-26,2026-08-26T20:07:00Z,Cleveland Guardians,Los Angeles Angels,,,67,66,52,81,Joey Cantillo,Grayson Rodriguez,Angel Stadium,Scheduled,Regular Season,1,,
-2026,823255,2026-08-26,2026-08-26T20:10:00Z,Pittsburgh Pirates,San Diego Padres,,,65,69,71,62,Bubba Chandler,Randy Vásquez,Petco Park,Pre-Game,Regular Season,1,,
-2026,823096,2026-08-26,2026-08-26T20:10:00Z,Philadelphia Phillies,Seattle Mariners,,,73,60,64,69,Jesús Luzardo,Bryan Woo,T-Mobile Park,Scheduled,Regular Season,1,,
+2026,823988,2026-08-26,2026-08-26T20:07:00Z,Cleveland Guardians,Los Angeles Angels,,,67,66,52,81,Joey Cantillo,Grayson Rodriguez,Angel Stadium,Pre-Game,Regular Season,1,,
+2026,823255,2026-08-26,2026-08-26T20:10:00Z,Pittsburgh Pirates,San Diego Padres,0.0,0.0,65,69,71,62,Bubba Chandler,Randy Vásquez,Petco Park,Pre-Game,Regular Season,1,,
+2026,823096,2026-08-26,2026-08-26T20:10:00Z,Philadelphia Phillies,Seattle Mariners,0.0,0.0,73,60,64,69,Jesús Luzardo,Bryan Woo,T-Mobile Park,Pre-Game,Regular Season,1,,
 2026,823825,2026-08-26,2026-08-26T22:40:00Z,Boston Red Sox,Miami Marlins,,,73,59,67,66,Sonny Gray,Ryan Gusto,loanDepot park,Scheduled,Regular Season,1,,
-2026,822692,2026-08-26,2026-08-26T22:45:00Z,Colorado Rockies,Washington Nationals,,,51,81,62,72,Tanner Gordon,Matt Waldron,Nationals Park,Scheduled,Regular Season,1,,
+2026,822692,2026-08-26,2026-08-26T22:45:00Z,Colorado Rockies,Washington Nationals,,,51,81,62,72,Tanner Gordon,Matt Waldron,Nationals Park,Pre-Game,Regular Season,1,,
 2026,823506,2026-08-26,2026-08-26T23:05:00Z,Houston Astros,New York Yankees,,,66,66,74,57,Peter Lambert,Elmer Rodríguez,Yankee Stadium,Scheduled,Regular Season,1,,
 2026,822772,2026-08-26,2026-08-26T23:07:00Z,Kansas City Royals,Toronto Blue Jays,,,59,74,64,69,Randy Dobnak,Spencer Miles,Rogers Centre,Scheduled,Regular Season,1,,
 2026,823584,2026-08-26,2026-08-26T23:10:00Z,Milwaukee Brewers,New York Mets,,,81,51,60,72,Dustin May,Robert Stock,Citi Field,Scheduled,Regular Season,1,,
