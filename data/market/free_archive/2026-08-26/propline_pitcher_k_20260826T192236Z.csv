@@ -1,0 +1,643 @@
+date,commence_time_utc,pitcher_name,line,side,price,sportsbook,event_id,home_team,away_team,snapshot_time_et,source
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,104,fanduel,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:06:23.365690+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-132,fanduel,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:06:23.365690+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-170,fanduel,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:27:32.359630+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,132,fanduel,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:27:32.359630+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,5.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,5.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,5.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,5.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,6.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,6.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,6.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,6.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,7.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,7.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,8.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,8.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,2.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,2.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,2.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,2.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,3.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,3.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T00:28:34.231118+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,-114,sleeper,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:57:45.936869+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-145,sleeper,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:57:45.936869+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,120,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:08:59.237730+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-122,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:08:59.237730+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta (TB),4.5,over,100,bovada,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:36:30.621535+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta (TB),4.5,under,-130,bovada,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:36:30.621535+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton (DET),3.5,over,-170,bovada,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:24:17.523600+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton (DET),3.5,under,130,bovada,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:24:17.523600+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,7.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T01:07:48.455370+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,7.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T01:07:48.455370+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-141,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:00:17.997573+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,135,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:57:23.385075+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,105,pinnacle,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:56:27.901680+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-140,pinnacle,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:56:27.901680+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-170,pinnacle,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:57:07.573736+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,127,pinnacle,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:57:07.573736+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,-220,prophetx,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:07:00.131804+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-530,prophetx,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:00:29.394717+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-102,prophetx,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:42:59.377462+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,-160,prophetx,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:05:01.744261+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-200,sleeper,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:04:14.899343+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,116,sleeper,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:04:14.899343+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,103,underdog,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:06:10.580767+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-159,underdog,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:52:53.876566+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-139,underdog,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:06:10.580767+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,121,underdog,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:52:53.876566+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,118,dabble,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:02:01.197787+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-137,dabble,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:01:19.175529+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-116,dabble,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:50:49.863181+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,138,dabble,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:01:19.175529+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,-101,smarkets,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:56:48.918886+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-137,smarkets,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:53:18.669997+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-161,smarkets,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:53:18.669997+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,114,smarkets,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:53:18.669997+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,over,163,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:06:45.847966+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,under,-170,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:08:59.237730+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,over,136,draftkings,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:49:51.391305+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,under,-174,draftkings,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:49:51.391305+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,1.5,over,-2400,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T09:54:11.377210+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,2.5,over,-1011,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T10:58:31.849184+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-809,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:18:56.376551+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:20:34.200219+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,5.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:06:36.592850+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,6.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:44:53.535365+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,7.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:06:18.151482+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:18:56.376551+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,2.5,under,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T10:58:31.849184+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,under,-1567,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:20:34.200219+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,5.5,under,-4900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:08:46.251304+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,6.5,under,-9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:32:36.886321+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,7.5,under,-9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:02:08.473635+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,1.5,under,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T10:30:16.454944+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,-102,draftkings,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:03:59.107170+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-125,draftkings,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:03:59.107170+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,-111,onexbet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:54:50.333941+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-169,onexbet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:48:22.059940+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-116,onexbet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:54:50.333941+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,130,onexbet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:48:22.059940+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,over,-170,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:35:11.446500+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,3.5,under,122,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:35:11.446500+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,111,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:09:13.391482+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-154,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:09:13.391482+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,over,-205,prophetx,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:06:15.914459+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,under,132,prophetx,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:06:15.914459+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,1.5,over,-4900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:40:33.862194+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,2.5,over,-4900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:34:24.794944+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,3.5,over,-4900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:14:38.234176+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:04:23.555975+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,5.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:38:37.014297+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,6.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:08:46.251304+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,7.5,over,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:22:37.722343+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,2.5,under,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:06:36.592850+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,3.5,under,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:14:38.234176+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-1567,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:59:52.503106+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,5.5,under,-1329,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:38:37.014297+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,6.5,under,-4900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:08:46.251304+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,7.5,under,-9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:06:36.592850+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,1.5,under,9900,kalshi,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:40:33.862194+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,-104,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T13:23:54.601628+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,over,117,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T13:01:16.764641+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-133,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T13:23:54.601628+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,under,-163,rebet,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T13:01:16.764641+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,100,betmgm,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:02:36.505459+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,-135,betmgm,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T17:02:36.505459+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,5.5,over,130,betmgm,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T11:51:29.414048+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,5.5,under,-175,betmgm,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T11:51:29.414048+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,2.5,over,-317,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:28:54.093079+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,2.5,under,308,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:30:52.639252+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,5.5,over,257,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:25:01.023031+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,5.5,under,-268,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:48:18.340061+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.0,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T11:09:40.136070+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.0,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T11:09:40.136070+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,over,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T13:47:37.588295+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,4.5,under,100,prizepicks,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T13:47:37.588295+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,3.5,over,-182,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T16:48:18.340061+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta,3.5,under,170,novig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T15:19:05.880530+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta (TB),4.5,over,100,betonlineag,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:57.049749+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta (TB),4.5,under,-140,betonlineag,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:57.049749+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton (DET),4.0,over,-120,betonlineag,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:57.049749+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton (DET),4.0,under,-120,betonlineag,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:57.049749+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta (TB),4.5,over,100,lowvig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:59.598558+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Freddy Peralta (TB),4.5,under,-140,lowvig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:59.598558+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton (DET),4.0,over,-120,lowvig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:59.598558+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton (DET),4.0,under,-120,lowvig,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:32:59.598558+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,over,112,smarkets,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:47:09.103967+00:00,propline_free_sample
+2026-08-26,2026-08-26 17:10:00+00:00,Troy Melton,4.5,under,-156,smarkets,165032,Detroit Tigers,Tampa Bay Rays,2026-08-26T14:47:09.103967+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-138,fanduel,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:47:31.786165+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,108,fanduel,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:47:31.786165+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,114,fanduel,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T20:38:07.868923+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-146,fanduel,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T20:38:07.868923+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-175,sleeper,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:45:34.369574+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,105,sleeper,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:49:11.396452+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-146,prophetx,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:42:58.559381+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,136,prophetx,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:42:58.559381+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,-9750,prophetx,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:39:51.078747+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-235,prophetx,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:41:15.620675+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser (SF),3.5,over,-145,bovada,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T17:08:50.169498+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser (SF),3.5,under,110,bovada,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T17:08:50.169498+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer (CIN),4.5,over,115,bovada,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T17:08:50.169498+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer (CIN),4.5,under,-150,bovada,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T17:08:50.169498+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.0,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T18:22:18.948844+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.0,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T18:22:18.948844+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,5.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,5.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,5.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,5.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,6.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,6.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,6.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,6.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,7.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,7.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,1.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,1.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,2.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,2.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,2.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,2.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,3.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,3.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:47:38.337252+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,-102,sleeper,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:35:15.462728+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-161,sleeper,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:41:29.147886+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-154,underdog,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:14:16.327893+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,115,underdog,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T21:48:24.545649+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,114,underdog,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:14:16.327893+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-152,underdog,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T06:09:17.715478+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-149,dabble,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:29:21.063110+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,110,dabble,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:58:33.399246+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,150,dabble,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:36:58.405294+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-109,dabble,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T05:58:33.399246+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-138,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:43:56.949191+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,133,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:43:56.949191+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,113,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:44:30.218603+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-122,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:44:30.218603+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-175,smarkets,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:41:10.262668+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,124,smarkets,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:41:10.262668+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,-105,smarkets,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:37:28.332244+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-132,smarkets,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:41:10.262668+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,over,129,draftkings,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:45:29.340595+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,under,-165,draftkings,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:45:29.340595+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-180,onexbet,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:27:01.110172+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,135,onexbet,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:27:01.110172+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,-101,draftkings,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:39:02.641781+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-127,draftkings,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:39:02.641781+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,1.5,over,-1011,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T16:38:12.583111+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,1.5,under,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T16:40:16.312306+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,2.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:43:22.210088+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,2.5,under,-733,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T21:41:22.130078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:46:27.731607+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,104,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:46:27.731607+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T21:22:52.200587+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,under,-245,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:16:34.426867+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,5.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:46:43.425203+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,5.5,under,-900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:41:26.743720+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,6.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:45:39.242151+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Alan Singer,4.5,over,-105,onexbet,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T20:28:15.043164+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Alan Singer,4.5,under,-130,onexbet,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T20:28:15.043164+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,6.5,under,-9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:47:56.183818+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,1.5,over,-4900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:45:39.242151+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,1.5,under,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T09:15:42.552702+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,2.5,over,-2400,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T17:11:04.656210+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,2.5,under,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T09:15:42.552702+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,3.5,over,-1329,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:25:25.207979+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,3.5,under,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:25:25.207979+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,-300,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:44:30.129994+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:44:30.129994+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,5.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:46:43.425203+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,5.5,under,-1900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:19:26.672718+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,6.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T19:49:01.032265+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,6.5,under,-1900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:33:08.419296+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,7.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:43:22.210088+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,7.5,under,-1567,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:29:00.104539+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,8.5,over,9900,kalshi,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T09:15:42.552702+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-165,rebet,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:51:32.804576+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,119,rebet,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T00:51:32.804576+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,104,rebet,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:44:01.015423+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-144,rebet,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:44:01.015423+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-155,betmgm,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:08:02.135207+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,115,betmgm,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:08:02.135207+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,110,betmgm,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T14:25:19.178414+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-150,betmgm,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T14:25:19.178414+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-136,betrivers,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T21:43:53.966144+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,102,betrivers,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T21:43:53.966144+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,112,betrivers,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:23:09.530267+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-150,betrivers,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:23:09.530267+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.0,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T12:53:16.094047+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.0,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T12:53:16.094047+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,2.5,over,-441,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:42:27.354154+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,2.5,under,186,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:14:02.292342+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,over,144,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:19:56.152560+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,4.5,under,-190,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T23:51:51.123792+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,3.5,over,-213,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:17:24.065266+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,3.5,under,190,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T20:43:13.562705+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,5.5,over,223,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-26T01:17:24.065266+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,5.5,under,-317,novig,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:21:14.374211+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,-148,pinnacle,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:52:28.783582+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,112,pinnacle,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T22:52:28.783582+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,over,109,pinnacle,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T13:33:37.130300+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer,4.5,under,-145,pinnacle,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T13:33:37.130300+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser (SF),3.5,over,-145,lowvig,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:07.697762+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser (SF),3.5,under,105,lowvig,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:07.697762+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer (CIN),4.5,over,110,lowvig,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:07.697762+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer (CIN),4.5,under,-150,lowvig,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:07.697762+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser (SF),3.5,over,-145,betonlineag,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:08.271071+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser (SF),3.5,under,105,betonlineag,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:08.271071+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer (CIN),4.5,over,110,betonlineag,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:08.271071+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Brady Singer (CIN),4.5,under,-150,betonlineag,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:55:08.271071+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,over,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:58:15.180894+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:45:00+00:00,Adrian Houser,3.5,under,100,prizepicks,164051,San Francisco Giants,Cincinnati Reds,2026-08-25T15:58:15.180894+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,108,fanduel,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:40:47.268373+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-138,fanduel,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:40:47.268373+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,-156,fanduel,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:51:26.732731+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,122,fanduel,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:51:26.732731+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T14:54:32.002947+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T14:54:32.002947+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,7.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,7.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,7.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,7.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,8.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,8.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,3.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,3.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,4.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,4.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,4.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,4.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-24T23:27:03.157761+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,-108,sleeper,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:59:16.767457+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-154,sleeper,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:03:50.538421+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,106,fanduel,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:45:24.351788+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-136,fanduel,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:45:24.351788+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,124,fanduel,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T23:59:55.149799+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-158,fanduel,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T23:59:55.149799+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-125,fanduel,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:07:34.656808+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,-102,fanduel,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T22:36:16.292810+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-122,fanduel,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T21:27:04.547799+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-104,fanduel,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T21:27:04.547799+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,4.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,4.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,5.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,5.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,5.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,5.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,6.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,6.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,2.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,2.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,3.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,3.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T00:15:13.486874+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,5.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,5.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,6.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,6.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,6.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,6.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,7.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,7.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,7.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,7.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,8.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,8.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,3.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,3.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,4.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,4.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T00:15:15.348572+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola (PHI),5.5,over,-125,bovada,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:24:16.780171+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola (PHI),5.5,under,-105,bovada,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:24:16.780171+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby (SEA),4.5,over,-125,bovada,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T15:50:25.317172+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby (SEA),4.5,under,-105,bovada,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T15:50:25.317172+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,2.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:10:59.424705+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,2.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:10:59.424705+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,7.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:10:59.424705+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,7.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:10:59.424705+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,8.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:18:29.053481+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,8.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:18:29.053481+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,3.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:18:29.053481+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,3.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:18:29.053481+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,10.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:18:29.053481+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,10.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:18:29.053481+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,3.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,3.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,10.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,10.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,9.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,9.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,2.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,2.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:18:29.142499+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,9.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:45:14.109341+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,9.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T01:45:14.109341+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,-102,sleeper,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:04.315764+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,104,sleeper,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:04:14.860768+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-161,sleeper,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:31:53.788352+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-175,sleeper,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:04:14.860768+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,6.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:53:43.751685+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,6.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:53:43.751685+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,1.5,over,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:53:43.751685+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,1.5,under,100,prizepicks,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T01:53:43.751685+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,8.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:53:43.921410+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,8.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:53:43.921410+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,9.5,over,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:53:43.921410+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,9.5,under,100,prizepicks,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T01:53:43.921410+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,-185,sleeper,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:09:48.310208+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,109,sleeper,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:09:48.310208+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-149,sleeper,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:09:58.089970+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-135,sleeper,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T00:42:56.664500+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,-111,sleeper,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T20:14:03.221076+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-122,sleeper,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T00:42:56.664500+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,over,212,underdog,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:03.468424+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,-159,underdog,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T19:04:58.116938+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,under,-334,underdog,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:03.468424+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,117,underdog,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T19:04:58.116938+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,107,dabble,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T07:14:38.882463+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,-111,dabble,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:35:15.788515+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-105,dabble,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T07:58:22.212209+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,120,dabble,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T21:27:14.871550+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,100,smarkets,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:37:28.473325+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-141,smarkets,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:37:28.473325+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,-132,smarkets,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:37:28.473325+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,-106,smarkets,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:37:28.473325+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,9.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T02:59:30.254834+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,9.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T02:59:30.254834+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,141,novig,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:38:23.286825+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-156,novig,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:21.339823+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-156,novig,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T01:31:18.344791+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,-127,novig,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T01:02:20.534068+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-130,onexbet,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T22:32:26.636569+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-120,onexbet,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T20:28:14.925937+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,-105,onexbet,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T22:32:26.636569+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-110,onexbet,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T20:28:14.925937+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,100,onexbet,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:27:00.302029+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,100,onexbet,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:27:00.302029+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-135,onexbet,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:27:00.302029+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-135,onexbet,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:27:00.302029+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,118,dabble,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:17:51.078061+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-116,dabble,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:37:12.891622+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,102,underdog,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:20:51.661999+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-134,underdog,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T07:58:16.812272+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,-101,smarkets,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:23:52.289284+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-139,smarkets,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:34:39.839053+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,109,draftkings,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:16:28.342799+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-139,draftkings,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:16:28.342799+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,-151,draftkings,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T22:34:05.599257+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,118,draftkings,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T22:34:05.599257+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,over,239,novig,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:19:55.872294+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,under,-292,novig,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:58:32.034209+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,135,novig,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:26:23.668439+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-138,novig,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:26:23.668439+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,-120,onexbet,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T18:30:54.037977+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,-135,onexbet,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:24:55.158846+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-110,onexbet,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T18:30:54.037977+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,100,onexbet,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:24:55.158846+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,119,prophetx,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:31.239694+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-164,prophetx,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T23:31:34.049332+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,-164,prophetx,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T23:51:59.043725+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-870,prophetx,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:27:49.936214+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-119,prophetx,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T01:39:30.723827+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,100,prophetx,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T01:37:33.200876+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,10.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:44:26.656142+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,2.5,over,-2400,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:27:38.967631+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,3.5,over,-2400,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:33:15.925914+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,3.5,over,-233,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T21:50:52.081783+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,4.5,over,-733,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:33:15.925914+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,4.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T18:14:17.653998+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,-525,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:34:53.004867+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:38:24.329945+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,over,-300,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:23:35.617020+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:38:24.329945+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,7.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:26:23.864117+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,7.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:44:26.656142+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,8.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T21:41:22.477517+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,8.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:59:02.219783+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,9.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:53.169502+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,9.5,over,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T18:06:15.197100+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,136,dabble,164068,Athletics,Minnesota Twins,2026-08-25T23:33:04.160264+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,-135,dabble,164068,Athletics,Minnesota Twins,2026-08-25T22:14:21.245116+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,119,underdog,164068,Athletics,Minnesota Twins,2026-08-25T21:30:07.964214+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-105,underdog,164068,Athletics,Minnesota Twins,2026-08-25T22:29:38.271270+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,-162,underdog,164068,Athletics,Minnesota Twins,2026-08-25T21:30:07.964214+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-130,underdog,164068,Athletics,Minnesota Twins,2026-08-25T22:29:38.271270+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-150,novig,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T01:37:20.894911+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-127,novig,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:58:32.198462+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,104,novig,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:52.799631+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-133,novig,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:36:23.704550+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,over,153,novig,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:34:23.165196+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,under,-186,novig,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:52.799631+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,2.5,under,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:27:38.967631+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,3.5,under,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:33:15.925914+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,3.5,under,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T22:14:25.070649+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,4.5,under,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:33:15.925914+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,4.5,under,-9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T16:12:26.060152+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:53.169502+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,5.5,under,-4900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:38:24.329945+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,6.5,under,9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:53.169502+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,under,-9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:36:24.515822+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,7.5,under,-1900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:53.169502+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,7.5,under,-9900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:44:26.656142+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,8.5,under,-1900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T23:59:02.219783+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,over,-149,smarkets,164068,Athletics,Minnesota Twins,2026-08-25T14:42:31.759596+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,under,106,smarkets,164068,Athletics,Minnesota Twins,2026-08-25T14:42:31.759596+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-127,smarkets,164068,Athletics,Minnesota Twins,2026-08-25T22:48:14.189605+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-110,smarkets,164068,Athletics,Minnesota Twins,2026-08-25T22:48:14.189605+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,8.5,under,-1900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T15:09:21.357662+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,9.5,under,-1567,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T14:05:39.766204+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,-9750,prophetx,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:31.570564+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-210,prophetx,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:39:31.570564+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,over,-156,prophetx,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:00:02.704910+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,under,-940,prophetx,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:10:16.417077+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,6.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,6.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,6.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,6.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,9.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,9.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,3.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,3.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,3.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,3.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T04:42:41.366703+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-115,prophetx,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T01:37:33.200876+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,-103,prophetx,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T01:35:31.049058+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,114,draftkings,164068,Athletics,Minnesota Twins,2026-08-25T23:16:27.942286+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,-146,draftkings,164068,Athletics,Minnesota Twins,2026-08-25T23:16:27.942286+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-106,draftkings,164068,Athletics,Minnesota Twins,2026-08-26T01:29:12.476643+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-121,draftkings,164068,Athletics,Minnesota Twins,2026-08-26T01:29:12.476643+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-136,underdog,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T14:36:18.266152+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-113,underdog,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T21:27:11.273020+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,100,underdog,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T14:36:18.266152+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-121,underdog,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T21:27:11.273020+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,104,sleeper,164068,Athletics,Minnesota Twins,2026-08-25T22:02:19.469238+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-128,sleeper,164068,Athletics,Minnesota Twins,2026-08-26T01:37:12.813562+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,-172,sleeper,164068,Athletics,Minnesota Twins,2026-08-26T00:47:17.113616+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-128,sleeper,164068,Athletics,Minnesota Twins,2026-08-26T01:37:12.813562+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-108,dabble,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T07:58:22.466968+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,104,dabble,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T00:36:58.132730+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,109,dabble,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T07:14:39.204149+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-103,dabble,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T21:36:54.007810+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-132,smarkets,164069,Seattle Mariners,Philadelphia Phillies,2026-08-26T00:45:27.128733+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,-105,smarkets,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T22:50:39.256391+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-114,smarkets,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T22:50:39.256391+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-122,smarkets,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T21:46:45.023006+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,116,fanduel,164068,Athletics,Minnesota Twins,2026-08-26T01:35:07.476802+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,-148,fanduel,164068,Athletics,Minnesota Twins,2026-08-26T01:35:07.476802+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-111,fanduel,164068,Athletics,Minnesota Twins,2026-08-25T22:34:04.992951+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-115,fanduel,164068,Athletics,Minnesota Twins,2026-08-25T22:34:04.992951+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,4.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:04:11.072491+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,4.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:04:11.072491+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,7.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:04:11.072491+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,7.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:04:11.072491+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,8.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:04:11.072491+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,8.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:04:11.072491+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,-102,underdog,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T09:15:34.830226+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-136,underdog,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:31:52.225729+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,115,dabble,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:37:12.891622+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-114,dabble,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:37:12.891622+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,102,novig,164068,Athletics,Minnesota Twins,2026-08-26T01:24:52.995275+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-111,novig,164068,Athletics,Minnesota Twins,2026-08-25T22:32:29.243487+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,7.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,7.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,8.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,8.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,2.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,2.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,100,prizepicks,164068,Athletics,Minnesota Twins,2026-08-25T05:15:03.898078+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-10000,prophetx,164068,Athletics,Minnesota Twins,2026-08-26T01:10:17.727303+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-280,prophetx,164068,Athletics,Minnesota Twins,2026-08-26T00:04:47.678841+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump (ATH),5.5,over,115,bovada,164068,Athletics,Minnesota Twins,2026-08-25T21:26:53.819199+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump (ATH),5.5,under,-150,bovada,164068,Athletics,Minnesota Twins,2026-08-25T21:26:53.819199+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley (MIN),5.5,over,-115,bovada,164068,Athletics,Minnesota Twins,2026-08-25T21:26:53.819199+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley (MIN),5.5,under,-115,bovada,164068,Athletics,Minnesota Twins,2026-08-25T21:26:53.819199+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King (SD),5.5,over,110,bovada,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:42:40.323119+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King (SD),5.5,under,-145,bovada,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:42:40.323119+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes (PIT),5.5,over,-160,bovada,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T16:24:30.286803+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes (PIT),5.5,under,120,bovada,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T16:24:30.286803+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-108,dabble,164068,Athletics,Minnesota Twins,2026-08-25T22:29:40.768112+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,109,dabble,164068,Athletics,Minnesota Twins,2026-08-26T01:35:15.125713+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,2.5,over,-9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T23:33:08.736964+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,2.5,over,-3233,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T21:43:55.171320+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,2.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:24:22.644144+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,2.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T14:34:33.049150+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,3.5,over,-1329,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T21:55:17.164768+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,3.5,over,-1329,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T20:07:22.134277+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,3.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T21:55:17.164768+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,3.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T20:07:22.134277+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,over,-1011,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:39:53.076270+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,4.5,over,-809,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T22:36:32.366568+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:38:24.216857+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,4.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T22:38:55.074833+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,-567,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T20:49:53.791750+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-1567,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T23:46:28.016107+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T20:49:53.791750+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T23:46:28.016107+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,6.5,over,-223,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T21:18:28.881401+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,6.5,over,-567,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T22:45:39.484803+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,6.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T21:18:28.881401+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,6.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T20:27:46.163329+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,7.5,over,-9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T21:27:23.520939+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,7.5,over,-144,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T23:17:27.495185+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,7.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:39:53.076270+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,7.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:38:24.216857+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,8.5,over,-488,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:22:22.542613+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,8.5,over,178,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T22:49:21.310081+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,8.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:22:22.542613+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,8.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:38:24.216857+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,9.5,over,-456,kalshi,164068,Athletics,Minnesota Twins,2026-08-25T22:45:39.484803+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,9.5,under,9900,kalshi,164068,Athletics,Minnesota Twins,2026-08-26T01:36:24.432381+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,113,novig,164068,Athletics,Minnesota Twins,2026-08-26T01:15:22.006784+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,-120,novig,164068,Athletics,Minnesota Twins,2026-08-26T01:25:48.167749+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,-102,smarkets,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:34:39.839053+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-137,smarkets,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:34:39.839053+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,over,-166,prophetx,164068,Athletics,Minnesota Twins,2026-08-25T23:10:32.610831+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,under,160,prophetx,164068,Athletics,Minnesota Twins,2026-08-26T00:58:00.522751+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T05:47:37.424936+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,100,prizepicks,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T05:47:37.424936+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,over,-165,onexbet,164068,Athletics,Minnesota Twins,2026-08-26T00:27:00.461084+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-130,onexbet,164068,Athletics,Minnesota Twins,2026-08-26T00:27:00.461084+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,under,125,onexbet,164068,Athletics,Minnesota Twins,2026-08-26T00:27:00.461084+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-105,onexbet,164068,Athletics,Minnesota Twins,2026-08-26T00:27:00.461084+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,over,-176,prophetx,164068,Athletics,Minnesota Twins,2026-08-26T01:18:14.738128+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,5.5,under,136,prophetx,164068,Athletics,Minnesota Twins,2026-08-26T01:39:31.013379+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,120,pinnacle,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:22:38.755135+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-160,pinnacle,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:22:38.755135+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,132,pinnacle,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:53:20.000913+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-177,pinnacle,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:53:20.000913+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,115,draftkings,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:25:07.206294+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-146,draftkings,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:25:07.206294+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,119,draftkings,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:50:07.917227+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,-152,draftkings,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:50:07.917227+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,over,-186,novig,164068,Athletics,Minnesota Twins,2026-08-25T22:16:48.100242+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,under,144,novig,164068,Athletics,Minnesota Twins,2026-08-26T01:39:21.998184+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,over,108,pinnacle,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:08:20.391092+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,5.5,under,-144,pinnacle,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:08:20.391092+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,over,126,pinnacle,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:22:37.805085+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,under,-168,pinnacle,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T00:22:37.805085+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,over,-130,pinnacle,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:24:31.161970+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Aaron Nola,5.5,under,-102,pinnacle,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:24:31.161970+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,over,-114,pinnacle,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:53:36.868922+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,George Kirby,4.5,under,-116,pinnacle,164069,Seattle Mariners,Philadelphia Phillies,2026-08-25T23:53:36.868922+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,over,-180,pinnacle,164068,Athletics,Minnesota Twins,2026-08-26T00:10:25.946342+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Gage Jump,4.5,under,134,pinnacle,164068,Athletics,Minnesota Twins,2026-08-26T00:10:25.946342+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,over,-115,pinnacle,164068,Athletics,Minnesota Twins,2026-08-25T15:21:09.535248+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Taj Bradley,5.5,under,-115,pinnacle,164068,Athletics,Minnesota Twins,2026-08-25T15:21:09.535248+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,1.5,over,-1011,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:45:39.398477+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,1.5,over,-1329,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T19:07:32.384312+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,1.5,under,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:07:21.676625+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,1.5,under,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T08:53:38.758602+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,2.5,over,-525,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T17:23:05.681699+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,2.5,over,-1329,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:38:24.019074+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,2.5,under,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T08:20:30.419179+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,2.5,under,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:52.798604+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,3.5,over,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:52.798604+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,over,-1329,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:41:26.950065+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,3.5,under,-1329,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:52.798604+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,3.5,under,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:38:24.019074+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,over,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:35:02.769722+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,4.5,over,-122,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:21:01.552134+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,4.5,under,-9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:35:02.769722+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,4.5,under,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:52.798604+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,5.5,over,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T23:52:08.469003+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,5.5,over,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:38:24.019074+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,5.5,under,-9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:52.798604+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,5.5,under,-1900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:36:24.312994+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,6.5,over,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:38:54.964992+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,6.5,over,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T00:51:47.612064+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,6.5,under,-9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:52.798604+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Clay Holmes,6.5,under,-1150,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:39:52.798604+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,7.5,over,9900,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-25T22:51:21.291152+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Brandon Pfaadt,7.5,under,-2400,kalshi,164065,Arizona Diamondbacks,Chicago Cubs,2026-08-26T01:36:24.312994+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Michael King,9.5,under,-1900,kalshi,164067,San Diego Padres,Pittsburgh Pirates,2026-08-26T01:16:52.418201+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,over,118,smarkets,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T14:54:56.494386+00:00,propline_free_sample
+2026-08-25,2026-08-26 01:40:00+00:00,Paul Skenes,6.5,under,-167,smarkets,164067,San Diego Padres,Pittsburgh Pirates,2026-08-25T14:54:56.494386+00:00,propline_free_sample
