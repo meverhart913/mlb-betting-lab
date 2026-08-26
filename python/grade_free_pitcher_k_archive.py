@@ -48,19 +48,45 @@ def main() -> None:
     p["is_starter"] = pd.to_numeric(p.get("is_starter"), errors="coerce").fillna(0).astype(int)
     p["strikeouts"] = pd.to_numeric(p["strikeouts"], errors="coerce")
     p["name_key"] = p["pitcher_name"].map(norm_name)
-    # Grade any pitcher who actually appeared. V2.2 eligibility remains a later
-    # filter because the model itself only generates starting-pitcher forecasts.
     p = p[p.strikeouts.notna()].copy()
     result_cols = ["date", "name_key", "game_id", "pitcher_id", "pitcher_name", "strikeouts", "is_starter"]
     results = p[[c for c in result_cols if c in p.columns]].copy()
     results = results.rename(columns={
+        "date": "matched_mlb_date",
         "pitcher_name": "mlb_pitcher_name",
         "strikeouts": "actual_k",
         "is_starter": "mlb_is_starter",
     })
-    results = results.drop_duplicates(["date", "name_key"], keep="last")
+    results = results.drop_duplicates(["matched_mlb_date", "name_key"], keep="last")
 
-    g = market.merge(results, on=["date", "name_key"], how="left")
+    # New archive files use Eastern calendar dates. Legacy files created before
+    # 2026-08-26 used the raw UTC commence date, which moves late U.S. games one
+    # calendar day forward. Prefer an exact MLB-date match, then repair only
+    # unmatched legacy rows with the immediately previous MLB date.
+    exact = market.merge(
+        results,
+        left_on=["date", "name_key"],
+        right_on=["matched_mlb_date", "name_key"],
+        how="left",
+    )
+    exact["date_offset_days"] = 0
+
+    missing = exact["actual_k"].isna()
+    if missing.any():
+        legacy = market.loc[missing].copy()
+        legacy["prior_date"] = legacy["date"] - pd.Timedelta(days=1)
+        prior = legacy.merge(
+            results,
+            left_on=["prior_date", "name_key"],
+            right_on=["matched_mlb_date", "name_key"],
+            how="left",
+        )
+        for c in ["matched_mlb_date", "game_id", "pitcher_id", "mlb_pitcher_name", "actual_k", "mlb_is_starter"]:
+            if c in prior.columns:
+                exact.loc[missing, c] = prior[c].to_numpy()
+        exact.loc[missing & exact["actual_k"].notna(), "date_offset_days"] = -1
+
+    g = exact
     g["line"] = pd.to_numeric(g["line"], errors="coerce")
     g["actual_k"] = pd.to_numeric(g["actual_k"], errors="coerce")
     side = g["side"].astype(str).str.lower()
@@ -80,6 +106,7 @@ def main() -> None:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     g.to_csv(OUT, index=False)
 
+    starter = pd.to_numeric(g.get("mlb_is_starter"), errors="coerce").eq(1)
     STATUS.parent.mkdir(exist_ok=True)
     status = pd.DataFrame([{
         "archive_files": len(files),
@@ -87,7 +114,8 @@ def main() -> None:
         "unique_dates": int(g.date.nunique()),
         "unique_pitchers": int(g.name_key.nunique()),
         "graded_rows": int(g.actual_k.notna().sum()),
-        "starter_graded_rows": int((g.actual_k.notna() & pd.to_numeric(g.get("mlb_is_starter"), errors="coerce").eq(1)).sum()),
+        "starter_graded_rows": int((g.actual_k.notna() & starter).sum()),
+        "utc_date_repairs": int(g.date_offset_days.eq(-1).sum()),
         "pending_rows": int(g.actual_k.isna().sum()),
         "earliest_date": g.date.min().date() if len(g) else None,
         "latest_date": g.date.max().date() if len(g) else None,
