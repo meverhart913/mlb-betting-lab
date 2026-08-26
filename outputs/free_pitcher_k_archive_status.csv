@@ -1,2 +1,2 @@
-archive_files,quote_rows,unique_dates,unique_pitchers,graded_rows,pending_rows,earliest_date,latest_date
-1,644,1,21,0,644,2026-08-25,2026-08-25
+archive_files,quote_rows,unique_dates,unique_pitchers,graded_rows,starter_graded_rows,pending_rows,earliest_date,latest_date
+4,1287,2,42,0,0,1287,2026-08-25,2026-08-26
