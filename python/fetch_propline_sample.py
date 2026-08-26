@@ -28,14 +28,25 @@ def main():
     market = pick(raw, 'market', 'market_key').astype(str)
     raw = raw[market.str.contains('pitcher_strikeouts', case=False, na=False)].copy()
     side = pick(raw, 'outcome_name', 'name', 'selection_side').astype(str).str.lower()
+
+    commence_utc = pd.to_datetime(pick(raw, 'commence_time', 'date'), errors='coerce', utc=True)
+    # MLB schedule dates are U.S. calendar dates. Using the raw UTC date shifts
+    # late-evening games (especially West Coast starts) into the following day.
+    # Normalize to Eastern before deriving the event date so it aligns with the
+    # MLB Stats API game-date field used by our result and model histories.
+    commence_et = commence_utc.dt.tz_convert('America/New_York')
+
     z = pd.DataFrame({
-        'date': pd.to_datetime(pick(raw, 'commence_time', 'date'), errors='coerce').dt.date,
+        'date': commence_et.dt.date,
+        'commence_time_utc': commence_utc.astype('string'),
         'pitcher_name': pick(raw, 'player_name', 'description', 'player'),
         'line': pd.to_numeric(pick(raw, 'point', 'line'), errors='coerce'),
         'side': side,
         'price': pd.to_numeric(pick(raw, 'price_american', 'american_odds', 'price'), errors='coerce'),
         'sportsbook': pick(raw, 'bookmaker', 'bookmaker_title', 'sportsbook'),
         'event_id': pick(raw, 'event_id'),
+        'home_team': pick(raw, 'home_team'),
+        'away_team': pick(raw, 'away_team'),
         'snapshot_time_et': pick(raw, 'closing_at', 'recorded_at', 'snapshot_time'),
         'source': 'propline_free_sample',
     })
