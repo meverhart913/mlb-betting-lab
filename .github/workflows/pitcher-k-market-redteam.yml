@@ -1,0 +1,63 @@
+name: Pitcher K market red-team
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'python/redteam_pitcher_k_market.py'
+      - '.github/workflows/pitcher-k-market-redteam.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Download latest successful V2.2 result artifact
+        shell: bash
+        run: |
+          RUN_ID="$(gh run list --workflow 'Pitcher K V2.2 lineup handedness research' --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo 'No successful V2.2 run found on main.'
+            exit 1
+          fi
+          echo "Using V2.2 run $RUN_ID"
+          mkdir -p latest
+          gh run download "$RUN_ID" -n pitcher-k-v22-results -D latest
+          mkdir -p data/market outputs
+          cp latest/data/market/pitcher_k_historical_raw.csv data/market/
+          cp latest/outputs/pitcher_k_market_graded.csv outputs/
+      - name: Run market red-team audit
+        run: python python/redteam_pitcher_k_market.py
+      - name: Write audit summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Pitcher K market red-team' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f outputs/pitcher_k_market_redteam_summary.csv ]; then
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/pitcher_k_market_redteam_summary.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pitcher-k-market-redteam-${{ github.run_id }}
+          path: |
+            outputs/pitcher_k_market_redteam_graded.csv
+            outputs/pitcher_k_market_redteam_summary.csv
+            outputs/pitcher_k_market_book_counts.csv
+          if-no-files-found: warn
+          retention-days: 30
