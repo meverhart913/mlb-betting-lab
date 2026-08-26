@@ -1,0 +1,135 @@
+name: FanDuel V2.2 pitcher K paper
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'python/run_v22_fanduel_paper.py'
+      - 'python/fetch_propline_sample.py'
+      - '.github/workflows/fanduel-pitcher-k-paper.yml'
+      - 'docs/FANDUEL_PROSPECTIVE_PROTOCOL.md'
+  # Hourly collection/decision checks from late morning through late evening ET
+  # during MLB season. The script itself only freezes a selection 45-195 minutes
+  # before first pitch and never replaces an already frozen pitcher selection.
+  schedule:
+    - cron: '45 0-2,14-23 * 4-10 *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Check MLB slate
+        id: slate
+        shell: bash
+        run: |
+          HAS_GAMES="$(python python/check_mlb_slate.py)"
+          echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
+          echo "Has regular-season games: $HAS_GAMES"
+
+      - name: Download latest successful V2.2 research data
+        if: steps.slate.outputs.has_games == 'true'
+        shell: bash
+        run: |
+          RUN_ID="$(gh run list --workflow 'Pitcher K V2.2 lineup handedness research' --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo 'No successful V2.2 run found on main.'
+            exit 1
+          fi
+          echo "Using V2.2 run $RUN_ID"
+          mkdir -p latest data/features
+          gh run download "$RUN_ID" -n pitcher-k-v22-results -D latest
+          cp latest/data/features/pitcher_handedness.csv data/features/
+          cp latest/data/features/historical_lineup_hand_features.csv data/features/
+          cp latest/data/features/statcast_pitcher_pregame.csv data/features/
+          cp latest/data/features/batter_k_by_pitcher_hand_pregame.csv data/features/
+
+          # Current live feature construction needs the unshifted daily aggregates.
+          # Pull the current and prior season source artifacts from that exact same
+          # V2.2 run so model inputs remain version-consistent.
+          for Y in 2025 2026; do
+            mkdir -p "parts/statcast_${Y}" "parts/matchup_${Y}"
+            gh run download "$RUN_ID" -n "v22-statcast-${Y}" -D "parts/statcast_${Y}"
+            gh run download "$RUN_ID" -n "v22-matchup-${Y}" -D "parts/matchup_${Y}"
+          done
+          find parts -type f -name 'statcast_pitcher_*.csv' -exec cp {} data/features/ \;
+          find parts -type f -name 'batter_hand_*.csv' -exec sh -c 'f="$1"; y=$(basename "$f" | sed -E "s/[^0-9]*([0-9]{4}).*/\\1/"); cp "$f" "data/features/batter_k_by_pitcher_hand_daily_${y}.csv"' _ {} \;
+          echo 'Live V2.2 source files:'
+          ls -lh data/features/
+
+      - name: Refresh recent completed MLB logs
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/refresh_recent_mlb.py --lookback-days 4
+
+      - name: Pull current free pitcher-K market
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/fetch_propline_sample.py
+
+      - name: Generate and freeze FanDuel V2.2 paper selections
+        if: steps.slate.outputs.has_games == 'true'
+        run: python python/run_v22_fanduel_paper.py
+
+      - name: Commit newly frozen paper selections
+        if: steps.slate.outputs.has_games == 'true'
+        shell: bash
+        run: |
+          if [ ! -f data/current/fanduel_pitcher_k_paper_history.csv ]; then
+            echo 'No paper selections frozen on this snapshot.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/current/fanduel_pitcher_k_paper_history.csv
+          if git diff --cached --quiet; then
+            echo 'No new frozen selections.'
+          else
+            git commit -m 'Freeze FanDuel pitcher K paper selections'
+            git push origin HEAD:main
+          fi
+
+      - name: Write FanDuel paper summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## FanDuel V2.2 pitcher K paper trading' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Research only. No wagers are placed.' >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.slate.outputs.has_games }}" != "true" ]; then
+            echo 'No MLB regular-season slate today.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ -f outputs/fanduel_pitcher_k_paper_today.csv ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Frozen/eligible selections this snapshot' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            head -n 35 outputs/fanduel_pitcher_k_paper_today.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'No eligible FanDuel V2.2 selection was generated.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.slate.outputs.has_games == 'true'
+        with:
+          name: fanduel-v22-paper-${{ github.run_id }}
+          path: |
+            outputs/fanduel_pitcher_k_paper_today.csv
+            outputs/fanduel_pitcher_k_all_candidates.csv
+            data/current/fanduel_pitcher_k_paper_history.csv
+            data/market/pitcher_k_historical_raw.csv
+          if-no-files-found: warn
+          retention-days: 90
