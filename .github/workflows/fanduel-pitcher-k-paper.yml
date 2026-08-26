@@ -8,9 +8,6 @@ on:
       - 'python/fetch_propline_sample.py'
       - '.github/workflows/fanduel-pitcher-k-paper.yml'
       - 'docs/FANDUEL_PROSPECTIVE_PROTOCOL.md'
-  # Hourly collection/decision checks from late morning through late evening ET
-  # during MLB season. The script itself only freezes a selection 45-195 minutes
-  # before first pitch and never replaces an already frozen pitcher selection.
   schedule:
     - cron: '45 0-2,14-23 * 4-10 *'
   workflow_dispatch:
@@ -60,15 +57,12 @@ jobs:
           cp latest/data/features/statcast_pitcher_pregame.csv data/features/
           cp latest/data/features/batter_k_by_pitcher_hand_pregame.csv data/features/
 
-          # Current live feature construction needs the unshifted daily aggregates.
-          # Pull the current and prior season source artifacts from that exact same
-          # V2.2 run so model inputs remain version-consistent.
           for Y in 2025 2026; do
             mkdir -p "parts/statcast_${Y}" "parts/matchup_${Y}"
             gh run download "$RUN_ID" -n "v22-statcast-${Y}" -D "parts/statcast_${Y}"
             gh run download "$RUN_ID" -n "v22-matchup-${Y}" -D "parts/matchup_${Y}"
           done
-          find parts -type f -name 'statcast_pitcher_*.csv' -exec cp {} data/features/ \;
+          find parts -type f -name 'statcast_pitcher_*.csv' -exec sh -c 'f="$1"; y=$(basename "$f" | sed -E "s/[^0-9]*([0-9]{4}).*/\\1/"); cp "$f" "data/features/statcast_pitcher_daily_${y}.csv"' _ {} \;
           find parts -type f -name 'batter_hand_*.csv' -exec sh -c 'f="$1"; y=$(basename "$f" | sed -E "s/[^0-9]*([0-9]{4}).*/\\1/"); cp "$f" "data/features/batter_k_by_pitcher_hand_daily_${y}.csv"' _ {} \;
           echo 'Live V2.2 source files:'
           ls -lh data/features/
