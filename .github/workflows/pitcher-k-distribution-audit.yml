@@ -1,0 +1,55 @@
+name: Pitcher K probability distribution audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'python/audit_pitcher_k_distribution.py'
+      - '.github/workflows/pitcher-k-distribution-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Download latest V2.2 predictions
+        shell: bash
+        run: |
+          RUN_ID="$(gh run list --workflow 'Pitcher K V2.2 lineup handedness research' --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          mkdir -p latest outputs
+          gh run download "$RUN_ID" -n pitcher-k-v22-results -D latest
+          cp latest/outputs/pitcher_k_batter_hand_predictions.csv outputs/
+      - name: Audit count distribution
+        run: python python/audit_pitcher_k_distribution.py
+      - name: Write summary
+        if: always()
+        shell: bash
+        run: |
+          echo '## Pitcher K probability distribution audit' >> "$GITHUB_STEP_SUMMARY"
+          if [ -f outputs/pitcher_k_distribution_audit.csv ]; then
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/pitcher_k_distribution_audit.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pitcher-k-distribution-audit-${{ github.run_id }}
+          path: |
+            outputs/pitcher_k_distribution_audit.csv
+            outputs/pitcher_k_distribution_by_projection.csv
+          if-no-files-found: warn
+          retention-days: 90
