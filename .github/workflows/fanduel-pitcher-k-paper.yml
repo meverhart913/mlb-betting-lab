@@ -6,6 +6,8 @@ on:
     paths:
       - 'python/run_v22_fanduel_paper.py'
       - 'python/fetch_propline_live_fanduel.py'
+      - 'python/fetch_propline_sample.py'
+      - 'python/grade_fanduel_pitcher_k_paper.py'
       - '.github/workflows/fanduel-pitcher-k-paper.yml'
       - 'docs/FANDUEL_PROSPECTIVE_PROTOCOL.md'
   schedule:
@@ -19,7 +21,7 @@ permissions:
 jobs:
   paper:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       GH_TOKEN: ${{ github.token }}
       PROPLINE_API_KEY: ${{ secrets.PROPLINE_API_KEY }}
@@ -33,7 +35,7 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
 
-      - name: Check prerequisites
+      - name: Check MLB slate
         id: prereq
         shell: bash
         run: |
@@ -42,10 +44,10 @@ jobs:
           echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
           echo "has_key=$HAS_KEY" >> "$GITHUB_OUTPUT"
           echo "Has regular-season games: $HAS_GAMES"
-          echo "PropLine key configured: $HAS_KEY"
+          echo "PropLine live key configured: $HAS_KEY"
 
       - name: Download latest successful V2.2 research data
-        if: steps.prereq.outputs.has_games == 'true' && steps.prereq.outputs.has_key == 'true'
+        if: steps.prereq.outputs.has_games == 'true'
         shell: bash
         run: |
           RUN_ID="$(gh run list --workflow 'Pitcher K V2.2 lineup handedness research' --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
@@ -60,7 +62,6 @@ jobs:
           cp latest/data/features/historical_lineup_hand_features.csv data/features/
           cp latest/data/features/statcast_pitcher_pregame.csv data/features/
           cp latest/data/features/batter_k_by_pitcher_hand_pregame.csv data/features/
-
           for Y in 2025 2026; do
             mkdir -p "parts/statcast_${Y}" "parts/matchup_${Y}"
             gh run download "$RUN_ID" -n "v22-statcast-${Y}" -D "parts/statcast_${Y}"
@@ -70,34 +71,46 @@ jobs:
           find parts -type f -name 'batter_hand_*.csv' -exec sh -c 'f="$1"; y=$(basename "$f" | sed -E "s/[^0-9]*([0-9]{4}).*/\\1/"); cp "$f" "data/features/batter_k_by_pitcher_hand_daily_${y}.csv"' _ {} \;
 
       - name: Refresh recent completed MLB logs
-        if: steps.prereq.outputs.has_games == 'true' && steps.prereq.outputs.has_key == 'true'
+        if: steps.prereq.outputs.has_games == 'true'
         run: python python/refresh_recent_mlb.py --lookback-days 4
 
-      - name: Pull live FanDuel pitcher-K board
-        if: steps.prereq.outputs.has_games == 'true' && steps.prereq.outputs.has_key == 'true'
+      - name: Pull FanDuel pitcher-K board
+        if: steps.prereq.outputs.has_games == 'true'
+        shell: bash
         run: |
-          python python/fetch_propline_live_fanduel.py
-          cp data/market/pitcher_k_live_fanduel.csv data/market/pitcher_k_historical_raw.csv
+          if [ -n "$PROPLINE_API_KEY" ]; then
+            echo 'Using PropLine live API.'
+            python python/fetch_propline_live_fanduel.py
+            cp data/market/pitcher_k_live_fanduel.csv data/market/pitcher_k_historical_raw.csv
+          else
+            echo 'No PropLine key: using free public sample fallback.'
+            python python/fetch_propline_sample.py
+          fi
 
       - name: Generate and freeze FanDuel V2.2 paper selections
-        if: steps.prereq.outputs.has_games == 'true' && steps.prereq.outputs.has_key == 'true'
+        if: steps.prereq.outputs.has_games == 'true'
         run: python python/run_v22_fanduel_paper.py
 
-      - name: Commit newly frozen paper selections
-        if: steps.prereq.outputs.has_games == 'true' && steps.prereq.outputs.has_key == 'true'
+      - name: Grade prior FanDuel selections and CLV
+        if: steps.prereq.outputs.has_games == 'true'
+        run: python python/grade_fanduel_pitcher_k_paper.py
+
+      - name: Commit immutable paper ledger
+        if: steps.prereq.outputs.has_games == 'true'
         shell: bash
         run: |
           if [ ! -f data/current/fanduel_pitcher_k_paper_history.csv ]; then
-            echo 'No paper selections frozen on this snapshot.'
+            echo 'No FanDuel paper ledger yet.'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/current/fanduel_pitcher_k_paper_history.csv
           if git diff --cached --quiet; then
-            echo 'No new frozen selections.'
+            echo 'No ledger changes.'
           else
-            git commit -m 'Freeze FanDuel pitcher K paper selections'
+            git commit -m 'Update frozen FanDuel pitcher K paper ledger'
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
 
@@ -108,10 +121,9 @@ jobs:
           echo '## FanDuel V2.2 pitcher K paper trading' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
           echo 'Research only. No wagers are placed.' >> "$GITHUB_STEP_SUMMARY"
+          echo "Live API key configured: ${{ steps.prereq.outputs.has_key }}" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.prereq.outputs.has_games }}" != "true" ]; then
             echo 'No MLB regular-season slate today.' >> "$GITHUB_STEP_SUMMARY"
-          elif [ "${{ steps.prereq.outputs.has_key }}" != "true" ]; then
-            echo 'BLOCKED: add repository Actions secret PROPLINE_API_KEY to enable free live FanDuel odds.' >> "$GITHUB_STEP_SUMMARY"
           elif [ -f outputs/fanduel_pitcher_k_paper_today.csv ]; then
             echo '' >> "$GITHUB_STEP_SUMMARY"
             echo '### Frozen/eligible selections this snapshot' >> "$GITHUB_STEP_SUMMARY"
@@ -119,17 +131,28 @@ jobs:
             head -n 35 outputs/fanduel_pitcher_k_paper_today.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'No eligible FanDuel V2.2 selection was generated.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'No eligible FanDuel V2.2 selection was generated. This is valid when lineups are not confirmed or no positive-EV line qualifies.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f outputs/fanduel_pitcher_k_paper_summary.csv ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Prospective grading / CLV' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/fanduel_pitcher_k_paper_summary.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.prereq.outputs.has_games == 'true' && steps.prereq.outputs.has_key == 'true'
+        if: always() && steps.prereq.outputs.has_games == 'true'
         with:
           name: fanduel-v22-paper-${{ github.run_id }}
           path: |
             outputs/fanduel_pitcher_k_paper_today.csv
             outputs/fanduel_pitcher_k_all_candidates.csv
+            outputs/fanduel_pitcher_k_paper_graded.csv
+            outputs/fanduel_pitcher_k_paper_summary.csv
+            outputs/fanduel_pitcher_k_calibration.csv
             data/current/fanduel_pitcher_k_paper_history.csv
+            data/market/pitcher_k_historical_raw.csv
             data/market/pitcher_k_live_fanduel.csv
             data/market/pitcher_k_live_fanduel_all_outcomes.csv
           if-no-files-found: warn
