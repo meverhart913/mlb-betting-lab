@@ -7,6 +7,7 @@ on:
       - 'python/run_v22_fanduel_paper.py'
       - 'python/fetch_propline_live_fanduel.py'
       - 'python/fetch_propline_sample.py'
+      - 'python/fetch_oddsapi_live_fanduel.py'
       - 'python/grade_fanduel_pitcher_k_paper.py'
       - '.github/workflows/fanduel-pitcher-k-paper.yml'
       - 'docs/FANDUEL_PROSPECTIVE_PROTOCOL.md'
@@ -25,6 +26,9 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       PROPLINE_API_KEY: ${{ secrets.PROPLINE_API_KEY }}
+      THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+      ODDS_API_CREDIT_RESERVE: '30'
+      FANDUEL_ODDS_HORIZON_HOURS: '4.0'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,11 +44,14 @@ jobs:
         shell: bash
         run: |
           HAS_GAMES="$(python python/check_mlb_slate.py)"
-          if [ -n "$PROPLINE_API_KEY" ]; then HAS_KEY=true; else HAS_KEY=false; fi
+          if [ -n "$PROPLINE_API_KEY" ]; then HAS_PROPLINE=true; else HAS_PROPLINE=false; fi
+          if [ -n "$THE_ODDS_API_KEY" ]; then HAS_ODDS=true; else HAS_ODDS=false; fi
           echo "has_games=$HAS_GAMES" >> "$GITHUB_OUTPUT"
-          echo "has_key=$HAS_KEY" >> "$GITHUB_OUTPUT"
+          echo "has_propline=$HAS_PROPLINE" >> "$GITHUB_OUTPUT"
+          echo "has_odds=$HAS_ODDS" >> "$GITHUB_OUTPUT"
           echo "Has regular-season games: $HAS_GAMES"
-          echo "PropLine live key configured: $HAS_KEY"
+          echo "PropLine live key configured: $HAS_PROPLINE"
+          echo "Odds API fallback configured: $HAS_ODDS"
 
       - name: Download latest successful V2.2 research data
         if: steps.prereq.outputs.has_games == 'true'
@@ -83,8 +90,28 @@ jobs:
             python python/fetch_propline_live_fanduel.py
             cp data/market/pitcher_k_live_fanduel.csv data/market/pitcher_k_historical_raw.csv
           else
-            echo 'No PropLine key: using free public sample fallback.'
+            echo 'Trying free PropLine public sample first.'
             python python/fetch_propline_sample.py
+            HAS_TODAY_FD="$(python - <<'PY'
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          import pandas as pd
+          p='data/market/pitcher_k_historical_raw.csv'
+          try:
+              d=pd.read_csv(p,low_memory=False)
+              today=datetime.now(ZoneInfo('America/New_York')).date().isoformat()
+              n=len(d[(d['date'].astype(str)==today) & d['sportsbook'].astype(str).str.casefold().eq('fanduel')])
+              print('true' if n>0 else 'false')
+          except Exception:
+              print('false')
+          PY
+          )"
+            echo "Free sample has same-day FanDuel rows: $HAS_TODAY_FD"
+            if [ "$HAS_TODAY_FD" != "true" ] && [ -n "$THE_ODDS_API_KEY" ]; then
+              echo 'Free sample is stale/missing. Using credit-aware Odds API FanDuel main+alt fallback.'
+              python python/fetch_oddsapi_live_fanduel.py
+              cp data/market/pitcher_k_live_fanduel.csv data/market/pitcher_k_historical_raw.csv
+            fi
           fi
 
       - name: Generate and freeze FanDuel V2.2 paper selections
@@ -121,7 +148,8 @@ jobs:
           echo '## FanDuel V2.2 pitcher K paper trading' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
           echo 'Research only. No wagers are placed.' >> "$GITHUB_STEP_SUMMARY"
-          echo "Live API key configured: ${{ steps.prereq.outputs.has_key }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "PropLine live key: ${{ steps.prereq.outputs.has_propline }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Odds API fallback: ${{ steps.prereq.outputs.has_odds }}" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.prereq.outputs.has_games }}" != "true" ]; then
             echo 'No MLB regular-season slate today.' >> "$GITHUB_STEP_SUMMARY"
           elif [ -f outputs/fanduel_pitcher_k_paper_today.csv ]; then
@@ -140,6 +168,13 @@ jobs:
             cat outputs/fanduel_pitcher_k_paper_summary.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
+          if [ -f data/current/fanduel_oddsapi_status.csv ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Odds API fallback credit status' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat data/current/fanduel_oddsapi_status.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - uses: actions/upload-artifact@v4
         if: always() && steps.prereq.outputs.has_games == 'true'
@@ -152,6 +187,7 @@ jobs:
             outputs/fanduel_pitcher_k_paper_summary.csv
             outputs/fanduel_pitcher_k_calibration.csv
             data/current/fanduel_pitcher_k_paper_history.csv
+            data/current/fanduel_oddsapi_status.csv
             data/market/pitcher_k_historical_raw.csv
             data/market/pitcher_k_live_fanduel.csv
             data/market/pitcher_k_live_fanduel_all_outcomes.csv
