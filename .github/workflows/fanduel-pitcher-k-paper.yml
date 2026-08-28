@@ -8,6 +8,7 @@ on:
       - 'python/run_fanduel_hybrid_paper.py'
       - 'python/build_fanduel_live_projections.py'
       - 'python/select_fanduel_paper_from_live.py'
+      - 'python/build_fanduel_daily_report.py'
       - 'python/fetch_propline_live_fanduel.py'
       - 'python/fetch_propline_sample.py'
       - 'python/fetch_oddsapi_live_fanduel.py'
@@ -135,6 +136,10 @@ jobs:
         if: steps.prereq.outputs.has_games == 'true'
         run: python python/grade_fanduel_pitcher_k_paper.py
 
+      - name: Build mobile daily report
+        if: steps.prereq.outputs.has_games == 'true'
+        run: python python/build_fanduel_daily_report.py
+
       - name: Commit immutable paper ledger
         if: steps.prereq.outputs.has_games == 'true'
         shell: bash
@@ -167,21 +172,11 @@ jobs:
           echo "Odds API fallback: ${{ steps.prereq.outputs.has_odds }}" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.prereq.outputs.has_games }}" != "true" ]; then
             echo 'No MLB regular-season slate today.' >> "$GITHUB_STEP_SUMMARY"
-          elif [ -f outputs/fanduel_pitcher_k_paper_today.csv ]; then
+          elif [ -f outputs/fanduel_pitcher_k_daily_report.md ]; then
             echo '' >> "$GITHUB_STEP_SUMMARY"
-            echo '### Frozen/eligible selections this snapshot' >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            head -n 35 outputs/fanduel_pitcher_k_paper_today.csv >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/fanduel_pitcher_k_daily_report.md >> "$GITHUB_STEP_SUMMARY"
           else
             echo 'No eligible FanDuel selection was generated.' >> "$GITHUB_STEP_SUMMARY"
-          fi
-          if [ -f outputs/fanduel_pitcher_k_live_projections.csv ]; then
-            echo '' >> "$GITHUB_STEP_SUMMARY"
-            echo '### Live projection routing' >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-            head -n 35 outputs/fanduel_pitcher_k_live_projections.csv >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
           if [ -f outputs/fanduel_pitcher_k_paper_summary.csv ]; then
             echo '' >> "$GITHUB_STEP_SUMMARY"
@@ -204,6 +199,8 @@ jobs:
           name: fanduel-v22-paper-${{ github.run_id }}
           path: |
             outputs/fanduel_pitcher_k_live_projections.csv
+            outputs/fanduel_pitcher_k_daily_report.csv
+            outputs/fanduel_pitcher_k_daily_report.md
             outputs/fanduel_pitcher_k_paper_today.csv
             outputs/fanduel_pitcher_k_all_candidates.csv
             outputs/fanduel_pitcher_k_paper_graded.csv
