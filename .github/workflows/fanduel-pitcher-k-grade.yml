@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'python/grade_fanduel_pitcher_k_paper.py'
+      - 'python/summarize_fanduel_failure_regimes.py'
       - '.github/workflows/fanduel-pitcher-k-grade.yml'
   schedule:
     - cron: '15 14 * 4-10 *'
@@ -30,6 +31,8 @@ jobs:
         run: python python/refresh_recent_mlb.py --lookback-days 4
       - name: Grade frozen FanDuel paper selections and CLV
         run: python python/grade_fanduel_pitcher_k_paper.py
+      - name: Summarize failure regimes
+        run: python python/summarize_fanduel_failure_regimes.py
       - name: Commit enriched paper ledger
         shell: bash
         run: |
@@ -44,6 +47,7 @@ jobs:
             echo 'No grading updates.'
           else
             git commit -m 'Grade FanDuel pitcher K paper selections'
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
       - name: Write grading summary
@@ -52,11 +56,24 @@ jobs:
         run: |
           echo '## FanDuel pitcher K prospective grading' >> "$GITHUB_STEP_SUMMARY"
           if [ -f outputs/fanduel_pitcher_k_paper_summary.csv ]; then
+            echo '### Thresholds / calibration / CLV' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             cat outputs/fanduel_pitcher_k_paper_summary.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           else
             echo 'No settled paper selections yet.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -s outputs/fanduel_pitcher_k_failure_regime_summary.csv ]; then
+            echo '### Failure regimes' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/fanduel_pitcher_k_failure_regime_summary.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -s outputs/fanduel_pitcher_k_model_version_summary.csv ]; then
+            echo '### Model versions' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/fanduel_pitcher_k_model_version_summary.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
       - uses: actions/upload-artifact@v4
         if: always()
@@ -66,6 +83,8 @@ jobs:
             outputs/fanduel_pitcher_k_paper_graded.csv
             outputs/fanduel_pitcher_k_paper_summary.csv
             outputs/fanduel_pitcher_k_calibration.csv
+            outputs/fanduel_pitcher_k_model_version_summary.csv
+            outputs/fanduel_pitcher_k_failure_regime_summary.csv
             data/current/fanduel_pitcher_k_paper_history.csv
           if-no-files-found: warn
           retention-days: 90
