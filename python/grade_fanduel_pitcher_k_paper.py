@@ -15,6 +15,7 @@ OUT = ROOT / "outputs"
 GRADED = OUT / "fanduel_pitcher_k_paper_graded.csv"
 SUMMARY = OUT / "fanduel_pitcher_k_paper_summary.csv"
 CALIB = OUT / "fanduel_pitcher_k_calibration.csv"
+MODEL_SUMMARY = OUT / "fanduel_pitcher_k_model_version_summary.csv"
 THRESHOLDS = (0.00, 0.025, 0.05, 0.075, 0.10)
 
 
@@ -34,6 +35,17 @@ def win_profit(price):
     return float(price) / 100 if float(price) > 0 else 100 / (-float(price))
 
 
+def binary_scores(x: pd.DataFrame):
+    q = x[x.result.isin(["WIN", "LOSS"]) & x.model_win_prob.notna()].copy()
+    if q.empty:
+        return np.nan, np.nan
+    y = q.result.eq("WIN").astype(float).to_numpy()
+    p = np.clip(pd.to_numeric(q.model_win_prob, errors="coerce").to_numpy(float), 1e-6, 1 - 1e-6)
+    brier = float(np.mean((p - y) ** 2))
+    log_loss = float(-np.mean(y * np.log(p) + (1 - y) * np.log(1 - p)))
+    return brier, log_loss
+
+
 def load_archive():
     fs = list(ARCHIVE.rglob("*.csv")) if ARCHIVE.exists() else []
     parts = []
@@ -42,11 +54,7 @@ def load_archive():
             q = pd.read_csv(f, low_memory=False)
         except Exception:
             continue
-        if q.empty:
-            continue
-        if "collected_at_utc" not in q.columns:
-            # Legacy snapshots predate prospective timing instrumentation and
-            # are deliberately excluded from CLV calculations.
+        if q.empty or "collected_at_utc" not in q.columns:
             continue
         parts.append(q)
     if not parts:
@@ -141,8 +149,6 @@ def grade():
 
     OUT.mkdir(exist_ok=True)
     h.to_csv(GRADED, index=False)
-    # Persist grading back to the canonical immutable-selection ledger. Selection
-    # fields stay frozen; only result/CLV columns are enriched later.
     h.drop(columns=["name_key"], errors="ignore").to_csv(HISTORY, index=False)
 
     done = h[h.result.isin(["WIN", "LOSS", "PUSH"])].copy()
@@ -152,10 +158,12 @@ def grade():
         wins = int(x.result.eq("WIN").sum()); losses = int(x.result.eq("LOSS").sum()); pushes = int(x.result.eq("PUSH").sum())
         staked = wins + losses
         profit = float(x.flat_profit_units.fillna(0).sum())
+        brier, logloss = binary_scores(x)
         rows.append({
             "min_edge": t, "independent_bets": staked, "pushes": pushes, "wins": wins, "losses": losses,
             "win_rate_ex_push": wins / staked if staked else np.nan,
             "profit_units": profit, "roi": profit / staked if staked else np.nan,
+            "brier_score_ex_push": brier, "log_loss_ex_push": logloss,
             "mean_clv_implied_prob": float(pd.to_numeric(x.clv_implied_prob, errors="coerce").mean()) if len(x) else np.nan,
         })
     pd.DataFrame(rows).to_csv(SUMMARY, index=False)
@@ -170,6 +178,18 @@ def grade():
     else:
         cal = pd.DataFrame(columns=["prob_bin", "bets", "mean_model_prob", "observed_win_rate"])
     cal.to_csv(CALIB, index=False)
+
+    if "model_version" in done.columns and not done.empty:
+        mr=[]
+        for name,x in done.groupby("model_version",dropna=False):
+            wins=int(x.result.eq("WIN").sum()); losses=int(x.result.eq("LOSS").sum()); pushes=int(x.result.eq("PUSH").sum())
+            staked=wins+losses; profit=float(x.flat_profit_units.fillna(0).sum()); brier,logloss=binary_scores(x)
+            mr.append({"model_version":name,"independent_bets":staked,"pushes":pushes,"wins":wins,"losses":losses,
+                       "win_rate_ex_push":wins/staked if staked else np.nan,"profit_units":profit,"roi":profit/staked if staked else np.nan,
+                       "brier_score_ex_push":brier,"log_loss_ex_push":logloss,
+                       "mean_clv_implied_prob":float(pd.to_numeric(x.clv_implied_prob,errors="coerce").mean())})
+        pd.DataFrame(mr).to_csv(MODEL_SUMMARY,index=False)
+
     print(f"FanDuel paper ledger: {len(h)} selections; settled={len(done)}; pending={h.result.eq('PENDING').sum()}")
     if SUMMARY.exists(): print(pd.read_csv(SUMMARY).round(5).to_string(index=False))
 
