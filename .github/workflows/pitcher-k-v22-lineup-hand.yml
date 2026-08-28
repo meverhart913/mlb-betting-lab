@@ -12,6 +12,7 @@ on:
       - 'python/build_statcast_rolling_features.py'
       - 'python/build_historical_lineup_hand_features.py'
       - 'python/test_pitcher_k_batter_hand_features.py'
+      - 'python/test_v22_pitcher_k_distribution.py'
       - 'python/build_pitcher_k_model.py'
       - 'python/test_pitcher_k_ensemble.py'
       - 'python/prepare_free_pitcher_k_backtest.py'
@@ -33,7 +34,9 @@ jobs:
       - name: Backfill season matchup inputs
         shell: bash
         run: |
-          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-25"
+          END="${{ matrix.year }}-10-31"
+          if [ "${{ matrix.year }}" = "2026" ]; then END="$(date -u -d 'yesterday' +%F)"; fi
+          echo "Backfill through $END"
           python python/backfill_batter_k_hand_splits.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/batter_k_by_pitcher_hand_daily.csv "data/features/batter_hand_${{ matrix.year }}.csv"
           python python/backfill_historical_starting_lineups.py --start "${{ matrix.year }}-03-15" --end "$END"
@@ -55,7 +58,9 @@ jobs:
       - name: Backfill season Statcast pitcher features
         shell: bash
         run: |
-          END="${{ matrix.year }}-10-31"; [ "${{ matrix.year }}" = "2026" ] && END="2026-08-25"
+          END="${{ matrix.year }}-10-31"
+          if [ "${{ matrix.year }}" = "2026" ]; then END="$(date -u -d 'yesterday' +%F)"; fi
+          echo "Backfill through $END"
           python python/backfill_statcast_pitch_features.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/statcast_pitcher_daily.csv "data/features/statcast_pitcher_${{ matrix.year }}.csv"
       - uses: actions/upload-artifact@v4
@@ -102,6 +107,8 @@ jobs:
         run: python python/build_historical_lineup_hand_features.py
       - name: Run V2.2 walk-forward challenger
         run: python python/test_pitcher_k_batter_hand_features.py
+      - name: Audit V2.2 Poisson vs negative-binomial pricing
+        run: python python/test_v22_pitcher_k_distribution.py
       - name: Prepare accumulated free market archive
         run: python python/prepare_free_pitcher_k_backtest.py
       - name: Run V2.2 free market ROI test
@@ -120,6 +127,8 @@ jobs:
             outputs/pitcher_k_batter_hand_metrics.csv
             outputs/pitcher_k_batter_hand_summary.csv
             outputs/pitcher_k_batter_hand_predictions.csv
+            outputs/v22_pitcher_k_distribution_metrics.csv
+            outputs/v22_pitcher_k_distribution_summary.csv
             outputs/pitcher_k_market_graded.csv
             outputs/pitcher_k_market_threshold_summary.csv
             outputs/pitcher_k_market_year_summary.csv
