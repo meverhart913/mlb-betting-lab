@@ -9,6 +9,7 @@ on:
       - 'python/build_fanduel_live_projections.py'
       - 'python/select_fanduel_paper_from_live.py'
       - 'python/build_fanduel_daily_report.py'
+      - 'python/archive_fanduel_decision_snapshot.py'
       - 'python/fetch_propline_live_fanduel.py'
       - 'python/fetch_propline_sample.py'
       - 'python/fetch_oddsapi_live_fanduel.py'
@@ -128,6 +129,10 @@ jobs:
             fi
           fi
 
+      - name: Persist FanDuel decision-cycle quote for CLV
+        if: steps.prereq.outputs.has_games == 'true'
+        run: python python/archive_fanduel_decision_snapshot.py
+
       - name: Price and freeze FanDuel paper selections
         if: steps.prereq.outputs.has_games == 'true'
         run: python python/select_fanduel_paper_from_live.py
@@ -140,21 +145,22 @@ jobs:
         if: steps.prereq.outputs.has_games == 'true'
         run: python python/build_fanduel_daily_report.py
 
-      - name: Commit immutable paper ledger
+      - name: Commit prospective paper and quote history
         if: steps.prereq.outputs.has_games == 'true'
         shell: bash
         run: |
-          if [ ! -f data/current/fanduel_pitcher_k_paper_history.csv ]; then
-            echo 'No FanDuel paper ledger yet.'
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/current/fanduel_pitcher_k_paper_history.csv
+          if [ -f data/current/fanduel_pitcher_k_paper_history.csv ]; then
+            git add data/current/fanduel_pitcher_k_paper_history.csv
+          fi
+          if [ -d data/market/free_archive ]; then
+            git add data/market/free_archive
+          fi
           if git diff --cached --quiet; then
-            echo 'No ledger changes.'
+            echo 'No prospective history changes.'
           else
-            git commit -m 'Update frozen FanDuel pitcher K paper ledger'
+            git commit -m 'Update FanDuel pitcher K prospective history'
             git pull --rebase origin main
             git push origin HEAD:main
           fi
@@ -180,9 +186,16 @@ jobs:
           fi
           if [ -f outputs/fanduel_pitcher_k_paper_summary.csv ]; then
             echo '' >> "$GITHUB_STEP_SUMMARY"
-            echo '### Prospective grading / CLV' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Prospective grading / CLV / calibration' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             cat outputs/fanduel_pitcher_k_paper_summary.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f outputs/fanduel_pitcher_k_model_version_summary.csv ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Model version split' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat outputs/fanduel_pitcher_k_model_version_summary.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
           if [ -f data/current/fanduel_oddsapi_status.csv ]; then
@@ -206,6 +219,7 @@ jobs:
             outputs/fanduel_pitcher_k_paper_graded.csv
             outputs/fanduel_pitcher_k_paper_summary.csv
             outputs/fanduel_pitcher_k_calibration.csv
+            outputs/fanduel_pitcher_k_model_version_summary.csv
             data/current/fanduel_pitcher_k_paper_history.csv
             data/current/fanduel_oddsapi_status.csv
             data/market/pitcher_k_historical_raw.csv
