@@ -5,7 +5,6 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +12,7 @@ sys.path.insert(0, str(ROOT / "python"))
 
 import run_v22_fanduel_paper as v22  # noqa: E402
 import run_fanduel_hybrid_paper as hybrid  # noqa: E402
+import select_fanduel_paper_from_live as selector  # noqa: E402
 
 
 class FanDuelPaperTests(unittest.TestCase):
@@ -59,6 +59,22 @@ class FanDuelPaperTests(unittest.TestCase):
         over = c[c.side.eq("OVER")].iloc[0]
         expected = over.model_win_prob * 1.5 - (1.0 - over.model_win_prob)
         self.assertAlmostEqual(over.expected_profit_per_unit, expected, places=10)
+
+    def test_timing_guard_allows_model_before_quote(self):
+        latest, earliest = selector.assert_projection_before_quote(
+            ["2026-08-28T20:59:00Z"], ["2026-08-28T21:00:00Z"]
+        )
+        self.assertLessEqual(latest, earliest)
+
+    def test_timing_guard_rejects_model_after_quote(self):
+        with self.assertRaises(ValueError):
+            selector.assert_projection_before_quote(
+                ["2026-08-28T21:01:00Z"], ["2026-08-28T21:00:00Z"]
+            )
+
+    def test_timing_guard_rejects_missing_timestamp(self):
+        with self.assertRaises(ValueError):
+            selector.assert_projection_before_quote([None], ["2026-08-28T21:00:00Z"])
 
     @patch.object(hybrid, "fit_v21_and_predict")
     @patch.object(hybrid, "fit_v22_and_predict")
