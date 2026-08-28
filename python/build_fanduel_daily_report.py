@@ -23,20 +23,21 @@ def fmt_odds(v):
 
 
 def risk_flags(row) -> str:
-    flags=[]
+    frozen=str(row.get("failure_regime_flags", "") or "").strip()
+    flags=[] if frozen in {"", "nan", "NONE"} else [x for x in frozen.split(",") if x]
     model=str(row.get("model_version", ""))
-    if "fallback" in model:
+    if "fallback" in model and "LINEUP_NOT_CONFIRMED" not in flags:
         flags.append("LINEUP_NOT_CONFIRMED")
     cov=pd.to_numeric(row.get("lineup_match_coverage"), errors="coerce")
-    if pd.notna(cov) and cov < .80:
+    if pd.notna(cov) and cov < .80 and "LOW_LINEUP_COVERAGE" not in flags:
         flags.append("LOW_LINEUP_COVERAGE")
     bf=pd.to_numeric(row.get("projected_bf"), errors="coerce")
-    if pd.notna(bf) and (bf < 18 or bf > 30):
+    if pd.notna(bf) and (bf < 18 or bf > 30) and "BF_EXTREME" not in flags:
         flags.append("BF_EXTREME")
     edge=pd.to_numeric(row.get("model_market_edge"), errors="coerce")
     if pd.notna(edge) and abs(edge) >= .15:
         flags.append("LARGE_MODEL_MARKET_GAP")
-    return ",".join(flags) if flags else "NONE"
+    return ",".join(dict.fromkeys(flags)) if flags else "NONE"
 
 
 def main():
@@ -51,25 +52,27 @@ def main():
         p=pd.DataFrame()
 
     if s.empty:
-        # Still expose projection availability and model routing when no market
-        # is eligible yet, which is especially useful in early-day runs.
         if p.empty:
             out=pd.DataFrame(columns=["pitcher","status","model","projected_k","notes"])
         else:
+            notes=[]
+            for _,r in p.iterrows():
+                base="lineup not confirmed; V2.1 Statcast fallback" if "fallback" in str(r.get("model_version","")) else "V2.2 confirmed-lineup model"
+                f=str(r.get("failure_regime_flags","NONE"))
+                notes.append(base + (f"; flags: {f}" if f not in {"NONE","nan",""} else ""))
             out=pd.DataFrame({
                 "pitcher":p.get("pitcher_name", ""),
                 "status":"WAITING_FOR_ELIGIBLE_FANDUEL_MARKET",
                 "model":p.get("model_version", ""),
                 "projected_k":pd.to_numeric(p.get("projected_k"), errors="coerce").round(2),
-                "notes":np.where(p.get("model_version", pd.Series(index=p.index,dtype=str)).astype(str).str.contains("fallback"),
-                                 "lineup not confirmed; V2.1 Statcast fallback", "V2.2 confirmed-lineup model"),
+                "notes":notes,
             })
         out.to_csv(OUT_CSV,index=False)
         lines=["# FanDuel Pitcher K Paper Report", "", "No eligible FanDuel paper selections in this snapshot.", ""]
         if not out.empty:
             lines.append("## Projection status")
             for r in out.head(40).itertuples(index=False):
-                lines.append(f"- {r.pitcher}: {r.projected_k} K, {r.model}, {r.status}")
+                lines.append(f"- {r.pitcher}: {r.projected_k} K, {r.model}, {r.status}. {r.notes}")
         OUT_MD.write_text("\n".join(lines)+"\n",encoding="utf-8")
         print(f"No frozen selections; report contains {len(out)} projection-status rows.")
         return
@@ -77,7 +80,7 @@ def main():
     rows=[]
     for _,r in s.iterrows():
         model=str(r.get("model_version", ""))
-        lineup="CONFIRMED" if model.startswith("v22_") else "NOT CONFIRMED"
+        lineup=str(r.get("lineup_status", "CONFIRMED" if model.startswith("v22_") else "NOT_CONFIRMED"))
         ev=pd.to_numeric(r.get("expected_profit_per_unit"), errors="coerce")
         edge=pd.to_numeric(r.get("model_market_edge"), errors="coerce")
         prob=pd.to_numeric(r.get("model_win_prob"), errors="coerce")
