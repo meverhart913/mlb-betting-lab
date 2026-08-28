@@ -92,18 +92,27 @@ def grade():
     logs["game_id"] = pd.to_numeric(logs.game_id, errors="coerce")
     logs["pitcher_id"] = pd.to_numeric(logs.pitcher_id, errors="coerce")
     logs["strikeouts"] = pd.to_numeric(logs.strikeouts, errors="coerce")
-    actual = (logs.dropna(subset=["game_id", "pitcher_id", "strikeouts"])
+    logs["is_starter"] = pd.to_numeric(logs.get("is_starter"), errors="coerce").fillna(0).astype(int)
+    completed_game_ids = set(logs.dropna(subset=["game_id"]).game_id.astype(float))
+    actual = (logs.dropna(subset=["game_id", "pitcher_id"])
               .sort_values(["date", "game_id"])
               .drop_duplicates(["game_id", "pitcher_id"], keep="last")
-              [["game_id", "pitcher_id", "strikeouts"]]
-              .rename(columns={"strikeouts": "actual_k"}))
-    h = h.drop(columns=[c for c in ["actual_k"] if c in h.columns]).merge(actual, on=["game_id", "pitcher_id"], how="left")
+              [["game_id", "pitcher_id", "strikeouts", "is_starter"]]
+              .rename(columns={"strikeouts": "actual_k", "is_starter": "actual_is_starter"}))
+    h = h.drop(columns=[c for c in ["actual_k", "actual_is_starter"] if c in h.columns]).merge(actual, on=["game_id", "pitcher_id"], how="left")
 
     results = []
     profits = []
     for r in h.itertuples(index=False):
+        game_completed = pd.notna(r.game_id) and float(r.game_id) in completed_game_ids
         if pd.isna(r.actual_k):
-            results.append("PENDING"); profits.append(np.nan); continue
+            if game_completed:
+                results.append("VOID_STARTER_CHANGE"); profits.append(0.0)
+            else:
+                results.append("PENDING"); profits.append(np.nan)
+            continue
+        if int(r.actual_is_starter or 0) != 1:
+            results.append("VOID_STARTER_CHANGE"); profits.append(0.0); continue
         if float(r.actual_k) == float(r.line):
             results.append("PUSH"); profits.append(0.0)
         elif (r.side == "OVER" and float(r.actual_k) > float(r.line)) or (r.side == "UNDER" and float(r.actual_k) < float(r.line)):
@@ -151,16 +160,16 @@ def grade():
     h.to_csv(GRADED, index=False)
     h.drop(columns=["name_key"], errors="ignore").to_csv(HISTORY, index=False)
 
-    done = h[h.result.isin(["WIN", "LOSS", "PUSH"])].copy()
+    decided = h[h.result.isin(["WIN", "LOSS", "PUSH", "VOID_STARTER_CHANGE"])].copy()
     rows = []
     for t in THRESHOLDS:
-        x = done[done.model_market_edge.ge(t)]
-        wins = int(x.result.eq("WIN").sum()); losses = int(x.result.eq("LOSS").sum()); pushes = int(x.result.eq("PUSH").sum())
+        x = decided[decided.model_market_edge.ge(t)]
+        wins = int(x.result.eq("WIN").sum()); losses = int(x.result.eq("LOSS").sum()); pushes = int(x.result.eq("PUSH").sum()); voids=int(x.result.eq("VOID_STARTER_CHANGE").sum())
         staked = wins + losses
         profit = float(x.flat_profit_units.fillna(0).sum())
         brier, logloss = binary_scores(x)
         rows.append({
-            "min_edge": t, "independent_bets": staked, "pushes": pushes, "wins": wins, "losses": losses,
+            "min_edge": t, "independent_bets": staked, "pushes": pushes, "voids": voids, "wins": wins, "losses": losses,
             "win_rate_ex_push": wins / staked if staked else np.nan,
             "profit_units": profit, "roi": profit / staked if staked else np.nan,
             "brier_score_ex_push": brier, "log_loss_ex_push": logloss,
@@ -168,7 +177,7 @@ def grade():
         })
     pd.DataFrame(rows).to_csv(SUMMARY, index=False)
 
-    settled = done[done.result.ne("PUSH") & done.model_win_prob.notna()].copy()
+    settled = decided[decided.result.isin(["WIN", "LOSS"]) & decided.model_win_prob.notna()].copy()
     if not settled.empty:
         settled["won"] = settled.result.eq("WIN").astype(int)
         settled["prob_bin"] = pd.cut(settled.model_win_prob, bins=[0,.4,.5,.6,.7,.8,1.0], include_lowest=True)
@@ -179,18 +188,18 @@ def grade():
         cal = pd.DataFrame(columns=["prob_bin", "bets", "mean_model_prob", "observed_win_rate"])
     cal.to_csv(CALIB, index=False)
 
-    if "model_version" in done.columns and not done.empty:
+    if "model_version" in decided.columns and not decided.empty:
         mr=[]
-        for name,x in done.groupby("model_version",dropna=False):
-            wins=int(x.result.eq("WIN").sum()); losses=int(x.result.eq("LOSS").sum()); pushes=int(x.result.eq("PUSH").sum())
+        for name,x in decided.groupby("model_version",dropna=False):
+            wins=int(x.result.eq("WIN").sum()); losses=int(x.result.eq("LOSS").sum()); pushes=int(x.result.eq("PUSH").sum()); voids=int(x.result.eq("VOID_STARTER_CHANGE").sum())
             staked=wins+losses; profit=float(x.flat_profit_units.fillna(0).sum()); brier,logloss=binary_scores(x)
-            mr.append({"model_version":name,"independent_bets":staked,"pushes":pushes,"wins":wins,"losses":losses,
+            mr.append({"model_version":name,"independent_bets":staked,"pushes":pushes,"voids":voids,"wins":wins,"losses":losses,
                        "win_rate_ex_push":wins/staked if staked else np.nan,"profit_units":profit,"roi":profit/staked if staked else np.nan,
                        "brier_score_ex_push":brier,"log_loss_ex_push":logloss,
                        "mean_clv_implied_prob":float(pd.to_numeric(x.clv_implied_prob,errors="coerce").mean())})
         pd.DataFrame(mr).to_csv(MODEL_SUMMARY,index=False)
 
-    print(f"FanDuel paper ledger: {len(h)} selections; settled={len(done)}; pending={h.result.eq('PENDING').sum()}")
+    print(f"FanDuel paper ledger: {len(h)} selections; settled bets={h.result.isin(['WIN','LOSS','PUSH']).sum()}; voids={h.result.eq('VOID_STARTER_CHANGE').sum()}; pending={h.result.eq('PENDING').sum()}")
     if SUMMARY.exists(): print(pd.read_csv(SUMMARY).round(5).to_string(index=False))
 
 
