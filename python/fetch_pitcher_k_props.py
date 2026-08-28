@@ -7,7 +7,7 @@ values crossing +/-100 are not linear.
 """
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 import os
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -78,11 +78,14 @@ def main() -> None:
     selected_events = events[:budget_events]
     skipped_budget = len(events) - len(selected_events)
 
-    snapshot = datetime.now(ZoneInfo("America/New_York")).isoformat(timespec="minutes")
+    now_utc = datetime.now(timezone.utc)
+    collected_at_utc = now_utc.isoformat(timespec="seconds")
+    snapshot = now_utc.astimezone(ZoneInfo("America/New_York")).isoformat(timespec="minutes")
     rows, credits, checked = [], 0, 0
     last_remaining = remaining_start
     for event in selected_events:
         eid = event.get("id")
+        event_commence = event.get("commence_time")
         q = requests.get(
             f"{BASE}/events/{eid}/odds",
             params={"apiKey": key, "regions": "us", "markets": "pitcher_strikeouts", "oddsFormat": "american", "dateFormat": "iso"},
@@ -100,6 +103,7 @@ def main() -> None:
         if q_remaining is not None:
             last_remaining = q_remaining
         payload = q.json()
+        commence = payload.get("commence_time") or event_commence
         for book in payload.get("bookmakers", []):
             sportsbook = book.get("title") or book.get("key")
             for market in book.get("markets", []):
@@ -115,16 +119,18 @@ def main() -> None:
                             "pitcher_name": pitcher, "side": side, "line": o.get("point"), "price": o.get("price"),
                             "sportsbook": sportsbook, "bookmaker_key": book.get("key"),
                             "source_last_update": market.get("last_update") or book.get("last_update"),
+                            "commence_time_utc": commence,
+                            "collected_at_utc": collected_at_utc,
                             "snapshot_time_et": snapshot, "source": "the-odds-api",
                         })
 
     CURRENT.mkdir(parents=True, exist_ok=True)
     pd.DataFrame([{
-        "date": target, "snapshot_time_et": snapshot, "events_on_slate": len(events),
-        "events_checked": checked, "events_skipped_for_quota": skipped_budget,
-        "credit_reserve": reserve, "credits_used_event_calls": credits,
-        "credits_remaining_start": remaining_start, "credits_remaining_end": last_remaining,
-        "raw_quotes": len(rows),
+        "date": target, "snapshot_time_et": snapshot, "collected_at_utc": collected_at_utc,
+        "events_on_slate": len(events), "events_checked": checked,
+        "events_skipped_for_quota": skipped_budget, "credit_reserve": reserve,
+        "credits_used_event_calls": credits, "credits_remaining_start": remaining_start,
+        "credits_remaining_end": last_remaining, "raw_quotes": len(rows),
     }]).to_csv(STATUS, index=False)
 
     raw = pd.DataFrame(rows)
