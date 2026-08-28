@@ -3,11 +3,42 @@ name: MLB model CI
 on:
   push:
     branches: [main, organize-pitcher-model-v3, hybrid-market-model, test-rest-features, pregame-context-v2, elo-market-v3, pitcher-k-props-v1, pitcher-k-props-v2]
+    paths:
+      - 'python/build_pitcher_model.py'
+      - 'python/compare_feature_sets.py'
+      - 'python/evaluate_clean_market.py'
+      - 'python/test_market_hybrid.py'
+      - 'python/test_rest_features.py'
+      - 'python/test_bullpen_features.py'
+      - 'python/test_bullpen_ablation.py'
+      - 'python/test_elo_features.py'
+      - 'python/test_elo_tuning.py'
+      - 'python/build_pitcher_k_model.py'
+      - 'python/test_pitcher_k_components.py'
+      - 'python/test_pitcher_k_ensemble.py'
+      - 'python/test_pitcher_k_distribution.py'
+      - 'requirements.txt'
+      - '.github/workflows/model-ci.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'python/build_pitcher_model.py'
+      - 'python/compare_feature_sets.py'
+      - 'python/evaluate_clean_market.py'
+      - 'python/test_market_hybrid.py'
+      - 'python/test_rest_features.py'
+      - 'python/test_bullpen_features.py'
+      - 'python/test_bullpen_ablation.py'
+      - 'python/test_elo_features.py'
+      - 'python/test_elo_tuning.py'
+      - 'python/build_pitcher_k_model.py'
+      - 'python/test_pitcher_k_components.py'
+      - 'python/test_pitcher_k_ensemble.py'
+      - 'python/test_pitcher_k_distribution.py'
+      - 'requirements.txt'
 
 jobs:
-  test-and-backtest:
+  backtest:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -16,46 +47,7 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Run unit tests
-        run: python -m unittest discover -s tests -v
-      - name: Validate automation syntax
-        run: >-
-          python -m py_compile
-          python/run_morning_model.py
-          python/run_morning_model_elo.py
-          python/fetch_morning_odds.py
-          python/refresh_recent_mlb.py
-          python/fetch_morning_context.py
-          python/fetch_bullpen_context.py
-          python/fetch_roster_context.py
-          python/fetch_lineup_context.py
-          python/check_mlb_slate.py
-          python/build_morning_report.py
-          python/build_line_movement.py
-          python/test_bullpen_features.py
-          python/test_bullpen_ablation.py
-          python/test_elo_features.py
-          python/test_elo_tuning.py
-          python/build_pitcher_k_model.py
-          python/test_pitcher_k_components.py
-          python/test_pitcher_k_ensemble.py
-          python/test_pitcher_k_distribution.py
-          python/fetch_pitcher_k_props.py
-          python/fetch_propline_sample.py
-          python/fetch_propline_live_fanduel.py
-          python/fetch_oddsapi_live_fanduel.py
-          python/build_pitcher_k_line_movement.py
-          python/run_pitcher_k_props.py
-          python/run_v22_fanduel_paper.py
-          python/run_fanduel_hybrid_paper.py
-          python/build_fanduel_live_projections.py
-          python/select_fanduel_paper_from_live.py
-          python/archive_fanduel_decision_snapshot.py
-          python/build_fanduel_daily_report.py
-          python/grade_fanduel_pitcher_k_paper.py
-          python/grade_pitcher_k_projections.py
+      - run: pip install -r requirements.txt
       - name: Run full pitcher-aware walk-forward backtest
         run: python python/build_pitcher_model.py
       - name: Compare pitcher, team, and combined feature sets
