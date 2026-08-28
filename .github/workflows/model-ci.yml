@@ -43,8 +43,14 @@ jobs:
           python/test_pitcher_k_ensemble.py
           python/test_pitcher_k_distribution.py
           python/fetch_pitcher_k_props.py
+          python/fetch_propline_sample.py
+          python/fetch_propline_live_fanduel.py
+          python/fetch_oddsapi_live_fanduel.py
           python/build_pitcher_k_line_movement.py
           python/run_pitcher_k_props.py
+          python/run_v22_fanduel_paper.py
+          python/run_fanduel_hybrid_paper.py
+          python/grade_fanduel_pitcher_k_paper.py
           python/grade_pitcher_k_projections.py
       - name: Run full pitcher-aware walk-forward backtest
         run: python python/build_pitcher_model.py
