@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -13,6 +14,7 @@ sys.path.insert(0, str(ROOT / "python"))
 import run_v22_fanduel_paper as v22  # noqa: E402
 import run_fanduel_hybrid_paper as hybrid  # noqa: E402
 import select_fanduel_paper_from_live as selector  # noqa: E402
+import grade_fanduel_pitcher_k_paper as grader  # noqa: E402
 
 
 class FanDuelPaperTests(unittest.TestCase):
@@ -91,6 +93,27 @@ class FanDuelPaperTests(unittest.TestCase):
         versions = dict(zip(out.pitcher_name, out.model_version))
         self.assertEqual(versions["A"], "v22_lineup_all_live")
         self.assertEqual(versions["B"], "v21_statcast_fallback_live")
+
+    def test_completed_game_with_different_starter_is_void(self):
+        with tempfile.TemporaryDirectory() as td:
+            t=Path(td); hist=t/'history.csv'; logs=t/'logs.csv'; archive=t/'archive'; out=t/'out'; archive.mkdir(); out.mkdir()
+            pd.DataFrame([{
+                'date':'2026-08-28','game_id':1,'event_id':'e1','pitcher_id':10,'pitcher_name':'Scratched Pitcher',
+                'line':5.5,'side':'OVER','fanduel_price':-110,'model_win_prob':0.60,'model_market_edge':0.08,
+                'collected_at_utc':'2026-08-28T20:00:00Z','commence_time_utc':'2026-08-28T22:00:00Z',
+                'model_version':'v22_lineup_all_live'
+            }]).to_csv(hist,index=False)
+            pd.DataFrame([{
+                'date':'2026-08-28','game_id':1,'pitcher_id':20,'pitcher_name':'Replacement Starter',
+                'strikeouts':6,'is_starter':1
+            }]).to_csv(logs,index=False)
+            with patch.object(grader,'HISTORY',hist), patch.object(grader,'LOG',logs), patch.object(grader,'ARCHIVE',archive), \
+                 patch.object(grader,'OUT',out), patch.object(grader,'GRADED',out/'graded.csv'), patch.object(grader,'SUMMARY',out/'summary.csv'), \
+                 patch.object(grader,'CALIB',out/'calib.csv'), patch.object(grader,'MODEL_SUMMARY',out/'models.csv'):
+                grader.grade()
+            got=pd.read_csv(hist)
+            self.assertEqual(got.loc[0,'result'],'VOID_STARTER_CHANGE')
+            self.assertEqual(float(got.loc[0,'flat_profit_units']),0.0)
 
 
 if __name__ == "__main__":
