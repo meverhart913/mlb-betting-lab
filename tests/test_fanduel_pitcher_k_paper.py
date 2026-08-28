@@ -94,6 +94,35 @@ class FanDuelPaperTests(unittest.TestCase):
         self.assertEqual(versions["A"], "v22_lineup_all_live")
         self.assertEqual(versions["B"], "v21_statcast_fallback_live")
 
+    def test_freeze_keeps_one_best_alt_line_and_no_duplicate_history(self):
+        with tempfile.TemporaryDirectory() as td:
+            t=Path(td); current=t/'current'; out=t/'out'; current.mkdir(); out.mkdir()
+            history=current/'history.csv'; today=out/'today.csv'; audit=out/'audit.csv'
+            base={
+                'date':'2026-08-28','game_id':1,'event_id':'e1','pitcher_id':10,'pitcher_name':'Test Pitcher',
+                'fanduel_price':-110,'fanduel_implied_prob':0.5238,'fanduel_no_vig_prob':0.50,'model_win_prob':0.60,
+                'push_prob':0.0,'model_market_edge':0.10,'projected_k':5.3,'projected_bf':24.0,'projected_k_rate':0.22,
+                'lineup_match_coverage':1.0,'commence_time_utc':'2026-08-28T23:00:00Z','collected_at_utc':'2026-08-28T21:00:00Z',
+                'minutes_to_start':120.0,'timing_eligible':True,'model_version':'v22_lineup_all_live',
+                'model_generated_at_et':'2026-08-28T16:59:00-04:00'
+            }
+            candidates=pd.DataFrame([
+                {**base,'line':4.5,'side':'OVER','expected_profit_per_unit':0.08},
+                {**base,'line':5.5,'side':'OVER','expected_profit_per_unit':0.15},
+                {**base,'line':6.5,'side':'UNDER','expected_profit_per_unit':0.05},
+            ])
+            with patch.object(v22,'CURRENT',current), patch.object(v22,'OUT',out), patch.object(v22,'HISTORY',history), \
+                 patch.object(v22,'TODAY_OUT',today), patch.object(v22,'AUDIT_OUT',audit):
+                first=v22.freeze(candidates)
+                second=v22.freeze(candidates)
+            self.assertEqual(len(first),1)
+            self.assertEqual(float(first.iloc[0].line),5.5)
+            self.assertEqual(float(first.iloc[0].expected_profit_per_unit),0.15)
+            self.assertEqual(len(second),1)
+            hist=pd.read_csv(history)
+            self.assertEqual(len(hist),1)
+            self.assertEqual(float(hist.loc[0,'line']),5.5)
+
     def test_completed_game_with_different_starter_is_void(self):
         with tempfile.TemporaryDirectory() as td:
             t=Path(td); hist=t/'history.csv'; logs=t/'logs.csv'; archive=t/'archive'; out=t/'out'; archive.mkdir(); out.mkdir()
