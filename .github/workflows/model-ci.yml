@@ -52,6 +52,7 @@ jobs:
           python/run_fanduel_hybrid_paper.py
           python/build_fanduel_live_projections.py
           python/select_fanduel_paper_from_live.py
+          python/build_fanduel_daily_report.py
           python/grade_fanduel_pitcher_k_paper.py
           python/grade_pitcher_k_projections.py
       - name: Run full pitcher-aware walk-forward backtest
