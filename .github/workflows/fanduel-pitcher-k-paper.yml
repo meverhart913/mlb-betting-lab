@@ -5,9 +5,11 @@ on:
     branches: [main]
     paths:
       - 'python/run_v22_fanduel_paper.py'
+      - 'python/run_fanduel_hybrid_paper.py'
       - 'python/fetch_propline_live_fanduel.py'
       - 'python/fetch_propline_sample.py'
       - 'python/fetch_oddsapi_live_fanduel.py'
+      - 'python/fetch_pitcher_k_props.py'
       - 'python/grade_fanduel_pitcher_k_paper.py'
       - '.github/workflows/fanduel-pitcher-k-paper.yml'
       - 'docs/FANDUEL_PROSPECTIVE_PROTOCOL.md'
@@ -114,9 +116,9 @@ jobs:
             fi
           fi
 
-      - name: Generate and freeze FanDuel V2.2 paper selections
+      - name: Generate and freeze FanDuel V2.2/V2.1 paper selections
         if: steps.prereq.outputs.has_games == 'true'
-        run: python python/run_v22_fanduel_paper.py
+        run: python python/run_fanduel_hybrid_paper.py
 
       - name: Grade prior FanDuel selections and CLV
         if: steps.prereq.outputs.has_games == 'true'
@@ -145,9 +147,10 @@ jobs:
         if: always()
         shell: bash
         run: |
-          echo '## FanDuel V2.2 pitcher K paper trading' >> "$GITHUB_STEP_SUMMARY"
+          echo '## FanDuel V2.2/V2.1 pitcher K paper trading' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
           echo 'Research only. No wagers are placed.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Confirmed lineups use V2.2 lineup-handedness; missing lineups use V2.1 Statcast fallback.' >> "$GITHUB_STEP_SUMMARY"
           echo "PropLine live key: ${{ steps.prereq.outputs.has_propline }}" >> "$GITHUB_STEP_SUMMARY"
           echo "Odds API fallback: ${{ steps.prereq.outputs.has_odds }}" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.prereq.outputs.has_games }}" != "true" ]; then
@@ -159,7 +162,14 @@ jobs:
             head -n 35 outputs/fanduel_pitcher_k_paper_today.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
           else
-            echo 'No eligible FanDuel V2.2 selection was generated. This is valid when lineups are not confirmed or no positive-EV line qualifies.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'No eligible FanDuel selection was generated.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f outputs/fanduel_pitcher_k_live_projections.csv ]; then
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Live projection routing' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            head -n 35 outputs/fanduel_pitcher_k_live_projections.csv >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
           fi
           if [ -f outputs/fanduel_pitcher_k_paper_summary.csv ]; then
             echo '' >> "$GITHUB_STEP_SUMMARY"
@@ -181,6 +191,7 @@ jobs:
         with:
           name: fanduel-v22-paper-${{ github.run_id }}
           path: |
+            outputs/fanduel_pitcher_k_live_projections.csv
             outputs/fanduel_pitcher_k_paper_today.csv
             outputs/fanduel_pitcher_k_all_candidates.csv
             outputs/fanduel_pitcher_k_paper_graded.csv
