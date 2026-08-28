@@ -30,6 +30,19 @@ def assert_projection_before_quote(projection_times, quote_times) -> tuple[pd.Ti
     return latest_projection, earliest_quote
 
 
+def attach_diagnostics(candidates: pd.DataFrame, projections: pd.DataFrame) -> pd.DataFrame:
+    if candidates.empty:
+        return candidates
+    extras=[c for c in [
+        "prior_start_count","statcast_appearance_count","days_rest_diagnostic",
+        "lineup_status","failure_regime_flags"
+    ] if c in projections.columns]
+    if not extras:
+        return candidates
+    d=projections[["game_id","pitcher_id",*extras]].drop_duplicates(["game_id","pitcher_id"])
+    return candidates.merge(d,on=["game_id","pitcher_id"],how="left")
+
+
 def main() -> None:
     day = date.today().isoformat()
     if not PROJ.exists() or PROJ.stat().st_size == 0:
@@ -64,7 +77,7 @@ def main() -> None:
     assert_projection_before_quote(projections["model_generated_at_et"], market["collected_at_utc"])
 
     projections["model_generated_at_et"] = projections["model_generated_at_et"].dt.tz_convert("America/New_York").astype(str)
-    candidates = select_candidates(market, projections)
+    candidates = attach_diagnostics(select_candidates(market, projections), projections)
     freeze(candidates)
 
 
