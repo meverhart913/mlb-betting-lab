@@ -15,6 +15,21 @@ ROOT = Path(__file__).resolve().parents[1]
 PROJ = ROOT / "outputs/fanduel_pitcher_k_live_projections.csv"
 
 
+def assert_projection_before_quote(projection_times, quote_times) -> tuple[pd.Timestamp, pd.Timestamp]:
+    p = pd.to_datetime(projection_times, errors="coerce", utc=True)
+    q = pd.to_datetime(quote_times, errors="coerce", utc=True)
+    latest_projection = p.max()
+    earliest_quote = q.min()
+    if pd.isna(latest_projection) or pd.isna(earliest_quote):
+        raise ValueError("Missing model or quote timestamps; cannot guarantee timing integrity.")
+    if latest_projection > earliest_quote:
+        raise ValueError(
+            f"Timing integrity failure: latest model timestamp {latest_projection} is after "
+            f"earliest decision quote {earliest_quote}. Rebuild projections before recollecting market."
+        )
+    return latest_projection, earliest_quote
+
+
 def main() -> None:
     day = date.today().isoformat()
     if not PROJ.exists() or PROJ.stat().st_size == 0:
@@ -46,18 +61,8 @@ def main() -> None:
         projections["model_generated_at_et"], errors="coerce", utc=True
     )
     market["collected_at_utc"] = pd.to_datetime(market["collected_at_utc"], errors="coerce", utc=True)
-    latest_projection = projections["model_generated_at_et"].max()
-    earliest_quote = market["collected_at_utc"].min()
-    if pd.isna(latest_projection) or pd.isna(earliest_quote):
-        raise ValueError("Missing model or quote timestamps; cannot guarantee timing integrity.")
-    if latest_projection > earliest_quote:
-        raise ValueError(
-            f"Timing integrity failure: latest model timestamp {latest_projection} is after "
-            f"earliest decision quote {earliest_quote}. Rebuild projections before recollecting market."
-        )
+    assert_projection_before_quote(projections["model_generated_at_et"], market["collected_at_utc"])
 
-    # select_candidates expects the display timestamp as text, but accepts the
-    # parsed value too; preserve a consistent ISO representation in outputs.
     projections["model_generated_at_et"] = projections["model_generated_at_et"].dt.tz_convert("America/New_York").astype(str)
     candidates = select_candidates(market, projections)
     freeze(candidates)
