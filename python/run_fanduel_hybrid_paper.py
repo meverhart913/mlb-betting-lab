@@ -85,8 +85,6 @@ def fit_v21_and_predict(day: str) -> pd.DataFrame:
     live["lineup_match_coverage"] = np.nan
     live["model_version"] = "v21_statcast_fallback_live"
     live["model_generated_at_et"] = pd.Timestamp.now(tz="America/New_York").isoformat()
-    # fit_v22_and_predict uses the same normalization helper indirectly; market
-    # merge only needs the same canonical alphanumeric key.
     live["name_key"] = (
         live.pitcher_name.astype(str).str.normalize("NFKD")
         .str.encode("ascii", errors="ignore").str.decode("ascii")
@@ -101,6 +99,7 @@ def hybrid_predictions(day: str) -> pd.DataFrame:
     if v21.empty:
         return v22
     if v22.empty:
+        print(f"Live model routing: V2.2 lineup=0 starters; V2.1 Statcast fallback={len(v21)} starters; total={len(v21)}.")
         return v21
 
     used = set(zip(pd.to_numeric(v22.game_id, errors="coerce"), pd.to_numeric(v22.pitcher_id, errors="coerce")))
@@ -119,9 +118,18 @@ def hybrid_predictions(day: str) -> pd.DataFrame:
 
 def main() -> None:
     day = date.today().isoformat()
-    if not MKT.exists():
-        raise SystemExit("Missing current normalized FanDuel market file.")
-    raw = pd.read_csv(MKT, low_memory=False)
+    if not MKT.exists() or MKT.stat().st_size == 0:
+        print(f"No current FanDuel market file with rows for {day}; normal early-day/no-market state.")
+        return
+    try:
+        raw = pd.read_csv(MKT, low_memory=False)
+    except pd.errors.EmptyDataError:
+        print(f"Current FanDuel market file is empty for {day}; normal early-day/no-market state.")
+        return
+    if raw.empty:
+        print(f"Current FanDuel market file has no rows for {day}.")
+        return
+
     market = pair_fanduel(raw, day)
     if market.empty:
         print(f"No FanDuel pitcher-K quotes found for {day}.")
