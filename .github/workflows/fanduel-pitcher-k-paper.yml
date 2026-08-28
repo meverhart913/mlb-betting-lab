@@ -11,14 +11,15 @@ on:
       - 'python/build_fanduel_daily_report.py'
       - 'python/archive_fanduel_decision_snapshot.py'
       - 'python/fetch_propline_live_fanduel.py'
-      - 'python/fetch_propline_sample.py'
       - 'python/fetch_oddsapi_live_fanduel.py'
       - 'python/fetch_pitcher_k_props.py'
       - 'python/grade_fanduel_pitcher_k_paper.py'
       - '.github/workflows/fanduel-pitcher-k-paper.yml'
       - 'docs/FANDUEL_PROSPECTIVE_PROTOCOL.md'
   schedule:
-    - cron: '45 0-2,14-23 * 4-10 *'
+    # 10:45am, 1:45pm, 4:45pm, 7:45pm ET during daylight time.
+    # These align with the major MLB start-time clusters while controlling API spend.
+    - cron: '45 14,17,20,23 * 4-10 *'
   workflow_dispatch:
 
 permissions:
@@ -57,7 +58,7 @@ jobs:
           echo "has_odds=$HAS_ODDS" >> "$GITHUB_OUTPUT"
           echo "Has regular-season games: $HAS_GAMES"
           echo "PropLine live key configured: $HAS_PROPLINE"
-          echo "Odds API fallback configured: $HAS_ODDS"
+          echo "Odds API current-quote source configured: $HAS_ODDS"
 
       - name: Download V2.2 research and freshest live feature data
         if: steps.prereq.outputs.has_games == 'true'
@@ -103,7 +104,7 @@ jobs:
         if: steps.prereq.outputs.has_games == 'true'
         run: python python/build_fanduel_live_projections.py
 
-      - name: Pull FanDuel pitcher-K board after model generation
+      - name: Pull verified-current FanDuel pitcher-K board after model generation
         if: steps.prereq.outputs.has_games == 'true'
         shell: bash
         run: |
@@ -111,34 +112,18 @@ jobs:
             echo 'Using PropLine live API.'
             python python/fetch_propline_live_fanduel.py
             cp data/market/pitcher_k_live_fanduel.csv data/market/pitcher_k_historical_raw.csv
-          else
-            echo 'Trying free PropLine public sample first.'
-            python python/fetch_propline_sample.py
-            HAS_TODAY_FD="$(python - <<'PY'
-          from datetime import datetime
-          from zoneinfo import ZoneInfo
-          import pandas as pd
-          p='data/market/pitcher_k_historical_raw.csv'
-          try:
-              d=pd.read_csv(p,low_memory=False)
-              today=datetime.now(ZoneInfo('America/New_York')).date().isoformat()
-              n=len(d[(d['date'].astype(str)==today) & d['sportsbook'].astype(str).str.casefold().eq('fanduel')])
-              print('true' if n>0 else 'false')
-          except Exception:
-              print('false')
-          PY
-          )"
-            echo "Free sample has same-day FanDuel rows: $HAS_TODAY_FD"
-            if [ "$HAS_TODAY_FD" != "true" ] && [ -n "$THE_ODDS_API_KEY" ]; then
-              echo 'Free sample is stale/missing. Using credit-aware Odds API FanDuel main+alt fallback.'
-              python python/fetch_oddsapi_live_fanduel.py
-              if [ -s data/market/pitcher_k_live_fanduel.csv ]; then
-                cp data/market/pitcher_k_live_fanduel.csv data/market/pitcher_k_historical_raw.csv
-              else
-                echo 'Odds API has no eligible near-term FanDuel board yet; leaving current market unavailable.'
-                : > data/market/pitcher_k_historical_raw.csv
-              fi
+          elif [ -n "$THE_ODDS_API_KEY" ]; then
+            echo 'Using credit-aware Odds API current FanDuel main+alt board.'
+            python python/fetch_oddsapi_live_fanduel.py
+            if [ -s data/market/pitcher_k_live_fanduel.csv ]; then
+              cp data/market/pitcher_k_live_fanduel.csv data/market/pitcher_k_historical_raw.csv
+            else
+              echo 'No eligible near-term FanDuel board yet.'
+              : > data/market/pitcher_k_historical_raw.csv
             fi
+          else
+            echo 'No verified-current FanDuel quote source configured. Public PropLine sample is archive-only and will not be used for prospective decisions.'
+            : > data/market/pitcher_k_historical_raw.csv
           fi
 
       - name: Persist FanDuel decision-cycle quote for CLV
@@ -184,10 +169,10 @@ jobs:
           echo '## FanDuel V2.2/V2.1 pitcher K paper trading' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
           echo 'Research only. No wagers are placed.' >> "$GITHUB_STEP_SUMMARY"
-          echo 'Timing rule: projection and lineup inputs are built before the decision quote is collected.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Timing rule: projection and lineup inputs are built before a verified-current decision quote is collected.' >> "$GITHUB_STEP_SUMMARY"
           echo 'Confirmed lineups use V2.2 lineup-handedness; missing lineups use V2.1 Statcast fallback.' >> "$GITHUB_STEP_SUMMARY"
           echo "PropLine live key: ${{ steps.prereq.outputs.has_propline }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "Odds API fallback: ${{ steps.prereq.outputs.has_odds }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Odds API current source: ${{ steps.prereq.outputs.has_odds }}" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.prereq.outputs.has_games }}" != "true" ]; then
             echo 'No MLB regular-season slate today.' >> "$GITHUB_STEP_SUMMARY"
           elif [ -f outputs/fanduel_pitcher_k_daily_report.md ]; then
@@ -212,7 +197,7 @@ jobs:
           fi
           if [ -f data/current/fanduel_oddsapi_status.csv ]; then
             echo '' >> "$GITHUB_STEP_SUMMARY"
-            echo '### Odds API fallback credit status' >> "$GITHUB_STEP_SUMMARY"
+            echo '### Odds API credit status' >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
             cat data/current/fanduel_oddsapi_status.csv >> "$GITHUB_STEP_SUMMARY"
             echo '```' >> "$GITHUB_STEP_SUMMARY"
