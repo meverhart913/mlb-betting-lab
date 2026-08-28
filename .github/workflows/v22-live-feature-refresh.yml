@@ -1,0 +1,102 @@
+name: V2.2 live feature refresh
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/v22-live-feature-refresh.yml'
+      - 'python/backfill_statcast_pitch_features.py'
+      - 'python/backfill_batter_k_hand_splits.py'
+  schedule:
+    - cron: '15 13 * 4-10 *'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Download latest V2.2 2026 raw feature artifacts
+        shell: bash
+        run: |
+          RUN_ID="$(gh run list --workflow 'Pitcher K V2.2 lineup handedness research' --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')"
+          if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "null" ]; then
+            echo 'No successful V2.2 research run available.'
+            exit 1
+          fi
+          mkdir -p parts/statcast parts/matchup data/features
+          gh run download "$RUN_ID" -n v22-statcast-2026 -D parts/statcast
+          gh run download "$RUN_ID" -n v22-matchup-2026 -D parts/matchup
+          find parts/statcast -type f -name 'statcast_pitcher_*.csv' -first 2>/dev/null || true
+          SC="$(find parts/statcast -type f -name 'statcast_pitcher_*.csv' | head -n 1)"
+          BH="$(find parts/matchup -type f -name 'batter_hand_*.csv' | head -n 1)"
+          test -n "$SC" && test -n "$BH"
+          cp "$SC" data/features/statcast_pitcher_daily_2026.csv
+          cp "$BH" data/features/batter_k_by_pitcher_hand_daily_2026.csv
+
+      - name: Determine missing date range
+        id: dates
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import pandas as pd
+          from datetime import date,timedelta
+          sc=pd.read_csv('data/features/statcast_pitcher_daily_2026.csv',low_memory=False)
+          bh=pd.read_csv('data/features/batter_k_by_pitcher_hand_daily_2026.csv',low_memory=False)
+          mx=[]
+          for df,col in [(sc,'game_date'),(bh,'game_date')]:
+              d=pd.to_datetime(df[col],errors='coerce').max()
+              if pd.notna(d): mx.append(d.date())
+          start=(min(mx)+timedelta(days=1)) if mx else date(2026,3,15)
+          end=date.today()-timedelta(days=1)
+          print(f'start={start.isoformat()}')
+          print(f'end={end.isoformat()}')
+          print(f'needs_refresh={str(start<=end).lower()}')
+          PY
+
+      - name: Fetch missing completed Statcast days
+        if: steps.dates.outputs.needs_refresh == 'true'
+        run: |
+          mv data/features/statcast_pitcher_daily_2026.csv data/features/statcast_base.csv
+          mv data/features/batter_k_by_pitcher_hand_daily_2026.csv data/features/batter_base.csv
+          python python/backfill_statcast_pitch_features.py --start '${{ steps.dates.outputs.start }}' --end '${{ steps.dates.outputs.end }}' --chunk-days 2 --sleep-seconds .2
+          python python/backfill_batter_k_hand_splits.py --start '${{ steps.dates.outputs.start }}' --end '${{ steps.dates.outputs.end }}' --chunk-days 2 --sleep-seconds .2
+          python - <<'PY'
+          import pandas as pd
+          def merge(base,fresh,out,keys):
+              a=pd.read_csv(base,low_memory=False); b=pd.read_csv(fresh,low_memory=False)
+              z=pd.concat([a,b],ignore_index=True,sort=False).drop_duplicates(keys,keep='last').sort_values(keys)
+              z.to_csv(out,index=False)
+          merge('data/features/statcast_base.csv','data/features/statcast_pitcher_daily.csv','data/features/statcast_pitcher_daily_2026.csv',['game_date','pitcher_id'])
+          merge('data/features/batter_base.csv','data/features/batter_k_by_pitcher_hand_daily.csv','data/features/batter_k_by_pitcher_hand_daily_2026.csv',['game_date','batter_id','pitcher_hand'])
+          PY
+
+      - name: Write freshness status
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          for p in ['data/features/statcast_pitcher_daily_2026.csv','data/features/batter_k_by_pitcher_hand_daily_2026.csv']:
+              d=pd.read_csv(p,low_memory=False)
+              print(p, 'rows=',len(d),'max_date=',pd.to_datetime(d.game_date,errors='coerce').max())
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: v22-live-current
+          path: |
+            data/features/statcast_pitcher_daily_2026.csv
+            data/features/batter_k_by_pitcher_hand_daily_2026.csv
+          retention-days: 7
