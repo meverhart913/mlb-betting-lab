@@ -59,7 +59,7 @@ jobs:
           echo "PropLine live key configured: $HAS_PROPLINE"
           echo "Odds API fallback configured: $HAS_ODDS"
 
-      - name: Download latest successful V2.2 research data
+      - name: Download V2.2 research and freshest live feature data
         if: steps.prereq.outputs.has_games == 'true'
         shell: bash
         run: |
@@ -68,7 +68,7 @@ jobs:
             echo 'No successful V2.2 run found on main.'
             exit 1
           fi
-          echo "Using V2.2 run $RUN_ID"
+          echo "Using V2.2 research run $RUN_ID"
           mkdir -p latest data/features
           gh run download "$RUN_ID" -n pitcher-k-v22-results -D latest
           cp latest/data/features/pitcher_handedness.csv data/features/
@@ -82,6 +82,18 @@ jobs:
           done
           find parts -type f -name 'statcast_pitcher_*.csv' -exec sh -c 'f="$1"; y=$(basename "$f" | sed -E "s/[^0-9]*([0-9]{4}).*/\\1/"); cp "$f" "data/features/statcast_pitcher_daily_${y}.csv"' _ {} \;
           find parts -type f -name 'batter_hand_*.csv' -exec sh -c 'f="$1"; y=$(basename "$f" | sed -E "s/[^0-9]*([0-9]{4}).*/\\1/"); cp "$f" "data/features/batter_k_by_pitcher_hand_daily_${y}.csv"' _ {} \;
+
+          LIVE_RUN="$(gh run list --workflow 'V2.2 live feature refresh' --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)"
+          if [ -n "$LIVE_RUN" ] && [ "$LIVE_RUN" != "null" ]; then
+            echo "Overlaying daily live features from run $LIVE_RUN"
+            mkdir -p live-current
+            if gh run download "$LIVE_RUN" -n v22-live-current -D live-current; then
+              find live-current -type f -name 'statcast_pitcher_daily_2026.csv' -exec cp {} data/features/statcast_pitcher_daily_2026.csv \;
+              find live-current -type f -name 'batter_k_by_pitcher_hand_daily_2026.csv' -exec cp {} data/features/batter_k_by_pitcher_hand_daily_2026.csv \;
+            fi
+          else
+            echo 'No successful lightweight live-feature refresh yet; using latest full V2.2 raw artifacts.'
+          fi
 
       - name: Refresh recent completed MLB logs
         if: steps.prereq.outputs.has_games == 'true'
