@@ -41,7 +41,14 @@ def main() -> None:
     market["date"] = pd.to_datetime(market["date"], errors="coerce").dt.normalize()
     market["name_key"] = market["pitcher_name"].map(norm_name)
     if "snapshot_time_et" in market.columns:
-        market["snapshot_time_et"] = pd.to_datetime(market["snapshot_time_et"], errors="coerce")
+        # Archive history spans legacy naive Eastern timestamps and newer
+        # offset-aware Eastern timestamps. Parse each value through UTC so
+        # pandas does not reject a mixed-timezone Series, then convert back to
+        # Eastern for stable sorting/deduplication and human-readable output.
+        market["snapshot_time_et"] = (
+            pd.to_datetime(market["snapshot_time_et"], errors="coerce", utc=True)
+            .dt.tz_convert("America/New_York")
+        )
 
     p = pd.read_csv(PITCHERS, low_memory=False)
     p["date"] = pd.to_datetime(p["date"], errors="coerce").dt.normalize()
@@ -59,10 +66,6 @@ def main() -> None:
     })
     results = results.drop_duplicates(["matched_mlb_date", "name_key"], keep="last")
 
-    # New archive files use Eastern calendar dates. Legacy files created before
-    # 2026-08-26 used the raw UTC commence date, which moves late U.S. games one
-    # calendar day forward. Prefer an exact MLB-date match, then repair only
-    # unmatched legacy rows with the immediately previous MLB date.
     exact = market.merge(
         results,
         left_on=["date", "name_key"],
