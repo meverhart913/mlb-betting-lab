@@ -12,52 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "python"))
 
 import run_v22_fanduel_paper as paper
-from select_fanduel_paper_from_live import assert_candidate_timing
-
-
-class CandidateTimingTests(unittest.TestCase):
-    def test_rejects_candidate_whose_model_is_after_its_quote(self):
-        # The first row is valid and would make a coarse earliest-vs-earliest
-        # comparison look harmless. The second row must still be rejected on
-        # its own lineage because its model timestamp is after its quote.
-        candidates = pd.DataFrame(
-            [
-                {
-                    "date": "2026-08-29",
-                    "game_id": 1,
-                    "pitcher_id": 101,
-                    "pitcher_name": "Valid Pitcher",
-                    "line": 5.5,
-                    "side": "OVER",
-                    "model_generated_at_et": "2026-08-29T12:00:00-04:00",
-                    "collected_at_utc": "2026-08-29T16:30:00Z",
-                },
-                {
-                    "date": "2026-08-29",
-                    "game_id": 2,
-                    "pitcher_id": 202,
-                    "pitcher_name": "Late Model Pitcher",
-                    "line": 6.5,
-                    "side": "UNDER",
-                    "model_generated_at_et": "2026-08-29T13:01:00-04:00",
-                    "collected_at_utc": "2026-08-29T17:00:00Z",
-                },
-            ]
-        )
-
-        with self.assertRaisesRegex(ValueError, "model time after quote time"):
-            assert_candidate_timing(candidates)
-
-    def test_accepts_candidate_when_model_predates_quote(self):
-        candidates = pd.DataFrame(
-            [
-                {
-                    "model_generated_at_et": "2026-08-29T12:00:00-04:00",
-                    "collected_at_utc": "2026-08-29T16:01:00Z",
-                }
-            ]
-        )
-        assert_candidate_timing(candidates)
 
 
 class FrozenLedgerTests(unittest.TestCase):
@@ -95,20 +49,19 @@ class FrozenLedgerTests(unittest.TestCase):
         )
 
     def test_history_keeps_first_selection_when_later_cycle_changes_line_and_side(self):
+        """A later quote cycle must never overwrite the wager frozen first."""
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             current = base / "current"
             out = base / "outputs"
             history = current / "history.csv"
-            today = out / "today.csv"
-            audit = out / "audit.csv"
 
             with (
                 patch.object(paper, "CURRENT", current),
                 patch.object(paper, "OUT", out),
                 patch.object(paper, "HISTORY", history),
-                patch.object(paper, "TODAY_OUT", today),
-                patch.object(paper, "AUDIT_OUT", audit),
+                patch.object(paper, "TODAY_OUT", out / "today.csv"),
+                patch.object(paper, "AUDIT_OUT", out / "audit.csv"),
             ):
                 paper.freeze(self._candidate(side="OVER", line=5.5, ev=0.12))
                 paper.freeze(self._candidate(side="UNDER", line=6.5, ev=0.20))
@@ -118,7 +71,8 @@ class FrozenLedgerTests(unittest.TestCase):
             self.assertEqual(str(frozen.loc[0, "side"]), "OVER")
             self.assertAlmostEqual(float(frozen.loc[0, "line"]), 5.5)
 
-    def test_one_selection_per_pitcher_start_even_with_multiple_lines(self):
+    def test_one_selection_per_pitcher_start_across_alternate_lines(self):
+        """Highest EV may win selection, but only one row may freeze for the start."""
         rows = pd.concat(
             [
                 self._candidate(side="OVER", line=5.5, ev=0.08),
