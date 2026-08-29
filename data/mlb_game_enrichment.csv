@@ -19849,38 +19849,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824721,2026-08-21,2026,R,,3.0,Fenway Park,69.0,Overcast,"5 mph, In From CF",543243.0,657277.0,137,657277.0,Logan Webb,111,543243.0,Sonny Gray
 824800,2026-08-21,2026,R,,2.0,Oriole Park at Camden Yards,77.0,Partly Cloudy,"3 mph, In From RF",669432.0,642547.0,139,642547.0,Freddy Peralta,110,669432.0,Trevor Rogers
 825045,2026-08-21,2026,R,,15.0,Chase Field,75.0,Roof Closed,"0 mph, None",593958.0,666157.0,113,666157.0,Nick Lodolo,109,593958.0,Eduardo Rodriguez
-822692,2026-08-26,2026,R,,3309.0,Nationals Park,,,,,685299.0,115,,,120,,
-822772,2026-08-26,2026,R,,14.0,Rogers Centre,,,,669456.0,677976.0,118,,,141,,
-823015,2026-08-26,2026,R,,2889.0,Busch Stadium,,,,,680694.0,110,,,138,,
-823506,2026-08-26,2026,R,,3313.0,Yankee Stadium,,,,,663567.0,117,,,147,,
-823584,2026-08-26,2026,R,,3289.0,Citi Field,,,,476594.0,669160.0,158,,,121,,
-823825,2026-08-26,2026,R,,4169.0,loanDepot park,,,,687473.0,543243.0,111,,,146,,
-823988,2026-08-26,2026,R,,1.0,Angel Stadium,,,,680570.0,676282.0,114,,,108,,
-824555,2026-08-26,2026,R,,4.0,Rate Field,,,,680732.0,669022.0,140,,,145,,
-824878,2026-08-26,2026,R,,4705.0,Truist Park,,,,700363.0,808963.0,119,,,144,,
-824963,2026-08-26,2026,R,,2529.0,Sutter Health Park,,,,669372.0,687570.0,142,,,133,,
-822694,2026-08-27,2026,R,,3309.0,Nationals Park,,,,663623.0,687312.0,115,,,120,,
-822771,2026-08-27,2026,R,,14.0,Rogers Centre,,,,,702070.0,118,,,141,,
-823014,2026-08-27,2026,R,,2889.0,Busch Stadium,,,,,669432.0,110,,,138,,
-823179,2026-08-27,2026,R,,2395.0,Oracle Park,,,,,,109,,,137,,
-823503,2026-08-27,2026,R,,3313.0,Yankee Stadium,,,,543037.0,669713.0,117,,,147,,
-823581,2026-08-27,2026,R,,3289.0,Citi Field,,,,640455.0,694819.0,158,,,121,,
-824879,2026-08-27,2026,R,,4705.0,Truist Park,,,,519242.0,808967.0,119,,,144,,
-822691,2026-08-28,2026,R,,3309.0,Nationals Park,,,,,,146,,,120,,
-822769,2026-08-28,2026,R,,14.0,Rogers Centre,,,,,,136,,,141,,
-822935,2026-08-28,2026,R,,12.0,Tropicana Field,,,,,,135,,,139,,
-823013,2026-08-28,2026,R,,2889.0,Busch Stadium,,,,,,134,,,138,,
-823178,2026-08-28,2026,R,,2395.0,Oracle Park,,,,,,109,,,137,,
-823504,2026-08-28,2026,R,,3313.0,Yankee Stadium,,,,,,111,,,147,,
-823583,2026-08-28,2026,R,,3289.0,Citi Field,,,,,,117,,,121,,
-823666,2026-08-28,2026,R,,3312.0,Target Field,,,,,,145,,,142,,
-823744,2026-08-28,2026,R,,32.0,American Family Field,,,,,,140,,,158,,
-823985,2026-08-28,2026,R,,1.0,Angel Stadium,,,,,,143,,,108,,
-824231,2026-08-28,2026,R,,2394.0,Comerica Park,,,,,,119,,,116,,
-824396,2026-08-28,2026,R,,5.0,Progressive Field,,,,,,118,,,114,,
-824638,2026-08-28,2026,R,,17.0,Wrigley Field,,,,,,113,,,112,,
-824877,2026-08-28,2026,R,,4705.0,Truist Park,,,,,,115,,,144,,
-824960,2026-08-28,2026,R,,2529.0,Sutter Health Park,,,,,,110,,,133,,
 822690,2026-08-29,2026,R,,3309.0,Nationals Park,,,,,,146,,,120,,
 822770,2026-08-29,2026,R,,14.0,Rogers Centre,,,,,,136,,,141,,
 822936,2026-08-29,2026,R,,12.0,Tropicana Field,,,,,,135,,,139,,
@@ -20337,7 +20305,39 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823098,2026-08-25,2026,R,,680.0,T-Mobile Park,78.0,Clear,"8 mph, Out To CF",669923.0,605400.0,143,605400.0,Aaron Nola,136,669923.0,George Kirby
 823181,2026-08-25,2026,R,,2395.0,Oracle Park,66.0,Partly Cloudy,"8 mph, Out To CF",605288.0,663903.0,113,663903.0,Brady Singer,137,605288.0,Adrian Houser
 824234,2026-08-26,2026,R,,2394.0,Comerica Park,78.0,Partly Cloudy,"9 mph, R To L",675512.0,642547.0,139,642547.0,Freddy Peralta,116,675512.0,Troy Melton
-825039,2026-08-26,2026,R,,15.0,Chase Field,72.0,Roof Closed,"0 mph, None",593958.0,571510.0,112,571510.0,Matthew Boyd,109,593958.0,Eduardo Rodriguez
-823180,2026-08-26,2026,R,,2395.0,Oracle Park,74.0,Sunny,"10 mph, Out To CF",657277.0,666157.0,113,666157.0,Nick Lodolo,137,657277.0,Logan Webb
-823255,2026-08-26,2026,R,,2680.0,Petco Park,81.0,Partly Cloudy,"9 mph, Out To RF",681190.0,696149.0,134,696149.0,Bubba Chandler,135,681190.0,Randy Vásquez
-823096,2026-08-26,2026,R,,680.0,T-Mobile Park,74.0,Sunny,"7 mph, Out To CF",693433.0,666200.0,143,666200.0,Jesús Luzardo,136,693433.0,Bryan Woo
+825039,2026-08-26,2026,R,,15.0,Chase Field,76.0,Roof Closed,"0 mph, None",593958.0,571510.0,112,571510.0,Matthew Boyd,109,593958.0,Eduardo Rodriguez
+823180,2026-08-26,2026,R,,2395.0,Oracle Park,70.0,Sunny,"10 mph, Out To CF",657277.0,666157.0,113,666157.0,Nick Lodolo,137,657277.0,Logan Webb
+823988,2026-08-26,2026,R,,1.0,Angel Stadium,92.0,Sunny,"4 mph, Out To CF",680570.0,676282.0,114,676282.0,Joey Cantillo,108,680570.0,Grayson Rodriguez
+823255,2026-08-26,2026,R,,2680.0,Petco Park,82.0,Partly Cloudy,"9 mph, L To R",681190.0,696149.0,134,696149.0,Bubba Chandler,135,681190.0,Randy Vásquez
+823096,2026-08-26,2026,R,,680.0,T-Mobile Park,69.0,Partly Cloudy,"5 mph, Out To CF",693433.0,666200.0,143,666200.0,Jesús Luzardo,136,693433.0,Bryan Woo
+823825,2026-08-26,2026,R,,4169.0,loanDepot park,72.0,Roof Closed,"0 mph, None",687473.0,543243.0,111,543243.0,Sonny Gray,146,687473.0,Ryan Gusto
+822692,2026-08-26,2026,R,,3309.0,Nationals Park,84.0,Partly Cloudy,"9 mph, Out To LF",663362.0,685299.0,115,685299.0,Tanner Gordon,120,663362.0,Matt Waldron
+823506,2026-08-26,2026,R,,3313.0,Yankee Stadium,78.0,Partly Cloudy,"10 mph, R To L",695684.0,663567.0,117,663567.0,Peter Lambert,147,695684.0,Elmer Rodríguez
+822772,2026-08-26,2026,R,,14.0,Rogers Centre,69.0,Clear,"11 mph, R To L",693686.0,677976.0,118,677976.0,Randy Dobnak,141,693686.0,Spencer Miles
+823584,2026-08-26,2026,R,,3289.0,Citi Field,75.0,Partly Cloudy,"9 mph, Out To LF",476594.0,669160.0,158,669160.0,Dustin May,121,476594.0,Robert Stock
+824878,2026-08-26,2026,R,,4705.0,Truist Park,89.0,Cloudy,"6 mph, Out To RF",700363.0,808963.0,119,808963.0,Roki Sasaki,144,700363.0,AJ Smith-Shawver
+824555,2026-08-26,2026,R,,4.0,Rate Field,83.0,Partly Cloudy,"10 mph, Varies",680732.0,669022.0,140,669022.0,MacKenzie Gore,145,680732.0,Sean Burke
+823015,2026-08-26,2026,R,,2889.0,Busch Stadium,87.0,Clear,"7 mph, Out To RF",700241.0,680694.0,110,680694.0,Kyle Bradish,138,700241.0,Michael McGreevy
+824963,2026-08-26,2026,R,,2529.0,Sutter Health Park,98.0,Clear,"5 mph, Calm",669372.0,687570.0,142,687570.0,Connor Prielipp,133,669372.0,J.T. Ginn
+822694,2026-08-27,2026,R,,3309.0,Nationals Park,81.0,Partly Cloudy,"9 mph, Out To LF",663623.0,687312.0,115,687312.0,Gabriel Hughes,120,663623.0,Jake Irvin
+823014,2026-08-27,2026,R,,2889.0,Busch Stadium,83.0,Partly Cloudy,"6 mph, Out To RF",700669.0,669432.0,110,669432.0,Trevor Rogers,138,700669.0,Gordon Graceffo
+823503,2026-08-27,2026,R,,3313.0,Yankee Stadium,76.0,Cloudy,"9 mph, R To L",543037.0,669713.0,117,669713.0,Hayden Wesneski,147,543037.0,Gerrit Cole
+822771,2026-08-27,2026,R,,14.0,Rogers Centre,77.0,Clear,"19 mph, R To L",681293.0,702070.0,118,702070.0,Noah Cameron,141,681293.0,Spencer Arrighetti
+823581,2026-08-27,2026,R,,3289.0,Citi Field,74.0,Overcast,"10 mph, Out To LF",640455.0,694819.0,158,694819.0,Jacob Misiorowski,121,640455.0,Sean Manaea
+824879,2026-08-27,2026,R,,4705.0,Truist Park,84.0,Partly Cloudy,"2 mph, Calm",519242.0,808967.0,119,808967.0,Yoshinobu Yamamoto,144,519242.0,Chris Sale
+823179,2026-08-27,2026,R,,2395.0,Oracle Park,67.0,Partly Cloudy,"8 mph, Out To CF",694738.0,703615.0,109,703615.0,Jose Cabrera,137,694738.0,Landen Roupp
+824638,2026-08-28,2026,R,,17.0,Wrigley Field,77.0,Sunny,"6 mph, R To L",656849.0,695076.0,113,695076.0,Rhett Lowder,112,656849.0,David Peterson
+824231,2026-08-28,2026,R,,2394.0,Comerica Park,76.0,Partly Cloudy,"5 mph, In From LF",623454.0,669373.0,119,669373.0,Tarik Skubal,116,623454.0,Drew Anderson
+822691,2026-08-28,2026,R,,3309.0,Nationals Park,84.0,Partly Cloudy,"8 mph, In From RF",800600.0,691587.0,146,691587.0,Eury Pérez,120,800600.0,Jackson Kent
+824396,2026-08-28,2026,R,,5.0,Progressive Field,73.0,Clear,"7 mph, In From RF",676440.0,608379.0,118,608379.0,Michael Wacha,114,676440.0,Tanner Bibee
+823583,2026-08-28,2026,R,,3289.0,Citi Field,79.0,Partly Cloudy,"5 mph, In From LF",681035.0,686613.0,117,686613.0,Hunter Brown,121,681035.0,Christian Scott
+822935,2026-08-28,2026,R,,12.0,Tropicana Field,72.0,Dome,"0 mph, None",663556.0,663554.0,135,663554.0,Casey Mize,139,663556.0,Shane McClanahan
+822769,2026-08-28,2026,R,,14.0,Rogers Centre,69.0,Clear,"3 mph, Out To LF",656302.0,676106.0,136,676106.0,Emerson Hancock,141,656302.0,Dylan Cease
+824877,2026-08-28,2026,R,,4705.0,Truist Park,84.0,Cloudy,"5 mph, Out To RF",656550.0,608372.0,115,608372.0,Tomoyuki Sugano,144,656550.0,Grant Holmes
+823504,2026-08-28,2026,R,,3313.0,Yankee Stadium,81.0,Partly Cloudy,"7 mph, Out To RF",693645.0,663776.0,111,663776.0,Patrick Sandoval,147,693645.0,Cam Schlittler
+823744,2026-08-28,2026,R,,32.0,American Family Field,79.0,Partly Cloudy,"11 mph, R To L",701656.0,674003.0,140,674003.0,Cody Bradford,158,701656.0,Logan Henderson
+823666,2026-08-28,2026,R,,3312.0,Target Field,78.0,Partly Cloudy,"6 mph, Out To LF",665152.0,622491.0,145,622491.0,Luis Castillo,142,665152.0,Dean Kremer
+823013,2026-08-28,2026,R,,2889.0,Busch Stadium,82.0,Clear,"4 mph, In From RF",687273.0,683003.0,134,683003.0,Jared Jones,138,687273.0,Quinn Mathews
+823985,2026-08-28,2026,R,,1.0,Angel Stadium,89.0,Clear,"5 mph, R To L",672282.0,691725.0,143,691725.0,Andrew Painter,108,672282.0,Reid Detmers
+824960,2026-08-28,2026,R,,2529.0,Sutter Health Park,74.0,Cloudy,"7 mph, Out To LF",682052.0,687064.0,110,687064.0,Brandon Young,133,682052.0,Jacob Lopez
+823178,2026-08-28,2026,R,,2395.0,Oracle Park,63.0,Partly Cloudy,"13 mph, Varies",694918.0,684442.0,109,684442.0,Kohl Drake,137,694918.0,Blade Tidwell
