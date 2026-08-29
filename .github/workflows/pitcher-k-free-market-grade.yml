@@ -1,5 +1,6 @@
 name: Pitcher K free market grade
 
+# Current-main validation trigger: verifies grader fixes through the normal push path.
 on:
   push:
     branches: [main]
