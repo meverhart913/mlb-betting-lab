@@ -16,6 +16,7 @@ PROJ = ROOT / "outputs/fanduel_pitcher_k_live_projections.csv"
 
 
 def assert_projection_before_quote(projection_times, quote_times) -> tuple[pd.Timestamp, pd.Timestamp]:
+    """Batch-level sanity check: every projection must predate every quote in the cycle."""
     p = pd.to_datetime(projection_times, errors="coerce", utc=True)
     q = pd.to_datetime(quote_times, errors="coerce", utc=True)
     latest_projection = p.max()
@@ -30,17 +31,43 @@ def assert_projection_before_quote(projection_times, quote_times) -> tuple[pd.Ti
     return latest_projection, earliest_quote
 
 
+def assert_candidate_timing(candidates: pd.DataFrame) -> None:
+    """Enforce timing lineage on every priced candidate before it can be frozen.
+
+    The batch guard above catches workflow-order regressions. This row-level guard
+    protects the prospective ledger even if a future refactor mixes projection or
+    quote timestamps inside one cycle.
+    """
+    if candidates.empty:
+        return
+    required = {"model_generated_at_et", "collected_at_utc"}
+    missing = sorted(required.difference(candidates.columns))
+    if missing:
+        raise ValueError(f"Candidate timing integrity failure: missing columns {missing}.")
+
+    p = pd.to_datetime(candidates["model_generated_at_et"], errors="coerce", utc=True)
+    q = pd.to_datetime(candidates["collected_at_utc"], errors="coerce", utc=True)
+    invalid = p.isna() | q.isna() | p.gt(q)
+    if invalid.any():
+        sample_cols = [c for c in ["date", "game_id", "pitcher_id", "pitcher_name", "line", "side"] if c in candidates.columns]
+        sample = candidates.loc[invalid, sample_cols].head(3).to_dict("records")
+        raise ValueError(
+            f"Candidate timing integrity failure: {int(invalid.sum())} candidate row(s) have "
+            f"missing timestamps or model time after quote time. Sample={sample}"
+        )
+
+
 def attach_diagnostics(candidates: pd.DataFrame, projections: pd.DataFrame) -> pd.DataFrame:
     if candidates.empty:
         return candidates
-    extras=[c for c in [
-        "prior_start_count","statcast_appearance_count","days_rest_diagnostic",
-        "lineup_status","failure_regime_flags"
+    extras = [c for c in [
+        "prior_start_count", "statcast_appearance_count", "days_rest_diagnostic",
+        "lineup_status", "failure_regime_flags"
     ] if c in projections.columns]
     if not extras:
         return candidates
-    d=projections[["game_id","pitcher_id",*extras]].drop_duplicates(["game_id","pitcher_id"])
-    return candidates.merge(d,on=["game_id","pitcher_id"],how="left")
+    d = projections[["game_id", "pitcher_id", *extras]].drop_duplicates(["game_id", "pitcher_id"])
+    return candidates.merge(d, on=["game_id", "pitcher_id"], how="left")
 
 
 def main() -> None:
@@ -78,6 +105,7 @@ def main() -> None:
 
     projections["model_generated_at_et"] = projections["model_generated_at_et"].dt.tz_convert("America/New_York").astype(str)
     candidates = attach_diagnostics(select_candidates(market, projections), projections)
+    assert_candidate_timing(candidates)
     freeze(candidates)
 
 
