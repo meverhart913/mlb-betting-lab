@@ -18870,7 +18870,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823048,2026-06-06,2026,R,,2889.0,Busch Stadium,85.0,Partly Cloudy,"9 mph, R To L",669461.0,666157.0,113,666157.0,Nick Lodolo,138,669461.0,Matthew Liberatore
 823292,2026-06-06,2026,R,,2680.0,Petco Park,68.0,Cloudy,"6 mph, L To R",656288.0,690997.0,121,690997.0,Nolan McLean,135,656288.0,Griffin Canning
 823454,2026-06-06,2026,R,,2681.0,Citizens Bank Park,91.0,Partly Cloudy,"16 mph, Out To RF",691725.0,685126.0,145,685126.0,Brandon Eisert,143,691725.0,Andrew Painter
-823539,2026-08-29,2026,R,,3313.0,Yankee Stadium,,,,,,111,,,147,,
 823697,2026-06-06,2026,R,,3312.0,Target Field,82.0,Sunny,"3 mph, L To R",657746.0,679883.0,118,679883.0,Luinder Avila,142,657746.0,Joe Ryan
 823859,2026-06-06,2026,R,,4169.0,loanDepot park,72.0,Roof Closed,"0 mph, None",669199.0,663556.0,139,663556.0,Shane McClanahan,146,669199.0,Lake Bachar
 823942,2026-06-06,2026,R,,22.0,UNIQLO Field at Dodger Stadium,70.0,Clear,"4 mph, Out To RF",808967.0,686799.0,108,686799.0,Jack Kochanowicz,119,808967.0,Yoshinobu Yamamoto
@@ -19860,7 +19859,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823665,2026-08-29,2026,R,,3312.0,Target Field,,,,,,145,,,142,,
 823741,2026-08-29,2026,R,,32.0,American Family Field,,,,,,140,,,158,,
 823986,2026-08-29,2026,R,,1.0,Angel Stadium,,,,,,143,,,108,,
-824230,2026-08-29,2026,R,,2394.0,Comerica Park,,,,,,119,,,116,,
 824392,2026-08-29,2026,R,,5.0,Progressive Field,,,,,,118,,,114,,
 824637,2026-08-29,2026,R,,17.0,Wrigley Field,,,,,,113,,,112,,
 824874,2026-08-29,2026,R,,4705.0,Truist Park,,,,,,115,,,144,,
@@ -20341,3 +20339,5 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823985,2026-08-28,2026,R,,1.0,Angel Stadium,89.0,Clear,"5 mph, R To L",672282.0,691725.0,143,691725.0,Andrew Painter,108,672282.0,Reid Detmers
 824960,2026-08-28,2026,R,,2529.0,Sutter Health Park,74.0,Cloudy,"7 mph, Out To LF",682052.0,687064.0,110,687064.0,Brandon Young,133,682052.0,Jacob Lopez
 823178,2026-08-28,2026,R,,2395.0,Oracle Park,63.0,Partly Cloudy,"13 mph, Varies",694918.0,684442.0,109,684442.0,Kohl Drake,137,694918.0,Blade Tidwell
+823539,2026-08-29,2026,R,,3313.0,Yankee Stadium,78.0,Sunny,"5 mph, L To R",607074.0,687562.0,111,687562.0,Jake Bennett,147,607074.0,Carlos Rodón
+824230,2026-08-29,2026,R,,2394.0,Comerica Park,75.0,Partly Cloudy,"13 mph, R To L",672456.0,605483.0,119,605483.0,Blake Snell,116,672456.0,Keider Montero
