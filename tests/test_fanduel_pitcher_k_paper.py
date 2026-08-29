@@ -80,29 +80,32 @@ class FanDuelPaperTests(unittest.TestCase):
 
     def test_candidate_timing_guard_allows_each_model_before_own_quote(self):
         candidates = pd.DataFrame([
-            {
-                "pitcher_name":"A", "line":5.5, "side":"OVER",
-                "model_generated_at_et":"2026-08-28T16:59:00-04:00",
-                "collected_at_utc":"2026-08-28T21:00:00Z",
-            },
-            {
-                "pitcher_name":"B", "line":4.5, "side":"UNDER",
-                "model_generated_at_et":"2026-08-28T17:10:00-04:00",
-                "collected_at_utc":"2026-08-28T21:15:00Z",
-            },
+            {"pitcher_name":"A", "line":5.5, "side":"OVER", "model_generated_at_et":"2026-08-28T16:59:00-04:00", "collected_at_utc":"2026-08-28T21:00:00Z"},
+            {"pitcher_name":"B", "line":4.5, "side":"UNDER", "model_generated_at_et":"2026-08-28T17:10:00-04:00", "collected_at_utc":"2026-08-28T21:15:00Z"},
         ])
         selector.assert_candidate_timing(candidates)
 
     def test_candidate_timing_guard_rejects_late_model_row(self):
-        candidates = pd.DataFrame([
-            {
-                "pitcher_name":"A", "line":5.5, "side":"OVER",
-                "model_generated_at_et":"2026-08-28T17:01:00-04:00",
-                "collected_at_utc":"2026-08-28T21:00:00Z",
-            }
-        ])
+        candidates = pd.DataFrame([{
+            "pitcher_name":"A", "line":5.5, "side":"OVER",
+            "model_generated_at_et":"2026-08-28T17:01:00-04:00", "collected_at_utc":"2026-08-28T21:00:00Z",
+        }])
         with self.assertRaises(ValueError):
             selector.assert_candidate_timing(candidates)
+
+    def test_paper_eligibility_requires_timing_nonnegative_edge_and_positive_ev(self):
+        x = pd.DataFrame([
+            {"timing_eligible":True, "model_market_edge":0.03, "expected_profit_per_unit":0.02},
+            {"timing_eligible":True, "model_market_edge":-0.01, "expected_profit_per_unit":0.02},
+            {"timing_eligible":True, "model_market_edge":0.03, "expected_profit_per_unit":0.0},
+            {"timing_eligible":False, "model_market_edge":0.03, "expected_profit_per_unit":0.02},
+        ])
+        got = selector.mark_paper_eligibility(x)
+        self.assertEqual(got.paper_eligible.tolist(), [True, False, False, False])
+        self.assertEqual(got.loc[0, "paper_rejection_reason"], "ELIGIBLE")
+        self.assertIn("NEGATIVE_MARKET_EDGE", got.loc[1, "paper_rejection_reason"])
+        self.assertIn("NONPOSITIVE_EV", got.loc[2, "paper_rejection_reason"])
+        self.assertIn("OUTSIDE_DECISION_WINDOW", got.loc[3, "paper_rejection_reason"])
 
     @patch.object(hybrid, "fit_v21_and_predict")
     @patch.object(hybrid, "fit_v22_and_predict")
