@@ -35,7 +35,6 @@ def write_cycle_audit(day: str, status: str, **fields) -> Path:
         "status": status,
         **fields,
     }
-    # Exclusive creation prevents a later cycle from overwriting prior evidence.
     with out.open("x", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, sort_keys=True, default=str)
         f.write("\n")
@@ -133,6 +132,19 @@ def history_rows_for_day(day: str) -> int:
     return int(h["date"].astype(str).eq(day).sum())
 
 
+def rejection_component_counts(audited: pd.DataFrame) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    if audited.empty or "paper_rejection_reason" not in audited.columns:
+        return counts
+    rejected = audited.loc[~audited["paper_eligible"], "paper_rejection_reason"].dropna().astype(str)
+    for raw in rejected:
+        for component in raw.split(","):
+            component = component.strip()
+            if component and component != "ELIGIBLE":
+                counts[component] = counts.get(component, 0) + 1
+    return dict(sorted(counts.items()))
+
+
 def main() -> None:
     day = date.today().isoformat()
     if not PROJ.exists() or PROJ.stat().st_size == 0:
@@ -212,7 +224,10 @@ def main() -> None:
 
     audited = mark_paper_eligibility(candidates)
     eligible = audited[audited["paper_eligible"]].copy() if not audited.empty else audited
+    history_before = history_rows_for_day(day)
     chosen = freeze(eligible)
+    history_after = history_rows_for_day(day)
+    newly_frozen = max(history_after - history_before, 0)
 
     if not audited.empty:
         AUDIT_OUT.parent.mkdir(parents=True, exist_ok=True)
@@ -226,14 +241,20 @@ def main() -> None:
         audited.loc[~audited["paper_eligible"], "paper_rejection_reason"].value_counts().sort_index().to_dict()
         if not audited.empty else {}
     )
-    status = "PAPER_SELECTION" if len(chosen) else "NO_PAPER"
-    if len(chosen):
+    if newly_frozen:
+        status = "NEW_PAPER_SELECTION"
+        no_paper_reason = None
+    elif len(chosen):
+        status = "EXISTING_FROZEN_SELECTION"
         no_paper_reason = None
     elif candidates.empty:
+        status = "NO_PAPER"
         no_paper_reason = "NO_MODEL_MARKET_MATCHED_CANDIDATES"
     elif eligible.empty:
+        status = "NO_PAPER"
         no_paper_reason = "NO_ELIGIBLE_CANDIDATES"
     else:
+        status = "NO_PAPER"
         no_paper_reason = "NO_NEW_FROZEN_SELECTION"
 
     write_cycle_audit(
@@ -245,8 +266,11 @@ def main() -> None:
         candidate_rows=len(candidates),
         eligible_candidate_rows=len(eligible),
         one_per_pitcher_selected_rows=len(chosen),
-        frozen_history_rows_for_date=history_rows_for_day(day),
+        newly_frozen_rows=newly_frozen,
+        frozen_history_rows_before_cycle=history_before,
+        frozen_history_rows_for_date=history_after,
         rejection_reason_counts={str(k): int(v) for k, v in rejection_counts.items()},
+        rejection_component_counts=rejection_component_counts(audited),
         latest_model_timestamp_utc=latest_projection.isoformat(),
         earliest_quote_timestamp_utc=earliest_quote.isoformat(),
         latest_quote_timestamp_utc=market["collected_at_utc"].max().isoformat(),
