@@ -2,18 +2,45 @@
 
 The projections must predate the quote collection. This script enforces that
 relationship and the frozen paper-eligibility rules before any selection can be
-written to the prospective ledger.
+written to the prospective ledger. Every decision cycle also persists an
+immutable audit record so NO_PAPER outcomes can be reconstructed later without
+relying on short-lived workflow artifacts.
 """
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
+import json
 from pathlib import Path
+from zoneinfo import ZoneInfo
 import pandas as pd
 
-from run_v22_fanduel_paper import AUDIT_OUT, MKT, freeze, pair_fanduel, select_candidates
+from run_v22_fanduel_paper import AUDIT_OUT, HISTORY, MKT, freeze, pair_fanduel, select_candidates
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJ = ROOT / "outputs/fanduel_pitcher_k_live_projections.csv"
+CYCLE_ARCHIVE = ROOT / "data/market/free_archive"
+
+
+def write_cycle_audit(day: str, status: str, **fields) -> Path:
+    """Persist one immutable machine-readable record for this decision cycle."""
+    now = datetime.now(ZoneInfo("America/New_York"))
+    folder = CYCLE_ARCHIVE / day
+    folder.mkdir(parents=True, exist_ok=True)
+    stamp = now.strftime("%H%M%S-%f")
+    out = folder / f"cycle-audit-{stamp}.json"
+    payload = {
+        "schema_version": 1,
+        "cycle_recorded_at_et": now.isoformat(),
+        "date": day,
+        "status": status,
+        **fields,
+    }
+    # Exclusive creation prevents a later cycle from overwriting prior evidence.
+    with out.open("x", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, sort_keys=True, default=str)
+        f.write("\n")
+    print(f"Persisted FanDuel cycle audit -> {out.relative_to(ROOT)}")
+    return out
 
 
 def assert_projection_before_quote(projection_times, quote_times) -> tuple[pd.Timestamp, pd.Timestamp]:
@@ -54,13 +81,7 @@ def assert_candidate_timing(candidates: pd.DataFrame) -> None:
 
 
 def mark_paper_eligibility(candidates: pd.DataFrame) -> pd.DataFrame:
-    """Apply the frozen prospective gate and preserve rejection reasons for audit.
-
-    A line/side can enter the prospective ledger only when it is in the decision
-    window, has non-negative model-vs-no-vig edge, and has strictly positive EV at
-    the actual FanDuel price. This prevents a negative-value option from becoming
-    the one-per-pitcher selection merely because it is the best bad option.
-    """
+    """Apply the frozen prospective gate and preserve rejection reasons for audit."""
     if candidates.empty:
         return candidates
     x = candidates.copy()
@@ -100,30 +121,55 @@ def attach_diagnostics(candidates: pd.DataFrame, projections: pd.DataFrame) -> p
     return candidates.merge(d, on=["game_id", "pitcher_id"], how="left")
 
 
+def history_rows_for_day(day: str) -> int:
+    if not HISTORY.exists() or HISTORY.stat().st_size == 0:
+        return 0
+    try:
+        h = pd.read_csv(HISTORY, low_memory=False)
+    except (pd.errors.EmptyDataError, OSError):
+        return 0
+    if h.empty or "date" not in h.columns:
+        return 0
+    return int(h["date"].astype(str).eq(day).sum())
+
+
 def main() -> None:
     day = date.today().isoformat()
     if not PROJ.exists() or PROJ.stat().st_size == 0:
+        write_cycle_audit(day, "NO_PAPER", no_paper_reason="NO_PREBUILT_PROJECTIONS")
         print("No prebuilt live projections; nothing to price.")
         return
     try:
         projections = pd.read_csv(PROJ, low_memory=False)
     except pd.errors.EmptyDataError:
+        write_cycle_audit(day, "NO_PAPER", no_paper_reason="EMPTY_PROJECTION_FILE")
         print("Live projection file is empty; nothing to price.")
         return
     if projections.empty:
+        write_cycle_audit(day, "NO_PAPER", no_paper_reason="NO_LIVE_PROJECTIONS")
         print("No live projections; nothing to price.")
         return
 
     if not MKT.exists() or MKT.stat().st_size == 0:
+        write_cycle_audit(day, "NO_PAPER", no_paper_reason="NO_CURRENT_FANDUEL_MARKET", projection_rows=len(projections))
         print("No current FanDuel market file; nothing to price.")
         return
     try:
         raw = pd.read_csv(MKT, low_memory=False)
     except pd.errors.EmptyDataError:
+        write_cycle_audit(day, "NO_PAPER", no_paper_reason="EMPTY_FANDUEL_MARKET_FILE", projection_rows=len(projections))
         print("Current FanDuel market file is empty; nothing to price.")
         return
     market = pair_fanduel(raw, day)
     if market.empty:
+        write_cycle_audit(
+            day,
+            "NO_PAPER",
+            no_paper_reason="NO_SAME_DAY_FANDUEL_PITCHER_K_QUOTES",
+            projection_rows=len(projections),
+            raw_market_rows=len(raw),
+            raw_sources=sorted(raw["source"].dropna().astype(str).unique().tolist()) if "source" in raw.columns else [],
+        )
         print(f"No FanDuel pitcher-K quotes found for {day}.")
         return
 
@@ -131,18 +177,43 @@ def main() -> None:
         projections["model_generated_at_et"], errors="coerce", utc=True
     )
     market["collected_at_utc"] = pd.to_datetime(market["collected_at_utc"], errors="coerce", utc=True)
-    assert_projection_before_quote(projections["model_generated_at_et"], market["collected_at_utc"])
+    try:
+        latest_projection, earliest_quote = assert_projection_before_quote(
+            projections["model_generated_at_et"], market["collected_at_utc"]
+        )
+    except ValueError as exc:
+        write_cycle_audit(
+            day,
+            "TIMING_INTEGRITY_FAILURE",
+            no_paper_reason="BATCH_MODEL_AFTER_QUOTE_OR_MISSING_TIMESTAMP",
+            projection_rows=len(projections),
+            paired_market_rows=len(market),
+            error=str(exc),
+        )
+        raise
 
     projections["model_generated_at_et"] = projections["model_generated_at_et"].dt.tz_convert("America/New_York").astype(str)
     candidates = attach_diagnostics(select_candidates(market, projections), projections)
-    assert_candidate_timing(candidates)
+    try:
+        assert_candidate_timing(candidates)
+    except ValueError as exc:
+        write_cycle_audit(
+            day,
+            "TIMING_INTEGRITY_FAILURE",
+            no_paper_reason="PER_CANDIDATE_MODEL_AFTER_QUOTE_OR_MISSING_TIMESTAMP",
+            projection_rows=len(projections),
+            paired_market_rows=len(market),
+            candidate_rows=len(candidates),
+            latest_model_timestamp_utc=latest_projection.isoformat(),
+            earliest_quote_timestamp_utc=earliest_quote.isoformat(),
+            error=str(exc),
+        )
+        raise
+
     audited = mark_paper_eligibility(candidates)
     eligible = audited[audited["paper_eligible"]].copy() if not audited.empty else audited
-    freeze(eligible)
+    chosen = freeze(eligible)
 
-    # freeze() owns the one-per-pitcher ledger logic and writes an audit of what it
-    # receives. Restore the complete decision-cycle audit afterward so rejected
-    # lines remain inspectable instead of disappearing from the evidence trail.
     if not audited.empty:
         AUDIT_OUT.parent.mkdir(parents=True, exist_ok=True)
         audited.to_csv(AUDIT_OUT, index=False)
@@ -150,6 +221,38 @@ def main() -> None:
             f"Prospective eligibility: {int(audited.paper_eligible.sum())}/{len(audited)} "
             "line/side candidates passed timing + non-negative edge + positive EV."
         )
+
+    rejection_counts = (
+        audited.loc[~audited["paper_eligible"], "paper_rejection_reason"].value_counts().sort_index().to_dict()
+        if not audited.empty else {}
+    )
+    status = "PAPER_SELECTION" if len(chosen) else "NO_PAPER"
+    if len(chosen):
+        no_paper_reason = None
+    elif candidates.empty:
+        no_paper_reason = "NO_MODEL_MARKET_MATCHED_CANDIDATES"
+    elif eligible.empty:
+        no_paper_reason = "NO_ELIGIBLE_CANDIDATES"
+    else:
+        no_paper_reason = "NO_NEW_FROZEN_SELECTION"
+
+    write_cycle_audit(
+        day,
+        status,
+        no_paper_reason=no_paper_reason,
+        projection_rows=len(projections),
+        paired_market_rows=len(market),
+        candidate_rows=len(candidates),
+        eligible_candidate_rows=len(eligible),
+        one_per_pitcher_selected_rows=len(chosen),
+        frozen_history_rows_for_date=history_rows_for_day(day),
+        rejection_reason_counts={str(k): int(v) for k, v in rejection_counts.items()},
+        latest_model_timestamp_utc=latest_projection.isoformat(),
+        earliest_quote_timestamp_utc=earliest_quote.isoformat(),
+        latest_quote_timestamp_utc=market["collected_at_utc"].max().isoformat(),
+        timing_integrity="PASS",
+        model_versions=sorted(audited["model_version"].dropna().astype(str).unique().tolist()) if "model_version" in audited.columns else [],
+    )
 
 
 if __name__ == "__main__":
