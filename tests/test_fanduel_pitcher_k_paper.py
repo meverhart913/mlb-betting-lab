@@ -78,6 +78,32 @@ class FanDuelPaperTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             selector.assert_projection_before_quote([None], ["2026-08-28T21:00:00Z"])
 
+    def test_candidate_timing_guard_allows_each_model_before_own_quote(self):
+        candidates = pd.DataFrame([
+            {
+                "pitcher_name":"A", "line":5.5, "side":"OVER",
+                "model_generated_at_et":"2026-08-28T16:59:00-04:00",
+                "collected_at_utc":"2026-08-28T21:00:00Z",
+            },
+            {
+                "pitcher_name":"B", "line":4.5, "side":"UNDER",
+                "model_generated_at_et":"2026-08-28T17:10:00-04:00",
+                "collected_at_utc":"2026-08-28T21:15:00Z",
+            },
+        ])
+        selector.assert_candidate_timing(candidates)
+
+    def test_candidate_timing_guard_rejects_late_model_row(self):
+        candidates = pd.DataFrame([
+            {
+                "pitcher_name":"A", "line":5.5, "side":"OVER",
+                "model_generated_at_et":"2026-08-28T17:01:00-04:00",
+                "collected_at_utc":"2026-08-28T21:00:00Z",
+            }
+        ])
+        with self.assertRaises(ValueError):
+            selector.assert_candidate_timing(candidates)
+
     @patch.object(hybrid, "fit_v21_and_predict")
     @patch.object(hybrid, "fit_v22_and_predict")
     def test_hybrid_uses_v21_only_for_missing_v22_starts(self, m22, m21):
