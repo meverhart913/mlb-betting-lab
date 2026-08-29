@@ -47,7 +47,10 @@ def binary_scores(x: pd.DataFrame):
 
 
 def load_archive():
-    fs = list(ARCHIVE.rglob("*.csv")) if ARCHIVE.exists() else []
+    # Prospective CLV must use only immutable verified-current FanDuel decision
+    # snapshots. Public PropLine sample files in the same archive are research-only
+    # and must never become sportsbook CLV evidence.
+    fs = list(ARCHIVE.rglob("decision-*.csv")) if ARCHIVE.exists() else []
     parts = []
     for f in fs:
         try:
