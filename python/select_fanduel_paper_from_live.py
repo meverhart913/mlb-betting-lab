@@ -1,7 +1,8 @@
 """Price the current FanDuel board using already-built live projections.
 
 The projections must predate the quote collection. This script enforces that
-relationship before any paper selection can be frozen.
+relationship and the frozen paper-eligibility rules before any selection can be
+written to the prospective ledger.
 """
 from __future__ import annotations
 
@@ -9,7 +10,7 @@ from datetime import date
 from pathlib import Path
 import pandas as pd
 
-from run_v22_fanduel_paper import MKT, freeze, pair_fanduel, select_candidates
+from run_v22_fanduel_paper import AUDIT_OUT, MKT, freeze, pair_fanduel, select_candidates
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJ = ROOT / "outputs/fanduel_pitcher_k_live_projections.csv"
@@ -32,12 +33,7 @@ def assert_projection_before_quote(projection_times, quote_times) -> tuple[pd.Ti
 
 
 def assert_candidate_timing(candidates: pd.DataFrame) -> None:
-    """Enforce timing lineage on every priced candidate before it can be frozen.
-
-    The batch guard above catches workflow-order regressions. This row-level guard
-    protects the prospective ledger even if a future refactor mixes projection or
-    quote timestamps inside one cycle.
-    """
+    """Enforce timing lineage on every priced candidate before it can be frozen."""
     if candidates.empty:
         return
     required = {"model_generated_at_et", "collected_at_utc"}
@@ -55,6 +51,40 @@ def assert_candidate_timing(candidates: pd.DataFrame) -> None:
             f"Candidate timing integrity failure: {int(invalid.sum())} candidate row(s) have "
             f"missing timestamps or model time after quote time. Sample={sample}"
         )
+
+
+def mark_paper_eligibility(candidates: pd.DataFrame) -> pd.DataFrame:
+    """Apply the frozen prospective gate and preserve rejection reasons for audit.
+
+    A line/side can enter the prospective ledger only when it is in the decision
+    window, has non-negative model-vs-no-vig edge, and has strictly positive EV at
+    the actual FanDuel price. This prevents a negative-value option from becoming
+    the one-per-pitcher selection merely because it is the best bad option.
+    """
+    if candidates.empty:
+        return candidates
+    x = candidates.copy()
+    timing = x["timing_eligible"].fillna(False).astype(bool)
+    edge = pd.to_numeric(x["model_market_edge"], errors="coerce")
+    ev = pd.to_numeric(x["expected_profit_per_unit"], errors="coerce")
+    x["paper_eligible"] = timing & edge.ge(0.0) & ev.gt(0.0)
+
+    reasons = []
+    for ok_timing, e, value in zip(timing, edge, ev):
+        r = []
+        if not ok_timing:
+            r.append("OUTSIDE_DECISION_WINDOW")
+        if pd.isna(e):
+            r.append("MISSING_MARKET_EDGE")
+        elif e < 0:
+            r.append("NEGATIVE_MARKET_EDGE")
+        if pd.isna(value):
+            r.append("MISSING_EV")
+        elif value <= 0:
+            r.append("NONPOSITIVE_EV")
+        reasons.append("ELIGIBLE" if not r else ",".join(r))
+    x["paper_rejection_reason"] = reasons
+    return x
 
 
 def attach_diagnostics(candidates: pd.DataFrame, projections: pd.DataFrame) -> pd.DataFrame:
@@ -106,7 +136,20 @@ def main() -> None:
     projections["model_generated_at_et"] = projections["model_generated_at_et"].dt.tz_convert("America/New_York").astype(str)
     candidates = attach_diagnostics(select_candidates(market, projections), projections)
     assert_candidate_timing(candidates)
-    freeze(candidates)
+    audited = mark_paper_eligibility(candidates)
+    eligible = audited[audited["paper_eligible"]].copy() if not audited.empty else audited
+    freeze(eligible)
+
+    # freeze() owns the one-per-pitcher ledger logic and writes an audit of what it
+    # receives. Restore the complete decision-cycle audit afterward so rejected
+    # lines remain inspectable instead of disappearing from the evidence trail.
+    if not audited.empty:
+        AUDIT_OUT.parent.mkdir(parents=True, exist_ok=True)
+        audited.to_csv(AUDIT_OUT, index=False)
+        print(
+            f"Prospective eligibility: {int(audited.paper_eligible.sum())}/{len(audited)} "
+            "line/side candidates passed timing + non-negative edge + positive EV."
+        )
 
 
 if __name__ == "__main__":
