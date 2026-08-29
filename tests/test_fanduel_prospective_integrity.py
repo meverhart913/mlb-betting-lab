@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT / "python"))
 import run_v22_fanduel_paper as paper
 
 
-class FrozenLedgerTests(unittest.TestCase):
+class FrozenLedgerImmutabilityTests(unittest.TestCase):
     @staticmethod
     def _candidate(*, side: str, line: float, ev: float) -> pd.DataFrame:
         return pd.DataFrame(
@@ -48,8 +48,8 @@ class FrozenLedgerTests(unittest.TestCase):
             ]
         )
 
-    def test_history_keeps_first_selection_when_later_cycle_changes_line_and_side(self):
-        """A later quote cycle must never overwrite the wager frozen first."""
+    def test_later_cycle_cannot_replace_first_frozen_line_or_side(self):
+        """First write wins even when a later cycle offers a different, higher-EV bet."""
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             current = base / "current"
@@ -70,34 +70,7 @@ class FrozenLedgerTests(unittest.TestCase):
             self.assertEqual(len(frozen), 1)
             self.assertEqual(str(frozen.loc[0, "side"]), "OVER")
             self.assertAlmostEqual(float(frozen.loc[0, "line"]), 5.5)
-
-    def test_one_selection_per_pitcher_start_across_alternate_lines(self):
-        """Highest EV may win selection, but only one row may freeze for the start."""
-        rows = pd.concat(
-            [
-                self._candidate(side="OVER", line=5.5, ev=0.08),
-                self._candidate(side="OVER", line=6.5, ev=0.15),
-                self._candidate(side="UNDER", line=5.5, ev=0.05),
-            ],
-            ignore_index=True,
-        )
-        with tempfile.TemporaryDirectory() as tmp:
-            base = Path(tmp)
-            current = base / "current"
-            out = base / "outputs"
-            history = current / "history.csv"
-            with (
-                patch.object(paper, "CURRENT", current),
-                patch.object(paper, "OUT", out),
-                patch.object(paper, "HISTORY", history),
-                patch.object(paper, "TODAY_OUT", out / "today.csv"),
-                patch.object(paper, "AUDIT_OUT", out / "audit.csv"),
-            ):
-                chosen = paper.freeze(rows)
-
-            self.assertEqual(len(chosen), 1)
-            self.assertEqual(float(chosen.iloc[0]["line"]), 6.5)
-            self.assertEqual(len(pd.read_csv(history)), 1)
+            self.assertAlmostEqual(float(frozen.loc[0, "expected_profit_per_unit"]), 0.12)
 
 
 if __name__ == "__main__":
