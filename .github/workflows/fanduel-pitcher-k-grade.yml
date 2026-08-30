@@ -47,8 +47,10 @@ jobs:
             echo 'No grading updates.'
           else
             git commit -m 'Grade FanDuel pitcher K paper selections'
+            git stash push --include-untracked --keep-index -m 'fanduel-grade-transient' || true
             git pull --rebase origin main
             git push origin HEAD:main
+            git stash pop || true
           fi
       - name: Write grading summary
         if: always()
