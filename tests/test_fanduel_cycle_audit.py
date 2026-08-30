@@ -19,7 +19,7 @@ class FanDuelCycleAuditTests(unittest.TestCase):
     def test_cycle_audit_is_immutable_and_machine_readable(self):
         with tempfile.TemporaryDirectory() as tmp:
             archive = Path(tmp)
-            with patch.object(selector, "CYCLE_ARCHIVE", archive):
+            with patch.object(selector, "ROOT", archive), patch.object(selector, "CYCLE_ARCHIVE", archive):
                 first = selector.write_cycle_audit(
                     "2026-08-29",
                     "NO_PAPER",
