@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from datetime import datetime, timezone
 import re
 import unicodedata
 import numpy as np
@@ -17,6 +18,9 @@ SUMMARY = OUT / "fanduel_pitcher_k_paper_summary.csv"
 CALIB = OUT / "fanduel_pitcher_k_calibration.csv"
 MODEL_SUMMARY = OUT / "fanduel_pitcher_k_model_version_summary.csv"
 THRESHOLDS = (0.00, 0.025, 0.05, 0.075, 0.10)
+# A regulation MLB game cannot legitimately be graded at its scheduled first pitch.
+# This guard also protects the prospective ledger from stale/future-dated result rows.
+MIN_GRADE_AFTER_START = pd.Timedelta(hours=2)
 
 
 def norm_name(v):
@@ -47,9 +51,6 @@ def binary_scores(x: pd.DataFrame):
 
 
 def load_archive():
-    # Prospective CLV must use only immutable verified-current FanDuel decision
-    # snapshots. Public PropLine sample files in the same archive are research-only
-    # and must never become sportsbook CLV evidence.
     fs = list(ARCHIVE.rglob("decision-*.csv")) if ARCHIVE.exists() else []
     parts = []
     for f in fs:
@@ -104,9 +105,15 @@ def grade():
               .rename(columns={"strikeouts": "actual_k", "is_starter": "actual_is_starter"}))
     h = h.drop(columns=[c for c in ["actual_k", "actual_is_starter"] if c in h.columns]).merge(actual, on=["game_id", "pitcher_id"], how="left")
 
+    now_utc = pd.Timestamp(datetime.now(timezone.utc))
     results = []
     profits = []
     for r in h.itertuples(index=False):
+        # Never grade from a result row until the wager's own scheduled game has had
+        # enough wall-clock time to finish. This is independent of whatever may be
+        # present in the refreshed historical log.
+        if pd.isna(r.commence_time_utc) or now_utc < r.commence_time_utc + MIN_GRADE_AFTER_START:
+            results.append("PENDING"); profits.append(np.nan); continue
         game_completed = pd.notna(r.game_id) and float(r.game_id) in completed_game_ids
         if pd.isna(r.actual_k):
             if game_completed:
@@ -135,12 +142,7 @@ def grade():
         for i, r in h.iterrows():
             if pd.isna(r.collected_at_utc) or pd.isna(r.commence_time_utc):
                 continue
-            q = arc[
-                arc.name_key.eq(r.name_key)
-                & arc.side.eq(str(r.side).upper())
-                & arc.collected_at_utc.gt(r.collected_at_utc)
-                & arc.collected_at_utc.lt(r.commence_time_utc)
-            ].copy()
+            q = arc[arc.name_key.eq(r.name_key) & arc.side.eq(str(r.side).upper()) & arc.collected_at_utc.gt(r.collected_at_utc) & arc.collected_at_utc.lt(r.commence_time_utc)].copy()
             if "event_id" in arc.columns and pd.notna(r.get("event_id", np.nan)):
                 q = q[q.event_id.astype(str).eq(str(r.event_id))]
             if q.empty:
@@ -169,22 +171,17 @@ def grade():
         staked = wins + losses
         profit = float(x.flat_profit_units.fillna(0).sum())
         brier, logloss = binary_scores(x)
-        rows.append({
-            "min_edge": t, "independent_bets": staked, "pushes": pushes, "voids": voids, "wins": wins, "losses": losses,
-            "win_rate_ex_push": wins / staked if staked else np.nan,
-            "profit_units": profit, "roi": profit / staked if staked else np.nan,
+        rows.append({"min_edge": t, "independent_bets": staked, "pushes": pushes, "voids": voids, "wins": wins, "losses": losses,
+            "win_rate_ex_push": wins / staked if staked else np.nan, "profit_units": profit, "roi": profit / staked if staked else np.nan,
             "brier_score_ex_push": brier, "log_loss_ex_push": logloss,
-            "mean_clv_implied_prob": float(pd.to_numeric(x.clv_implied_prob, errors="coerce").mean()) if len(x) else np.nan,
-        })
+            "mean_clv_implied_prob": float(pd.to_numeric(x.clv_implied_prob, errors="coerce").mean()) if len(x) else np.nan})
     pd.DataFrame(rows).to_csv(SUMMARY, index=False)
 
     settled = decided[decided.result.isin(["WIN", "LOSS"]) & decided.model_win_prob.notna()].copy()
     if not settled.empty:
         settled["won"] = settled.result.eq("WIN").astype(int)
         settled["prob_bin"] = pd.cut(settled.model_win_prob, bins=[0,.4,.5,.6,.7,.8,1.0], include_lowest=True)
-        cal = settled.groupby("prob_bin", observed=True).agg(
-            bets=("won", "size"), mean_model_prob=("model_win_prob", "mean"), observed_win_rate=("won", "mean")
-        ).reset_index()
+        cal = settled.groupby("prob_bin", observed=True).agg(bets=("won", "size"), mean_model_prob=("model_win_prob", "mean"), observed_win_rate=("won", "mean")).reset_index()
     else:
         cal = pd.DataFrame(columns=["prob_bin", "bets", "mean_model_prob", "observed_win_rate"])
     cal.to_csv(CALIB, index=False)
