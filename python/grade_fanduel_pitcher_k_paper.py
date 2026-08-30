@@ -47,7 +47,10 @@ def binary_scores(x: pd.DataFrame):
 
 
 def load_archive():
-    fs = list(ARCHIVE.rglob("*.csv")) if ARCHIVE.exists() else []
+    # Prospective CLV must use only immutable verified-current FanDuel decision
+    # snapshots. Public PropLine sample files in the same archive are research-only
+    # and must never become sportsbook CLV evidence.
+    fs = list(ARCHIVE.rglob("decision-*.csv")) if ARCHIVE.exists() else []
     parts = []
     for f in fs:
         try:
@@ -139,9 +142,7 @@ def grade():
                 & arc.collected_at_utc.lt(r.commence_time_utc)
             ].copy()
             if "event_id" in arc.columns and pd.notna(r.get("event_id", np.nan)):
-                qe = q[q.event_id.astype(str).eq(str(r.event_id))]
-                if not qe.empty:
-                    q = qe
+                q = q[q.event_id.astype(str).eq(str(r.event_id))]
             if q.empty:
                 continue
             latest = q.sort_values("collected_at_utc").iloc[-1]
