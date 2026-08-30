@@ -158,8 +158,13 @@ jobs:
             echo 'No prospective history changes.'
           else
             git commit -m 'Update FanDuel pitcher K prospective history'
+            # Projection/refresh steps intentionally modify research files that are not
+            # part of the prospective ledger. Preserve them locally while rebasing the
+            # immutable history commit, then restore them for artifact/report output.
+            git stash push --include-untracked --keep-index -m 'fanduel-workflow-transient' || true
             git pull --rebase origin main
             git push origin HEAD:main
+            git stash pop || true
           fi
 
       - name: Write FanDuel paper summary
