@@ -20,6 +20,7 @@ class FanDuelGradingEdgeCaseTests(unittest.TestCase):
             t = Path(tmp)
             history = t / "history.csv"
             logs = t / "logs.csv"
+            games = t / "games.csv"
             archive = t / "archive"
             out = t / "out"
             day = archive / "2026-08-29"
@@ -50,10 +51,20 @@ class FanDuelGradingEdgeCaseTests(unittest.TestCase):
                 },
             ]).to_csv(history, index=False)
 
+            # Game 3 deliberately contains a stale/partial pitcher line. The grader
+            # must ignore it until the authoritative game table says the exact game
+            # is final.
             pd.DataFrame([
                 {"date": "2026-08-29", "game_id": 1, "pitcher_id": 11, "strikeouts": 5, "is_starter": 1},
                 {"date": "2026-08-29", "game_id": 2, "pitcher_id": 22, "strikeouts": 3, "is_starter": 1},
+                {"date": "2026-08-29", "game_id": 3, "pitcher_id": 33, "strikeouts": 8, "is_starter": 1},
             ]).to_csv(logs, index=False)
+
+            pd.DataFrame([
+                {"game_id": 1, "status": "Final"},
+                {"game_id": 2, "status": "Completed Early: Rain"},
+                {"game_id": 3, "status": "In Progress"},
+            ]).to_csv(games, index=False)
 
             pd.DataFrame([
                 {
@@ -71,6 +82,7 @@ class FanDuelGradingEdgeCaseTests(unittest.TestCase):
             with (
                 patch.object(grader, "HISTORY", history),
                 patch.object(grader, "LOG", logs),
+                patch.object(grader, "GAMES", games),
                 patch.object(grader, "ARCHIVE", archive),
                 patch.object(grader, "OUT", out),
                 patch.object(grader, "GRADED", out / "graded.csv"),
@@ -89,6 +101,7 @@ class FanDuelGradingEdgeCaseTests(unittest.TestCase):
 
             self.assertEqual(got.loc["Pending Pitcher", "result"], "PENDING")
             self.assertTrue(pd.isna(got.loc["Pending Pitcher", "flat_profit_units"]))
+            self.assertEqual(float(got.loc["Pending Pitcher", "actual_k"]), 8.0)
 
             # Positive CLV means the same selected side became more expensive / more
             # implied-likely before first pitch. The sign must work identically for
