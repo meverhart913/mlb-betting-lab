@@ -2,6 +2,7 @@
 
 Designed for the scheduled morning workflow. It revisits the last few calendar
 days so postponed games and late corrections are naturally repaired by upsert.
+Only games explicitly reported as final by MLB are allowed into result logs.
 """
 from __future__ import annotations
 
@@ -19,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 SCHEDULE_URL = "https://statsapi.mlb.com/api/v1/schedule"
 FEED_URL = "https://statsapi.mlb.com/api/v1.1/game/{}/feed/live"
+FINAL_STATES = {"final", "game over", "completed early"}
 
 
 def upsert(path: Path, fresh: pd.DataFrame, keys: list[str]) -> None:
@@ -71,7 +73,7 @@ def schedule(start: str, end: str) -> list[dict]:
                 "winner": None,
                 "home_win": None,
             }
-            if hs is not None and aws is not None and hs != aws:
+            if hs is not None and aws is not None and hs != aws and str(row["status"]).strip().lower() in FINAL_STATES:
                 row["home_win"] = int(hs > aws)
                 row["winner"] = row["home_team"] if hs > aws else row["away_team"]
             rows.append(row)
@@ -90,12 +92,21 @@ def main() -> None:
     upsert(DATA / "mlb_games_2018_present.csv", games, ["game_id"])
 
     enrich_rows, pitcher_rows, team_rows = [], [], []
-    completed = games[games["home_score"].notna() & games["away_score"].notna()] if not games.empty else games
+    if not games.empty:
+        status = games["status"].fillna("").astype(str).str.strip().str.lower()
+        completed = games[status.isin(FINAL_STATES)].copy()
+    else:
+        completed = games
     for row in completed.itertuples(index=False):
         try:
             r = requests.get(FEED_URL.format(int(row.game_id)), timeout=40)
             r.raise_for_status()
-            e, p, t = extract(int(row.game_id), r.json())
+            feed = r.json()
+            feed_state = str(((feed.get("gameData") or {}).get("status") or {}).get("detailedState") or "").strip().lower()
+            if feed_state not in FINAL_STATES:
+                print(f"SKIP game {row.game_id}: feed status is {feed_state or 'unknown'}, not final")
+                continue
+            e, p, t = extract(int(row.game_id), feed)
             enrich_rows.append(e)
             pitcher_rows.extend(p)
             team_rows.extend(t)
@@ -106,7 +117,7 @@ def main() -> None:
     upsert(DATA / "mlb_game_enrichment.csv", pd.DataFrame(enrich_rows), ["game_id"])
     upsert(DATA / "mlb_pitcher_game_logs.csv", pd.DataFrame(pitcher_rows), ["game_id", "side", "pitcher_id"])
     upsert(DATA / "mlb_team_game_logs.csv", pd.DataFrame(team_rows), ["game_id", "side"])
-    print(f"Refreshed {len(games):,} recent schedule rows and {len(enrich_rows):,} completed game feeds ({start} through {end}).")
+    print(f"Refreshed {len(games):,} recent schedule rows and {len(enrich_rows):,} final game feeds ({start} through {end}).")
 
 
 if __name__ == "__main__":
