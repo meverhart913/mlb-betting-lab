@@ -11,6 +11,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 HISTORY = ROOT / "data/current/fanduel_pitcher_k_paper_history.csv"
 LOG = ROOT / "data/mlb_pitcher_game_logs.csv"
+GAMES = ROOT / "data/mlb_games_2018_present.csv"
 ARCHIVE = ROOT / "data/market/free_archive"
 OUT = ROOT / "outputs"
 GRADED = OUT / "fanduel_pitcher_k_paper_graded.csv"
@@ -26,6 +27,22 @@ MIN_GRADE_AFTER_START = pd.Timedelta(hours=2)
 def norm_name(v):
     x = unicodedata.normalize("NFKD", str(v or "")).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]", "", x)
+
+
+def is_final_state(v) -> bool:
+    s = str(v or "").strip().lower()
+    return s in {"final", "game over"} or s.startswith("completed early")
+
+
+def authoritative_final_game_ids() -> set[float]:
+    if not GAMES.exists():
+        return set()
+    games = pd.read_csv(GAMES, low_memory=False)
+    if games.empty or "game_id" not in games.columns or "status" not in games.columns:
+        return set()
+    games["game_id"] = pd.to_numeric(games.game_id, errors="coerce")
+    final = games[games.status.map(is_final_state) & games.game_id.notna()]
+    return set(final.game_id.astype(float))
 
 
 def implied_prob(price):
@@ -97,7 +114,7 @@ def grade():
     logs["pitcher_id"] = pd.to_numeric(logs.pitcher_id, errors="coerce")
     logs["strikeouts"] = pd.to_numeric(logs.strikeouts, errors="coerce")
     logs["is_starter"] = pd.to_numeric(logs.get("is_starter"), errors="coerce").fillna(0).astype(int)
-    completed_game_ids = set(logs.dropna(subset=["game_id"]).game_id.astype(float))
+    final_game_ids = authoritative_final_game_ids()
     actual = (logs.dropna(subset=["game_id", "pitcher_id"])
               .sort_values(["date", "game_id"])
               .drop_duplicates(["game_id", "pitcher_id"], keep="last")
@@ -109,17 +126,15 @@ def grade():
     results = []
     profits = []
     for r in h.itertuples(index=False):
-        # Never grade from a result row until the wager's own scheduled game has had
-        # enough wall-clock time to finish. This is independent of whatever may be
-        # present in the refreshed historical log.
+        # Defense in depth: require both enough wall-clock time and an authoritative
+        # final status for this exact MLB game before any result row can settle.
         if pd.isna(r.commence_time_utc) or now_utc < r.commence_time_utc + MIN_GRADE_AFTER_START:
             results.append("PENDING"); profits.append(np.nan); continue
-        game_completed = pd.notna(r.game_id) and float(r.game_id) in completed_game_ids
+        game_completed = pd.notna(r.game_id) and float(r.game_id) in final_game_ids
+        if not game_completed:
+            results.append("PENDING"); profits.append(np.nan); continue
         if pd.isna(r.actual_k):
-            if game_completed:
-                results.append("VOID_STARTER_CHANGE"); profits.append(0.0)
-            else:
-                results.append("PENDING"); profits.append(np.nan)
+            results.append("VOID_STARTER_CHANGE"); profits.append(0.0)
             continue
         if int(r.actual_is_starter or 0) != 1:
             results.append("VOID_STARTER_CHANGE"); profits.append(0.0); continue

@@ -154,7 +154,7 @@ class FanDuelPaperTests(unittest.TestCase):
 
     def test_completed_game_with_different_starter_is_void(self):
         with tempfile.TemporaryDirectory() as td:
-            t=Path(td); hist=t/'history.csv'; logs=t/'logs.csv'; archive=t/'archive'; out=t/'out'; archive.mkdir(); out.mkdir()
+            t=Path(td); hist=t/'history.csv'; logs=t/'logs.csv'; games=t/'games.csv'; archive=t/'archive'; out=t/'out'; archive.mkdir(); out.mkdir()
             pd.DataFrame([{
                 'date':'2026-08-28','game_id':1,'event_id':'e1','pitcher_id':10,'pitcher_name':'Scratched Pitcher',
                 'line':5.5,'side':'OVER','fanduel_price':-110,'model_win_prob':0.60,'model_market_edge':0.08,
@@ -165,7 +165,8 @@ class FanDuelPaperTests(unittest.TestCase):
                 'date':'2026-08-28','game_id':1,'pitcher_id':20,'pitcher_name':'Replacement Starter',
                 'strikeouts':6,'is_starter':1
             }]).to_csv(logs,index=False)
-            with patch.object(grader,'HISTORY',hist), patch.object(grader,'LOG',logs), patch.object(grader,'ARCHIVE',archive), \
+            pd.DataFrame([{'game_id':1,'status':'Final'}]).to_csv(games,index=False)
+            with patch.object(grader,'HISTORY',hist), patch.object(grader,'LOG',logs), patch.object(grader,'GAMES',games), patch.object(grader,'ARCHIVE',archive), \
                  patch.object(grader,'OUT',out), patch.object(grader,'GRADED',out/'graded.csv'), patch.object(grader,'SUMMARY',out/'summary.csv'), \
                  patch.object(grader,'CALIB',out/'calib.csv'), patch.object(grader,'MODEL_SUMMARY',out/'models.csv'):
                 grader.grade()
