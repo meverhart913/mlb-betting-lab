@@ -1,0 +1,12 @@
+{
+  "cycle_recorded_at_et": "2026-08-31T20:07:14.733729-04:00",
+  "date": "2026-09-01",
+  "no_paper_reason": "NO_SAME_DAY_FANDUEL_PITCHER_K_QUOTES",
+  "projection_rows": 27,
+  "raw_market_rows": 65,
+  "raw_sources": [
+    "the_odds_api_fanduel_fallback"
+  ],
+  "schema_version": 1,
+  "status": "NO_PAPER"
+}
