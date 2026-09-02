@@ -32,8 +32,13 @@ def parse_dt(value):
 
 
 def nominal_window(dt):
+    """Assign a delayed capture to the latest nominal slot that has already passed."""
     mins = dt.hour * 60 + dt.minute
-    h, m = min(WINDOWS, key=lambda x: abs(mins - (x[0] * 60 + x[1])))
+    passed = [(h, m) for h, m in WINDOWS if h * 60 + m <= mins]
+    if passed:
+        h, m = passed[-1]
+    else:
+        h, m = WINDOWS[0]
     return f"{h:02d}:{m:02d} ET"
 
 
@@ -51,7 +56,15 @@ def main():
             data = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
-        ts = parse_dt(first(data, "quote_timestamp", "quote_ts", "cycle_timestamp", "timestamp", default=None))
+        ts = parse_dt(first(
+            data,
+            "cycle_recorded_at_et",
+            "quote_timestamp",
+            "quote_ts",
+            "cycle_timestamp",
+            "timestamp",
+            default=None,
+        ))
         if ts is None:
             # Filenames are local HHMMSS in the current archive convention.
             try:
@@ -65,9 +78,31 @@ def main():
             "window": nominal_window(ts),
             "actual_time": ts.strftime("%H:%M:%S"),
             "status": first(data, "status", "cycle_status", default="UNKNOWN"),
-            "market_rows": int(first(data, "market_rows", "quote_rows", "market_row_count", default=0) or 0),
-            "eligible": int(first(data, "eligible_candidates", "eligible_count", "eligible_rows", default=0) or 0),
-            "new": int(first(data, "new_selections", "new_selection_count", "new_frozen", default=0) or 0),
+            "market_rows": int(first(
+                data,
+                "paired_market_rows",
+                "raw_market_rows",
+                "market_rows",
+                "quote_rows",
+                "market_row_count",
+                default=0,
+            ) or 0),
+            "eligible": int(first(
+                data,
+                "eligible_candidate_rows",
+                "eligible_candidates",
+                "eligible_count",
+                "eligible_rows",
+                default=0,
+            ) or 0),
+            "new": int(first(
+                data,
+                "newly_frozen_rows",
+                "new_selections",
+                "new_selection_count",
+                "new_frozen",
+                default=0,
+            ) or 0),
             "path": str(path.relative_to(ROOT)),
         })
 
