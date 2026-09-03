@@ -19847,21 +19847,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824721,2026-08-21,2026,R,,3.0,Fenway Park,69.0,Overcast,"5 mph, In From CF",543243.0,657277.0,137,657277.0,Logan Webb,111,543243.0,Sonny Gray
 824800,2026-08-21,2026,R,,2.0,Oriole Park at Camden Yards,77.0,Partly Cloudy,"3 mph, In From RF",669432.0,642547.0,139,642547.0,Freddy Peralta,110,669432.0,Trevor Rogers
 825045,2026-08-21,2026,R,,15.0,Chase Field,75.0,Roof Closed,"0 mph, None",593958.0,666157.0,113,666157.0,Nick Lodolo,109,593958.0,Eduardo Rodriguez
-822686,2026-09-02,2026,R,,3309.0,Nationals Park,,,,,,144,,,120,,
-822851,2026-09-02,2026,R,,5325.0,Globe Life Field,,,,,,133,,,140,,
-822931,2026-09-02,2026,R,,12.0,Tropicana Field,,,,,,121,,,139,,
-823339,2026-09-02,2026,R,,31.0,PNC Park,,,,,,137,,,134,,
-823660,2026-09-02,2026,R,,3312.0,Target Field,,,,,,116,,,142,,
-823906,2026-09-02,2026,R,,22.0,UNIQLO Field at Dodger Stadium,,,,,,138,,,119,,
-823983,2026-09-02,2026,R,,1.0,Angel Stadium,,,,,,147,,,108,,
-824068,2026-09-02,2026,R,,7.0,Kauffman Stadium,,,,,,146,,,118,,
-824147,2026-09-02,2026,R,,2392.0,Daikin Park,,,,,,145,,,117,,
-824312,2026-09-02,2026,R,,19.0,Coors Field,,,,,,110,,,115,,
-824390,2026-09-02,2026,R,,5.0,Progressive Field,,,,,,141,,,114,,
-824470,2026-09-02,2026,R,,2602.0,Great American Ball Park,,,,,,135,,,113,,
-824634,2026-09-02,2026,R,,17.0,Wrigley Field,,,,,,158,,,112,,
-824717,2026-09-02,2026,R,,3.0,Fenway Park,,,,,,136,,,111,,
-825037,2026-09-02,2026,R,,15.0,Chase Field,,,,,,143,,,109,,
 822853,2026-09-03,2026,R,,5325.0,Globe Life Field,,,,,,139,,,140,,
 823095,2026-09-03,2026,R,,680.0,T-Mobile Park,,,,,,133,,,136,,
 823337,2026-09-03,2026,R,,31.0,PNC Park,,,,,,137,,,134,,
@@ -20341,3 +20326,18 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823984,2026-09-01,2026,R,,1.0,Angel Stadium,78.0,Clear,"6 mph, R To L",680570.0,543037.0,147,543037.0,Gerrit Cole,108,680570.0,Grayson Rodriguez
 825038,2026-09-01,2026,R,,15.0,Chase Field,76.0,Roof Closed,"0 mph, None",593958.0,666200.0,143,666200.0,Jesús Luzardo,109,593958.0,Eduardo Rodriguez
 823908,2026-09-01,2026,R,,22.0,UNIQLO Field at Dodger Stadium,73.0,Clear,"9 mph, Out To CF",641778.0,700241.0,138,700241.0,Michael McGreevy,119,641778.0,Eric Lauer
+824470,2026-09-02,2026,R,,2602.0,Great American Ball Park,94.0,Sunny,"6 mph, Out To LF",682227.0,663554.0,135,663554.0,Casey Mize,113,682227.0,Brandon Williamson
+822686,2026-09-02,2026,R,,3309.0,Nationals Park,88.0,Cloudy,"7 mph, In From RF",695418.0,656550.0,144,656550.0,Grant Holmes,120,695418.0,Brad Lord
+822851,2026-09-02,2026,R,,5325.0,Globe Life Field,74.0,Roof Closed,"0 mph, None",674003.0,682052.0,133,682052.0,Jacob Lopez,140,674003.0,Cody Bradford
+824312,2026-09-02,2026,R,,19.0,Coors Field,85.0,Sunny,"11 mph, R To L",608372.0,669432.0,110,669432.0,Trevor Rogers,115,608372.0,Tomoyuki Sugano
+825037,2026-09-02,2026,R,,15.0,Chase Field,76.0,Roof Closed,"0 mph, None",664199.0,691725.0,143,691725.0,Andrew Painter,109,664199.0,Taylor Clarke
+824717,2026-09-02,2026,R,,3.0,Fenway Park,71.0,Partly Cloudy,"5 mph, In From RF",663776.0,682243.0,136,682243.0,Bryce Miller,111,663776.0,Patrick Sandoval
+823339,2026-09-02,2026,R,,31.0,PNC Park,90.0,Partly Cloudy,"10 mph, Out To LF",696149.0,694738.0,137,694738.0,Landen Roupp,134,696149.0,Bubba Chandler
+822931,2026-09-02,2026,R,,12.0,Tropicana Field,72.0,Dome,"0 mph, None",643377.0,663795.0,121,663795.0,Justin Hagenman,139,643377.0,Griffin Jax
+824390,2026-09-02,2026,R,,5.0,Progressive Field,89.0,Partly Cloudy,"14 mph, Out To RF",676282.0,656302.0,141,656302.0,Dylan Cease,114,676282.0,Joey Cantillo
+823660,2026-09-02,2026,R,,3312.0,Target Field,89.0,Clear,"2 mph, In From LF",665152.0,623454.0,116,623454.0,Drew Anderson,142,665152.0,Dean Kremer
+824068,2026-09-02,2026,R,,7.0,Kauffman Stadium,98.0,Clear,"8 mph, R To L",702070.0,691587.0,146,691587.0,Eury Pérez,118,702070.0,Noah Cameron
+824634,2026-09-02,2026,R,,17.0,Wrigley Field,92.0,Partly Cloudy,"9 mph, Out To CF",656849.0,694819.0,158,694819.0,Jacob Misiorowski,112,656849.0,David Peterson
+824147,2026-09-02,2026,R,,2392.0,Daikin Park,73.0,Roof Closed,"0 mph, None",669713.0,663436.0,145,663436.0,Davis Martin,117,669713.0,Hayden Wesneski
+823983,2026-09-02,2026,R,,1.0,Angel Stadium,78.0,Clear,"6 mph, R To L",672282.0,693645.0,147,693645.0,Cam Schlittler,108,672282.0,Reid Detmers
+823906,2026-09-02,2026,R,,22.0,UNIQLO Field at Dodger Stadium,75.0,Clear,"6 mph, Out To RF",808967.0,802408.0,138,802408.0,Brycen Mautz,119,808967.0,Yoshinobu Yamamoto
