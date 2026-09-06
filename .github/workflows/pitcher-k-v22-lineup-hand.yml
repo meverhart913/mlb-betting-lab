@@ -18,6 +18,9 @@ on:
       - 'python/prepare_free_pitcher_k_backtest.py'
       - 'python/backtest_pitcher_k_market.py'
       - 'data/market/free_pitcher_k_archive_graded.csv'
+  # Regenerate durable baseline artifacts monthly so live workflows never depend on expired Actions output.
+  schedule:
+    - cron: '20 9 1 * *'
   workflow_dispatch:
 jobs:
   historical-data:
@@ -42,7 +45,7 @@ jobs:
           python python/backfill_historical_starting_lineups.py --start "${{ matrix.year }}-03-15" --end "$END"
           mv data/features/historical_starting_lineups.csv "data/features/lineups_${{ matrix.year }}.csv"
       - uses: actions/upload-artifact@v4
-        with: {name: 'v22-matchup-${{ matrix.year }}', path: 'data/features/*_${{ matrix.year }}.csv', retention-days: 7}
+        with: {name: 'v22-matchup-${{ matrix.year }}', path: 'data/features/*_${{ matrix.year }}.csv', retention-days: 90}
 
   statcast-data:
     runs-on: ubuntu-latest
@@ -64,7 +67,7 @@ jobs:
           python python/backfill_statcast_pitch_features.py --start "${{ matrix.year }}-03-15" --end "$END" --chunk-days 3 --sleep-seconds .2
           mv data/features/statcast_pitcher_daily.csv "data/features/statcast_pitcher_${{ matrix.year }}.csv"
       - uses: actions/upload-artifact@v4
-        with: {name: 'v22-statcast-${{ matrix.year }}', path: 'data/features/statcast_pitcher_${{ matrix.year }}.csv', retention-days: 7}
+        with: {name: 'v22-statcast-${{ matrix.year }}', path: 'data/features/statcast_pitcher_${{ matrix.year }}.csv', retention-days: 90}
 
   test-v22:
     needs: [historical-data, statcast-data]
@@ -132,4 +135,4 @@ jobs:
             outputs/pitcher_k_market_graded.csv
             outputs/pitcher_k_market_threshold_summary.csv
             outputs/pitcher_k_market_year_summary.csv
-          retention-days: 30
+          retention-days: 90
