@@ -19846,11 +19846,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824721,2026-08-21,2026,R,,3.0,Fenway Park,69.0,Overcast,"5 mph, In From CF",543243.0,657277.0,137,657277.0,Logan Webb,111,543243.0,Sonny Gray
 824800,2026-08-21,2026,R,,2.0,Oriole Park at Camden Yards,77.0,Partly Cloudy,"3 mph, In From RF",669432.0,642547.0,139,642547.0,Freddy Peralta,110,669432.0,Trevor Rogers
 825045,2026-08-21,2026,R,,15.0,Chase Field,75.0,Roof Closed,"0 mph, None",593958.0,666157.0,113,666157.0,Nick Lodolo,109,593958.0,Eduardo Rodriguez
-823088,2026-09-10,2026,R,,680.0,T-Mobile Park,,,,,,140,,,136,,
-823413,2026-09-10,2026,R,,2681.0,Citizens Bank Park,,,,,,117,,,143,,
-823499,2026-09-10,2026,R,,3313.0,Yankee Stadium,,,,,,115,,,147,,
-824550,2026-09-10,2026,R,,4.0,Rate Field,,,,,,134,,,145,,
-824872,2026-09-10,2026,R,,4705.0,Truist Park,,,,,,139,,,144,,
 822684,2026-09-11,2026,R,,3309.0,Nationals Park,,,,,,108,,,120,,
 822767,2026-09-11,2026,R,,14.0,Rogers Centre,,,,,,110,,,141,,
 822930,2026-09-11,2026,R,,12.0,Tropicana Field,,,,,,117,,,139,,
@@ -20341,3 +20336,8 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824549,2026-09-09,2026,R,,4.0,Rate Field,79.0,Cloudy,"9 mph, Out To LF",663436.0,669199.0,134,669199.0,Lake Bachar,145,663436.0,Davis Martin
 823739,2026-09-09,2026,R,,32.0,American Family Field,81.0,Partly Cloudy,"7 mph, Out To LF",701656.0,592332.0,112,592332.0,Kevin Gausman,158,701656.0,Logan Henderson
 823900,2026-09-09,2026,R,,22.0,UNIQLO Field at Dodger Stadium,91.0,Clear,"9 mph, Out To RF",808967.0,695076.0,113,695076.0,Rhett Lowder,119,808967.0,Yoshinobu Yamamoto
+824872,2026-09-10,2026,R,,4705.0,Truist Park,83.0,Partly Cloudy,"3 mph, L To R",527048.0,607259.0,139,607259.0,Nick Martinez,144,527048.0,Martín Pérez
+823413,2026-09-10,2026,R,,2681.0,Citizens Bank Park,86.0,Sunny,"9 mph, Out To RF",554430.0,664299.0,117,664299.0,Cristian Javier,143,554430.0,Zack Wheeler
+823088,2026-09-10,2026,R,,680.0,T-Mobile Park,68.0,Cloudy,"3 mph, L To R",669302.0,594798.0,140,594798.0,Jacob deGrom,136,669302.0,Logan Gilbert
+823499,2026-09-10,2026,R,,3313.0,Yankee Stadium,82.0,Cloudy,"5 mph, In From RF",608331.0,663372.0,115,663372.0,Ryan Feltner,147,608331.0,Max Fried
+824550,2026-09-10,2026,R,,4.0,Rate Field,74.0,Clear,"8 mph, L To R",696146.0,683003.0,134,683003.0,Jared Jones,145,696146.0,Hagen Smith
