@@ -1,0 +1,33 @@
+{
+  "candidate_rows": 81,
+  "cycle_recorded_at_et": "2026-09-12T13:28:28.203752-04:00",
+  "date": "2026-09-12",
+  "earliest_quote_timestamp_utc": "2026-09-12T17:28:25.292772+00:00",
+  "eligible_candidate_rows": 27,
+  "frozen_history_rows_before_cycle": 0,
+  "frozen_history_rows_for_date": 12,
+  "latest_model_timestamp_utc": "2026-09-12T17:28:24.383563+00:00",
+  "latest_quote_timestamp_utc": "2026-09-12T17:28:25.292772+00:00",
+  "model_versions": [
+    "v22_lineup_all_live"
+  ],
+  "newly_frozen_rows": 12,
+  "no_paper_reason": null,
+  "one_per_pitcher_selected_rows": 12,
+  "paired_market_rows": 73,
+  "projection_rows": 28,
+  "rejection_component_counts": {
+    "NEGATIVE_MARKET_EDGE": 49,
+    "NONPOSITIVE_EV": 51,
+    "OUTSIDE_DECISION_WINDOW": 7
+  },
+  "rejection_reason_counts": {
+    "NEGATIVE_MARKET_EDGE,NONPOSITIVE_EV": 45,
+    "NONPOSITIVE_EV": 2,
+    "OUTSIDE_DECISION_WINDOW": 3,
+    "OUTSIDE_DECISION_WINDOW,NEGATIVE_MARKET_EDGE,NONPOSITIVE_EV": 4
+  },
+  "schema_version": 1,
+  "status": "NEW_PAPER_SELECTION",
+  "timing_integrity": "PASS"
+}
