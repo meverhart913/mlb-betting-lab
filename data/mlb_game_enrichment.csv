@@ -19846,21 +19846,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824721,2026-08-21,2026,R,,3.0,Fenway Park,69.0,Overcast,"5 mph, In From CF",543243.0,657277.0,137,657277.0,Logan Webb,111,543243.0,Sonny Gray
 824800,2026-08-21,2026,R,,2.0,Oriole Park at Camden Yards,77.0,Partly Cloudy,"3 mph, In From RF",669432.0,642547.0,139,642547.0,Freddy Peralta,110,669432.0,Trevor Rogers
 825045,2026-08-21,2026,R,,15.0,Chase Field,75.0,Roof Closed,"0 mph, None",593958.0,666157.0,113,666157.0,Nick Lodolo,109,593958.0,Eduardo Rodriguez
-822680,2026-09-16,2026,R,,3309.0,Nationals Park,,,,,,143,,,120,,
-822763,2026-09-16,2026,R,,14.0,Rogers Centre,,,,,,116,,,141,,
-822846,2026-09-16,2026,R,,5325.0,Globe Life Field,,,,,,111,,,140,,
-822926,2026-09-16,2026,R,,12.0,Tropicana Field,,,,,,133,,,139,,
-823004,2026-09-16,2026,R,,2889.0,Busch Stadium,,,,,,137,,,138,,
-823332,2026-09-16,2026,R,,31.0,PNC Park,,,,,,158,,,134,,
-823576,2026-09-16,2026,R,,3289.0,Citi Field,,,,,,110,,,121,,
-823655,2026-09-16,2026,R,,3312.0,Target Field,,,,,,147,,,142,,
-823979,2026-09-16,2026,R,,1.0,Angel Stadium,,,,,,136,,,108,,
-824140,2026-09-16,2026,R,,2392.0,Daikin Park,,,,,,118,,,117,,
-824306,2026-09-16,2026,R,,19.0,Coors Field,,,,,,135,,,115,,
-824382,2026-09-16,2026,R,,5.0,Progressive Field,,,,,,145,,,114,,
-824467,2026-09-16,2026,R,,2602.0,Great American Ball Park,,,,,,119,,,113,,
-824626,2026-09-16,2026,R,,17.0,Wrigley Field,,,,,,144,,,112,,
-825031,2026-09-16,2026,R,,15.0,Chase Field,,,,,,146,,,109,,
 822845,2026-09-17,2026,R,,5325.0,Globe Life Field,,,,,,111,,,140,,
 822924,2026-09-17,2026,R,,12.0,Tropicana Field,,,,,,133,,,139,,
 823334,2026-09-17,2026,R,,31.0,PNC Park,,,,,,158,,,134,,
@@ -20341,3 +20326,18 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824307,2026-09-15,2026,R,,19.0,Coors Field,72.0,Partly Cloudy,"4 mph, R To L",607536.0,621111.0,135,621111.0,Walker Buehler,115,607536.0,Kyle Freeland
 823980,2026-09-15,2026,R,,1.0,Angel Stadium,75.0,Clear,"10 mph, Out To CF",696270.0,669302.0,136,669302.0,Logan Gilbert,108,696270.0,Ryan Johnson
 825030,2026-09-15,2026,R,,15.0,Chase Field,74.0,Roof Closed,"0 mph, None",647336.0,676083.0,146,676083.0,Janson Junk,109,647336.0,Michael Soroka
+824382,2026-09-16,2026,R,,5.0,Progressive Field,79.0,Cloudy,"7 mph, In From LF",800048.0,641743.0,145,641743.0,Anthony Kay,114,800048.0,Parker Messick
+823004,2026-09-16,2026,R,,2889.0,Busch Stadium,91.0,Cloudy,"4 mph, In From RF",669461.0,683627.0,137,683627.0,Anthony Molina,138,669461.0,Matthew Liberatore
+823655,2026-09-16,2026,R,,3312.0,Target Field,71.0,Partly Cloudy,"10 mph, In From RF",805673.0,607074.0,147,607074.0,Carlos Rodón,142,805673.0,Zebby Matthews
+822763,2026-09-16,2026,R,,14.0,Rogers Centre,74.0,Partly Cloudy,"5 mph, Out To LF",453286.0,672456.0,116,672456.0,Keider Montero,141,453286.0,Max Scherzer
+824467,2026-09-16,2026,R,,2602.0,Great American Ball Park,91.0,Partly Cloudy,"7 mph, In From LF",671096.0,605483.0,119,605483.0,Blake Snell,113,671096.0,Andrew Abbott
+822926,2026-09-16,2026,R,,12.0,Tropicana Field,72.0,Dome,"0 mph, None",607259.0,669620.0,133,669620.0,Brady Basso,139,607259.0,Nick Martinez
+823332,2026-09-16,2026,R,,31.0,PNC Park,83.0,Partly Cloudy,"4 mph, Calm",683003.0,701656.0,158,701656.0,Logan Henderson,134,683003.0,Jared Jones
+822680,2026-09-16,2026,R,,3309.0,Nationals Park,84.0,Clear,"6 mph, R To L",688692.0,554430.0,143,554430.0,Zack Wheeler,120,688692.0,Jared Simpson
+823576,2026-09-16,2026,R,,3289.0,Citi Field,73.0,Cloudy,"8 mph, Out To LF",675540.0,605135.0,110,605135.0,Chris Bassitt,121,675540.0,Xzavion Curry
+824626,2026-09-16,2026,R,,17.0,Wrigley Field,69.0,Cloudy,"10 mph, In From LF",684007.0,702275.0,144,702275.0,JR Ritchie,112,684007.0,Shota Imanaga
+822846,2026-09-16,2026,R,,5325.0,Globe Life Field,74.0,Roof Closed,"0 mph, None",669022.0,687562.0,111,687562.0,Jake Bennett,140,669022.0,MacKenzie Gore
+824140,2026-09-16,2026,R,,2392.0,Daikin Park,73.0,Roof Closed,"0 mph, None",664299.0,663738.0,118,663738.0,Daniel Lynch IV,117,664299.0,Cristian Javier
+824306,2026-09-16,2026,R,,19.0,Coors Field,74.0,Cloudy,"13 mph, In From LF",690279.0,592662.0,135,592662.0,Robbie Ray,115,690279.0,Mason Adams
+823979,2026-09-16,2026,R,,1.0,Angel Stadium,74.0,Clear,"8 mph, Out To LF",579328.0,669923.0,136,669923.0,George Kirby,108,579328.0,Yusei Kikuchi
+825031,2026-09-16,2026,R,,15.0,Chase Field,74.0,Roof Closed,"0 mph, None",518876.0,687473.0,146,687473.0,Ryan Gusto,109,518876.0,Merrill Kelly
