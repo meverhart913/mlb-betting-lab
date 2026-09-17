@@ -1,5 +1,7 @@
 # MLB Betting Lab
 
+> Current MLB pitcher-K canonical status: `docs/CURRENT_MLB_MODEL_CONTEXT.md`
+
 Leakage-resistant MLB moneyline research and automated morning-of-game operating pipeline.
 
 ## Repository layout
