@@ -1,6 +1,6 @@
 # Current MLB Model Canonical Context
 
-**Canonical status date:** 2026-09-17  
+**Canonical status date:** 2026-09-17 19:25 ET  
 **Repository:** `meverhart913/mlb-betting-lab`  
 **Primary live research lane:** FanDuel MLB pitcher strikeouts  
 **Mode:** Prospective paper validation / maintenance only  
@@ -168,7 +168,11 @@ After market capture is restored:
 - `python/fetch_propline_live_fanduel.py` — preferred live source when configured
 - `python/fetch_oddsapi_live_fanduel.py` — credit-aware Odds API fallback
 
-## 10. Handoff rule
+## 10. Latest verification
+
+Verified against GitHub Actions at **2026-09-17 19:25 ET**. The latest primary FanDuel workflow is **run #92** (`schedule`), started at 19:06 ET and completed successfully at 19:08 ET. The prior primary run **#91** also completed successfully. The live V2.2 feature refresh **#22** and free-market grading **#29** completed successfully today. Despite green workflow execution, the active P0 remains the empty FanDuel market feed described above; successful workflow status must not be interpreted as successful market capture.
+
+## 11. Handoff rule
 
 At the start of any future MLB-model conversation:
 
