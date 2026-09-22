@@ -19846,9 +19846,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824721,2026-08-21,2026,R,,3.0,Fenway Park,69.0,Overcast,"5 mph, In From CF",543243.0,657277.0,137,657277.0,Logan Webb,111,543243.0,Sonny Gray
 824800,2026-08-21,2026,R,,2.0,Oriole Park at Camden Yards,77.0,Partly Cloudy,"3 mph, In From RF",669432.0,642547.0,139,642547.0,Freddy Peralta,110,669432.0,Trevor Rogers
 825045,2026-08-21,2026,R,,15.0,Chase Field,75.0,Roof Closed,"0 mph, None",593958.0,666157.0,113,666157.0,Nick Lodolo,109,593958.0,Eduardo Rodriguez
-823169,2026-09-21,2026,R,,2395.0,Oracle Park,,,,,,142,,,137,,
-824221,2026-09-21,2026,R,,2394.0,Comerica Park,,,,,,120,,,116,,
-824787,2026-09-21,2026,R,,2.0,Oriole Park at Camden Yards,,,,,,141,,,110,,
 822840,2026-09-22,2026,R,,5325.0,Globe Life Field,,,,,,121,,,140,,
 823089,2026-09-22,2026,R,,680.0,T-Mobile Park,,,,,,117,,,136,,
 823166,2026-09-22,2026,R,,2395.0,Oracle Park,,,,,,142,,,137,,
@@ -20341,3 +20338,6 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823247,2026-09-20,2026,R,,2680.0,Petco Park,76.0,Partly Cloudy,"9 mph, L To R",621111.0,645261.0,146,645261.0,Sandy Alcantara,135,621111.0,Walker Buehler
 825028,2026-09-20,2026,R,,15.0,Chase Field,73.0,Roof Closed,"0 mph, None",669203.0,701542.0,147,701542.0,Will Warren,109,669203.0,Corbin Burnes
 824789,2026-09-20,2026,R,,2.0,Oriole Park at Camden Yards,81.0,Cloudy,"6 mph, Out To RF",687064.0,694819.0,158,694819.0,Jacob Misiorowski,110,687064.0,Brandon Young
+824787,2026-09-21,2026,R,,2.0,Oriole Park at Camden Yards,65.0,Overcast,"3 mph, In From RF",669358.0,702056.0,141,702056.0,Trey Yesavage,110,669358.0,Shane Baz
+824221,2026-09-21,2026,R,,2394.0,Comerica Park,60.0,Partly Cloudy,"11 mph, L To R",689981.0,687792.0,120,687792.0,DJ Herz,116,689981.0,River Ryan
+823169,2026-09-21,2026,R,,2395.0,Oracle Park,62.0,Cloudy,"15 mph, Varies",694918.0,805673.0,142,805673.0,Zebby Matthews,137,694918.0,Blade Tidwell
