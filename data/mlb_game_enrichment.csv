@@ -19845,20 +19845,7 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824721,2026-08-21,2026,R,,3.0,Fenway Park,69.0,Overcast,"5 mph, In From CF",543243.0,657277.0,137,657277.0,Logan Webb,111,543243.0,Sonny Gray
 824800,2026-08-21,2026,R,,2.0,Oriole Park at Camden Yards,77.0,Partly Cloudy,"3 mph, In From RF",669432.0,642547.0,139,642547.0,Freddy Peralta,110,669432.0,Trevor Rogers
 825045,2026-08-21,2026,R,,15.0,Chase Field,75.0,Roof Closed,"0 mph, None",593958.0,666157.0,113,666157.0,Nick Lodolo,109,593958.0,Eduardo Rodriguez
-822678,2026-09-26,2026,R,,3309.0,Nationals Park,,,,,,121,,,120,,
-822759,2026-09-26,2026,R,,14.0,Rogers Centre,,,,,,113,,,141,,
-823083,2026-09-26,2026,R,,680.0,T-Mobile Park,,,,,,108,,,136,,
-823165,2026-09-26,2026,R,,2395.0,Oracle Park,,,,,,119,,,137,,
-823245,2026-09-26,2026,R,,2680.0,Petco Park,,,,,,109,,,135,,
-823407,2026-09-26,2026,R,,2681.0,Citizens Bank Park,,,,,,139,,,143,,
-823653,2026-09-26,2026,R,,3312.0,Target Field,,,,,,140,,,142,,
-823733,2026-09-26,2026,R,,32.0,American Family Field,,,,,,138,,,158,,
-823813,2026-09-26,2026,R,,4169.0,loanDepot park,,,,,,144,,,146,,
-824057,2026-09-26,2026,R,,7.0,Kauffman Stadium,,,,,,114,,,118,,
-824219,2026-09-26,2026,R,,2394.0,Comerica Park,,,,,,134,,,116,,
-824543,2026-09-26,2026,R,,4.0,Rate Field,,,,,,115,,,145,,
 824705,2026-09-26,2026,R,,3.0,Fenway Park,,,,,,112,,,111,,
-824949,2026-09-26,2026,R,,2529.0,Sutter Health Park,,,,,,117,,,133,,
 822679,2026-09-27,2026,R,,3309.0,Nationals Park,,,,,,121,,,120,,
 822761,2026-09-27,2026,R,,14.0,Rogers Centre,,,,,,113,,,141,,
 823084,2026-09-27,2026,R,,680.0,T-Mobile Park,,,,,,108,,,136,,
@@ -20341,3 +20328,16 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823248,2026-09-25,2026,R,,2680.0,Petco Park,74.0,Partly Cloudy,"10 mph, L To R",663554.0,694297.0,109,694297.0,Brandon Pfaadt,135,663554.0,Casey Mize
 823085,2026-09-25,2026,R,,680.0,T-Mobile Park,57.0,Partly Cloudy,"5 mph, In From CF",682243.0,672282.0,108,672282.0,Reid Detmers,136,682243.0,Bryce Miller
 823167,2026-09-25,2026,R,,2395.0,Oracle Park,63.0,Clear,"11 mph, Out To CF",805074.0,669373.0,119,669373.0,Tarik Skubal,137,805074.0,Yunior Marte
+822678,2026-09-26,2026,R,,3309.0,Nationals Park,67.0,Overcast,"16 mph, In From LF",813349.0,804636.0,121,804636.0,Jonah Tong,120,813349.0,Connelly Early
+824219,2026-09-26,2026,R,,2394.0,Comerica Park,70.0,Sunny,"8 mph, Out To RF",434378.0,489446.0,134,489446.0,Kirby Yates,116,434378.0,Justin Verlander
+822759,2026-09-26,2026,R,,14.0,Rogers Centre,71.0,Sunny,"5 mph, Out To CF",702056.0,695076.0,113,695076.0,Rhett Lowder,141,702056.0,Trey Yesavage
+823165,2026-09-26,2026,R,,2395.0,Oracle Park,63.0,Sunny,"7 mph, Out To CF",683363.0,605483.0,119,605483.0,Blake Snell,137,683363.0,Matt Wilkinson
+823653,2026-09-26,2026,R,,3312.0,Target Field,62.0,Drizzle,"10 mph, In From CF",641927.0,543135.0,140,543135.0,Nathan Eovaldi,142,641927.0,Bailey Ober
+823813,2026-09-26,2026,R,,4169.0,loanDepot park,72.0,Roof Closed,"0 mph, None",667652.0,608718.0,144,608718.0,Brent Suter,146,667652.0,Jack Ralston
+824057,2026-09-26,2026,R,,7.0,Kauffman Stadium,74.0,Partly Cloudy,"5 mph, R To L",608379.0,676440.0,114,676440.0,Tanner Bibee,118,608379.0,Michael Wacha
+824543,2026-09-26,2026,R,,4.0,Rate Field,64.0,Partly Cloudy,"8 mph, L To R",663436.0,500779.0,115,500779.0,Jose Quintana,145,663436.0,Davis Martin
+823733,2026-09-26,2026,R,,32.0,American Family Field,70.0,Roof Closed,"0 mph, None",669160.0,687273.0,138,687273.0,Quinn Mathews,158,669160.0,Dustin May
+823407,2026-09-26,2026,R,,2681.0,Citizens Bank Park,62.0,Drizzle,"14 mph, In From CF",605400.0,643377.0,139,643377.0,Griffin Jax,143,605400.0,Aaron Nola
+823245,2026-09-26,2026,R,,2680.0,Petco Park,76.0,Partly Cloudy,"9 mph, L To R",621111.0,664199.0,109,664199.0,Taylor Clarke,135,621111.0,Walker Buehler
+824949,2026-09-26,2026,R,,2529.0,Sutter Health Park,79.0,Partly Cloudy,"6 mph, Out To LF",678022.0,669713.0,117,669713.0,Hayden Wesneski,133,678022.0,Jack Perkins
+823083,2026-09-26,2026,R,,680.0,T-Mobile Park,58.0,Partly Cloudy,"7 mph, In From LF",807739.0,696270.0,108,696270.0,Ryan Johnson,136,807739.0,Kade Anderson
