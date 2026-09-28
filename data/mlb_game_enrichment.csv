@@ -19845,21 +19845,7 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 824721,2026-08-21,2026,R,,3.0,Fenway Park,69.0,Overcast,"5 mph, In From CF",543243.0,657277.0,137,657277.0,Logan Webb,111,543243.0,Sonny Gray
 824800,2026-08-21,2026,R,,2.0,Oriole Park at Camden Yards,77.0,Partly Cloudy,"3 mph, In From RF",669432.0,642547.0,139,642547.0,Freddy Peralta,110,669432.0,Trevor Rogers
 825045,2026-08-21,2026,R,,15.0,Chase Field,75.0,Roof Closed,"0 mph, None",593958.0,666157.0,113,666157.0,Nick Lodolo,109,593958.0,Eduardo Rodriguez
-824705,2026-09-26,2026,R,,3.0,Fenway Park,,,,,,112,,,111,,
-822679,2026-09-27,2026,R,,3309.0,Nationals Park,,,,,,121,,,120,,
-822761,2026-09-27,2026,R,,14.0,Rogers Centre,,,,,,113,,,141,,
-823084,2026-09-27,2026,R,,680.0,T-Mobile Park,,,,,,108,,,136,,
-823164,2026-09-27,2026,R,,2395.0,Oracle Park,,,,,,119,,,137,,
-823246,2026-09-27,2026,R,,2680.0,Petco Park,,,,,,109,,,135,,
-823408,2026-09-27,2026,R,,2681.0,Citizens Bank Park,,,,,,139,,,143,,
 823490,2026-09-27,2026,R,,3313.0,Yankee Stadium,,,,,,110,,,147,,
-823650,2026-09-27,2026,R,,3312.0,Target Field,,,,,,140,,,142,,
-823731,2026-09-27,2026,R,,32.0,American Family Field,,,,,,138,,,158,,
-823814,2026-09-27,2026,R,,4169.0,loanDepot park,,,,,,144,,,146,,
-824055,2026-09-27,2026,R,,7.0,Kauffman Stadium,,,,,,114,,,118,,
-824217,2026-09-27,2026,R,,2394.0,Comerica Park,,,,,,134,,,116,,
-824542,2026-09-27,2026,R,,4.0,Rate Field,,,,,,115,,,145,,
-824948,2026-09-27,2026,R,,2529.0,Sutter Health Park,,,,,,117,,,133,,
 823509,2026-08-22,2026,R,,3313.0,Yankee Stadium,74.0,Cloudy,"6 mph, In From LF",677960.0,656302.0,141,656302.0,Dylan Cease,147,677960.0,Ryan Weathers
 823743,2026-08-22,2026,R,,32.0,American Family Field,78.0,Partly Cloudy,"10 mph, Out To CF",701656.0,527048.0,144,527048.0,Martín Pérez,158,701656.0,Logan Henderson
 823831,2026-08-22,2026,R,,4169.0,loanDepot park,72.0,Roof Closed,"0 mph, None",691587.0,663623.0,120,663623.0,Jake Irvin,146,691587.0,Eury Pérez
@@ -20341,3 +20327,17 @@ game_id,date,season,game_type,day_night,venue_id,venue_name,temperature_f,weathe
 823245,2026-09-26,2026,R,,2680.0,Petco Park,76.0,Partly Cloudy,"9 mph, L To R",621111.0,664199.0,109,664199.0,Taylor Clarke,135,621111.0,Walker Buehler
 824949,2026-09-26,2026,R,,2529.0,Sutter Health Park,79.0,Partly Cloudy,"6 mph, Out To LF",678022.0,669713.0,117,669713.0,Hayden Wesneski,133,678022.0,Jack Perkins
 823083,2026-09-26,2026,R,,680.0,T-Mobile Park,58.0,Partly Cloudy,"7 mph, In From LF",807739.0,696270.0,108,696270.0,Ryan Johnson,136,807739.0,Kade Anderson
+822679,2026-09-27,2026,R,,3309.0,Nationals Park,62.0,Rain,"14 mph, L To R",687792.0,640455.0,121,640455.0,Sean Manaea,120,687792.0,DJ Herz
+823408,2026-09-27,2026,R,,2681.0,Citizens Bank Park,65.0,Overcast,"19 mph, In From RF",554430.0,607259.0,139,607259.0,Nick Martinez,143,554430.0,Zack Wheeler
+824705,2026-09-27,2026,R,,12.0,Tropicana Field,72.0,Dome,"0 mph, None",656557.0,684007.0,112,684007.0,Shota Imanaga,111,656557.0,Tanner Houck
+824948,2026-09-27,2026,R,,2529.0,Sutter Health Park,66.0,Partly Cloudy,"6 mph, Out To CF",686751.0,663567.0,117,663567.0,Peter Lambert,133,686751.0,Seth Johnson
+823164,2026-09-27,2026,R,,2395.0,Oracle Park,61.0,Partly Cloudy,"8 mph, Out To CF",693313.0,676263.0,119,676263.0,Jack Dreyer,137,693313.0,Carson Seymour
+822761,2026-09-27,2026,R,,14.0,Rogers Centre,76.0,Sunny,"15 mph, In From CF",453286.0,682227.0,113,682227.0,Brandon Williamson,141,453286.0,Max Scherzer
+824055,2026-09-27,2026,R,,7.0,Kauffman Stadium,72.0,Cloudy,"4 mph, R To L",663738.0,800048.0,114,800048.0,Parker Messick,118,663738.0,Daniel Lynch IV
+824217,2026-09-27,2026,R,,2394.0,Comerica Park,76.0,Sunny,"8 mph, Out To RF",689981.0,683003.0,134,683003.0,Jared Jones,116,689981.0,River Ryan
+823246,2026-09-27,2026,R,,2680.0,Petco Park,78.0,Cloudy,"7 mph, L To R",681190.0,647336.0,109,647336.0,Michael Soroka,135,681190.0,Randy Vásquez
+823084,2026-09-27,2026,R,,680.0,T-Mobile Park,59.0,Sunny,"11 mph, In From LF",669302.0,579328.0,108,579328.0,Yusei Kikuchi,136,669302.0,Logan Gilbert
+823650,2026-09-27,2026,R,,3312.0,Target Field,65.0,Partly Cloudy,"3 mph, In From LF",665152.0,669022.0,140,669022.0,MacKenzie Gore,142,665152.0,Dean Kremer
+824542,2026-09-27,2026,R,,4.0,Rate Field,70.0,Partly Cloudy,"6 mph, L To R",641743.0,607536.0,115,607536.0,Kyle Freeland,145,641743.0,Anthony Kay
+823814,2026-09-27,2026,R,,4169.0,loanDepot park,72.0,Roof Closed,"0 mph, None",676083.0,702275.0,144,702275.0,JR Ritchie,146,676083.0,Janson Junk
+823731,2026-09-27,2026,R,,32.0,American Family Field,70.0,Partly Cloudy,"5 mph, L To R",694819.0,669467.0,138,669467.0,Andre Pallante,158,694819.0,Jacob Misiorowski

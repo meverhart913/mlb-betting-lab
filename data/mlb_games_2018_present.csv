@@ -20326,18 +20326,18 @@ season,game_id,date,game_datetime,away_team,home_team,away_score,home_score,away
 2026,823245,2026-09-26,2026-09-27T00:40:00Z,Arizona Diamondbacks,San Diego Padres,7.0,10.0,86,75,90,71,Taylor Clarke,Walker Buehler,Petco Park,Final,Regular Season,1,San Diego Padres,1.0
 2026,824949,2026-09-26,2026-09-27T01:40:00Z,Houston Astros,Athletics,13.0,2.0,80,81,64,97,Hayden Wesneski,Jack Perkins,Sutter Health Park,Final,Regular Season,1,Houston Astros,0.0
 2026,823083,2026-09-26,2026-09-27T01:40:00Z,Los Angeles Angels,Seattle Mariners,4.0,8.0,62,99,75,86,Ryan Johnson,Kade Anderson,T-Mobile Park,Final,Regular Season,1,Seattle Mariners,1.0
-2026,822679,2026-09-27,2026-09-27T17:05:00Z,New York Mets,Washington Nationals,0.0,0.0,74,87,76,85,Sean Manaea,DJ Herz,Nationals Park,Pre-Game,Regular Season,1,,
-2026,823490,2026-09-27,2026-09-27T17:05:00Z,Baltimore Orioles,New York Yankees,,,79,82,93,68,Shane Baz,Elmer Rodríguez,Yankee Stadium,Pre-Game,Regular Season,1,,
-2026,824705,2026-09-27,2026-09-27T19:05:00Z,Chicago Cubs,Boston Red Sox,,,88,73,87,74,Shota Imanaga,,Tropicana Field,Scheduled,Regular Season,1,,
-2026,824948,2026-09-27,2026-09-27T19:05:00Z,Houston Astros,Athletics,,,80,81,64,97,Peter Lambert,Seth Johnson,Sutter Health Park,Scheduled,Regular Season,1,,
-2026,823164,2026-09-27,2026-09-27T19:05:00Z,Los Angeles Dodgers,San Francisco Giants,,,99,62,65,96,,Carson Seymour,Oracle Park,Scheduled,Regular Season,1,,
-2026,823408,2026-09-27,2026-09-27T19:05:00Z,Tampa Bay Rays,Philadelphia Phillies,,,98,63,87,74,Nick Martinez,Zack Wheeler,Citizens Bank Park,Scheduled,Regular Season,1,,
-2026,822761,2026-09-27,2026-09-27T19:07:00Z,Cincinnati Reds,Toronto Blue Jays,,,75,86,78,83,Brandon Williamson,Max Scherzer,Rogers Centre,Scheduled,Regular Season,1,,
-2026,824055,2026-09-27,2026-09-27T19:10:00Z,Cleveland Guardians,Kansas City Royals,,,85,76,68,93,Parker Messick,Daniel Lynch IV,Kauffman Stadium,Scheduled,Regular Season,1,,
-2026,824217,2026-09-27,2026-09-27T19:10:00Z,Pittsburgh Pirates,Detroit Tigers,,,81,80,76,85,Jared Jones,River Ryan,Comerica Park,Scheduled,Regular Season,1,,
-2026,823246,2026-09-27,2026-09-27T19:10:00Z,Arizona Diamondbacks,San Diego Padres,,,86,75,90,71,Michael Soroka,Randy Vásquez,Petco Park,Scheduled,Regular Season,1,,
-2026,823084,2026-09-27,2026-09-27T19:10:00Z,Los Angeles Angels,Seattle Mariners,,,62,99,75,86,Yusei Kikuchi,Logan Gilbert,T-Mobile Park,Scheduled,Regular Season,1,,
-2026,823650,2026-09-27,2026-09-27T19:10:00Z,Texas Rangers,Minnesota Twins,,,80,81,76,85,MacKenzie Gore,Dean Kremer,Target Field,Scheduled,Regular Season,1,,
-2026,824542,2026-09-27,2026-09-27T19:10:00Z,Colorado Rockies,Chicago White Sox,,,58,103,83,78,Kyle Freeland,Anthony Kay,Rate Field,Scheduled,Regular Season,1,,
-2026,823814,2026-09-27,2026-09-27T19:10:00Z,Atlanta Braves,Miami Marlins,,,94,67,79,82,JR Ritchie,Janson Junk,loanDepot park,Scheduled,Regular Season,1,,
-2026,823731,2026-09-27,2026-09-27T19:10:00Z,St. Louis Cardinals,Milwaukee Brewers,,,77,84,102,59,Andre Pallante,Jacob Misiorowski,American Family Field,Scheduled,Regular Season,1,,
+2026,822679,2026-09-27,2026-09-27T17:05:00Z,New York Mets,Washington Nationals,4.0,6.0,74,88,77,85,Sean Manaea,DJ Herz,Nationals Park,Final,Regular Season,1,Washington Nationals,1.0
+2026,823408,2026-09-27,2026-09-27T18:30:00Z,Tampa Bay Rays,Philadelphia Phillies,3.0,7.0,98,64,88,74,Nick Martinez,Zack Wheeler,Citizens Bank Park,Final,Regular Season,1,Philadelphia Phillies,1.0
+2026,824705,2026-09-27,2026-09-27T19:05:00Z,Chicago Cubs,Boston Red Sox,6.0,2.0,89,73,87,75,Shota Imanaga,Tanner Houck,Tropicana Field,Final,Regular Season,1,Chicago Cubs,0.0
+2026,824948,2026-09-27,2026-09-27T19:05:00Z,Houston Astros,Athletics,9.0,0.0,81,81,64,98,Peter Lambert,Seth Johnson,Sutter Health Park,Final,Regular Season,1,Houston Astros,0.0
+2026,823164,2026-09-27,2026-09-27T19:05:00Z,Los Angeles Dodgers,San Francisco Giants,5.0,1.0,100,62,65,97,Jack Dreyer,Carson Seymour,Oracle Park,Final,Regular Season,1,Los Angeles Dodgers,0.0
+2026,822761,2026-09-27,2026-09-27T19:07:00Z,Cincinnati Reds,Toronto Blue Jays,1.0,5.0,75,87,79,83,Brandon Williamson,Max Scherzer,Rogers Centre,Final,Regular Season,1,Toronto Blue Jays,1.0
+2026,824055,2026-09-27,2026-09-27T19:10:00Z,Cleveland Guardians,Kansas City Royals,2.0,3.0,85,77,69,93,Parker Messick,Daniel Lynch IV,Kauffman Stadium,Final,Regular Season,1,Kansas City Royals,1.0
+2026,824217,2026-09-27,2026-09-27T19:10:00Z,Pittsburgh Pirates,Detroit Tigers,4.0,2.0,82,80,76,86,Jared Jones,River Ryan,Comerica Park,Final,Regular Season,1,Pittsburgh Pirates,0.0
+2026,823246,2026-09-27,2026-09-27T19:10:00Z,Arizona Diamondbacks,San Diego Padres,4.0,9.0,86,76,91,71,Michael Soroka,Randy Vásquez,Petco Park,Final,Regular Season,1,San Diego Padres,1.0
+2026,823084,2026-09-27,2026-09-27T19:10:00Z,Los Angeles Angels,Seattle Mariners,3.0,7.0,62,100,76,86,Yusei Kikuchi,Logan Gilbert,T-Mobile Park,Final,Regular Season,1,Seattle Mariners,1.0
+2026,823650,2026-09-27,2026-09-27T19:10:00Z,Texas Rangers,Minnesota Twins,4.0,6.0,80,82,77,85,MacKenzie Gore,Dean Kremer,Target Field,Final,Regular Season,1,Minnesota Twins,1.0
+2026,824542,2026-09-27,2026-09-27T19:10:00Z,Colorado Rockies,Chicago White Sox,2.0,4.0,58,104,84,78,Kyle Freeland,Anthony Kay,Rate Field,Final,Regular Season,1,Chicago White Sox,1.0
+2026,823814,2026-09-27,2026-09-27T19:10:00Z,Atlanta Braves,Miami Marlins,3.0,5.0,94,68,80,82,JR Ritchie,Janson Junk,loanDepot park,Final,Regular Season,1,Miami Marlins,1.0
+2026,823731,2026-09-27,2026-09-27T19:10:00Z,St. Louis Cardinals,Milwaukee Brewers,4.0,6.0,77,85,103,59,Andre Pallante,Jacob Misiorowski,American Family Field,Final,Regular Season,1,Milwaukee Brewers,1.0
+2026,823490,2026-09-27,2026-09-27T17:05:00Z,Baltimore Orioles,New York Yankees,,,79,82,93,68,Shane Baz,Elmer Rodríguez,Yankee Stadium,Cancelled,Regular Season,1,,
